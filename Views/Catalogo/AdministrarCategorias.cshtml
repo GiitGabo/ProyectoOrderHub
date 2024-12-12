@@ -1,0 +1,105 @@
+﻿<link rel="stylesheet" href="~/Estilos/CSS/Estilos.css" />
+<h1>Categorías</h1>
+
+<!-- Tabla de Categorías -->
+<table id="categoryTable">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Disponible</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+    <td>100</td>
+    <td>Entrada</td>
+    <td>Algo para empezar</td>
+    <td>Si</td>
+    <td>
+        <button class="icon-btn edit">
+            <i class="fas fa-edit"></i>
+        </button>
+        <button class="icon-btn delete">
+            <i class="fas fa-trash-alt"></i>
+        </button>
+    </td>
+    </tbody>
+</table>
+
+<!-- Botón Añadir Categoría -->
+<button class="add-category" id="addCategoryBtn">Añadir Categoría</button>
+
+<!-- Popup para añadir categoría -->
+<div class="overlay" id="overlayCategory"></div>
+<div class="popup" id="categoryPopup">
+    <h3>Añadir Categoría</h3>
+
+    <!-- Campo para el nombre de la categoría -->
+    <label for="categoryName">Nombre de la categoría:</label>
+    <input type="text" id="categoryName" placeholder="Escribe el nombre de la categoría" required>
+
+    <!-- Campo para la descripción de la categoría -->
+    <label for="categoryDescription">Descripción:</label>
+    <textarea id="categoryDescription" placeholder="Escribe una breve descripción de la categoría" required></textarea>
+
+    <!-- Campo para la disponibilidad -->
+    <label for="categoryAvailable">Disponible:</label>
+    <select id="categoryAvailable" required>
+        <option value="Sí">Sí</option>
+        <option value="No">No</option>
+    </select>
+
+    <!-- Botones -->
+    <button onclick="addCategory()">Guardar Categoría</button>
+    <button onclick="closeCategoryPopup()">Cerrar</button>
+</div>
+
+<script>
+    // Función para abrir el popup de añadir categoría
+    function openCategoryPopup() {
+        document.getElementById('overlayCategory').style.display = 'block';
+        document.getElementById('categoryPopup').style.display = 'block';
+    }
+
+    // Función para cerrar el popup
+    function closeCategoryPopup() {
+        document.getElementById('overlayCategory').style.display = 'none';
+        document.getElementById('categoryPopup').style.display = 'none';
+        document.getElementById('categoryName').value = '';
+        document.getElementById('categoryDescription').value = '';
+        document.getElementById('categoryAvailable').value = 'Sí';
+    }
+
+    // Función para añadir la categoría
+    function addCategory() {
+        const categoryName = document.getElementById('categoryName').value;
+        const categoryDescription = document.getElementById('categoryDescription').value;
+        const categoryAvailable = document.getElementById('categoryAvailable').value;
+
+        // Validar que todos los campos estén completos
+        if (categoryName && categoryDescription) {
+            const table = document.querySelector("#categoryTable tbody");
+            const newRow = `
+                <tr>
+                    <td>Nuevo</td> <!-- El ID se generará automáticamente en el backend -->
+                    <td>${categoryName}</td>
+                    <td>${categoryDescription}</td>
+                    <td>${categoryAvailable}</td>
+                    <td>
+                        <button class="icon-btn edit"><i class="fas fa-edit"></i></button>
+                        <button class="icon-btn delete"><i class="fas fa-trash-alt"></i></button>
+                    </td>
+                </tr>
+            `;
+            table.insertAdjacentHTML('beforeend', newRow);
+            closeCategoryPopup();
+        } else {
+            alert("Por favor, ingresa todos los datos necesarios.");
+        }
+    }
+
+    // Abrir el popup al hacer clic en el botón de añadir categoría
+    document.getElementById('addCategoryBtn').onclick = openCategoryPopup;
+</script>

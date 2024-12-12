@@ -1,0 +1,111 @@
+﻿<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="~/Estilos/CSS/HistorialPagos.css" />
+
+<div class="container">
+    <header>
+        <h1>Historial de Pagos</h1>
+        <p>Consulta tus pagos realizados y accede a los detalles de tus pedidos.</p>
+    </header>
+
+    <!-- Sección de pagos -->
+    <div class="pagos-container">
+        <div class="pago-card">
+            <div class="pago-info">
+                <h2>Pedido #123</h2>
+                <p><strong>Fecha de Pedido:</strong> 2024-12-10</p>
+                <p><strong>Total:</strong> $150.00</p>
+                <p><strong>Pago:</strong> $150.00</p>
+                <p><strong>Método de Pago:</strong> Tarjeta de Crédito</p>
+                <p><strong>Estado:</strong> Pagado</p>
+            </div>
+            <div class="pago-actions">
+                <button onclick="verDetalles(123)"><i class="fas fa-eye"></i> Ver Detalles</button>
+                <button onclick="reenviarFactura(123)"><i class="fas fa-envelope"></i> Reenviar Factura</button>
+            </div>
+        </div>
+
+        <div class="pago-card">
+            <div class="pago-info">
+                <h2>Pedido #124</h2>
+                <p><strong>Fecha de Pedido:</strong> 2024-12-05</p>
+                <p><strong>Total:</strong> $200.00</p>
+                <p><strong>Pago:</strong> $200.00</p>
+                <p><strong>Método de Pago:</strong> PayPal</p>
+                <p><strong>Estado:</strong> Pagado</p>
+            </div>
+            <div class="pago-actions">
+                <button onclick="verDetalles(124)"><i class="fas fa-eye"></i> Ver Detalles</button>
+                <button onclick="reenviarFactura(124)"><i class="fas fa-envelope"></i> Reenviar Factura</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Modal de Detalles del Pedido -->
+<div id="modalDetalles" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="cerrarModal()">&times;</span>
+        <h2>Detalles del Pedido</h2>
+        <p id="detallesPedido"></p>
+    </div>
+</div>
+
+<!-- Modal para reenviar factura -->
+<div id="modalReenviarFactura" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="cerrarModal()">&times;</span>
+        <h2>Reenviar Factura</h2>
+        <p id="reenviarMensaje"></p>
+        <button onclick="reenviarFacturaConfirmado()">Enviar Factura</button>
+    </div>
+</div>
+
+<script>
+    // Función para ver detalles del pedido
+    function verDetalles(pedidoId) {
+        // Simular la carga de los detalles del pedido
+        let detalles = `Detalles del pedido #${pedidoId}:
+                    - Producto A x 2
+                    - Producto B x 1
+                    - Total: $150.00`;
+
+        // Mostrar el contenido en el modal
+        document.getElementById("detallesPedido").innerText = detalles;
+
+        // Mostrar el modal
+        document.getElementById("modalDetalles").style.display = "block";
+    }
+
+    // Función para reenviar la factura
+    function reenviarFactura(pedidoId) {
+        // Simular la acción de reenviar factura
+        let mensaje = `¿Deseas reenviar la factura del pedido #${pedidoId}?`;
+
+        // Mostrar el mensaje en el modal
+        document.getElementById("reenviarMensaje").innerText = mensaje;
+
+        // Mostrar el modal
+        document.getElementById("modalReenviarFactura").style.display = "block";
+    }
+
+    // Función para confirmar el envío de la factura
+    function reenviarFacturaConfirmado() {
+        alert("Factura reenviada exitosamente!");
+        cerrarModal();
+    }
+
+    // Función para cerrar el modal
+    function cerrarModal() {
+        document.getElementById("modalDetalles").style.display = "none";
+        document.getElementById("modalReenviarFactura").style.display = "none";
+    }
+
+    // Cerrar el modal si se hace clic fuera de él
+    window.onclick = function (event) {
+        if (event.target == document.getElementById("modalDetalles") || event.target == document.getElementById("modalReenviarFactura")) {
+            cerrarModal();
+        }
+    }
+
+</script>
