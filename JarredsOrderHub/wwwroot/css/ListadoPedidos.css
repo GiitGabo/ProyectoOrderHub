@@ -1,0 +1,112 @@
+﻿body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff; /* Color de fondo principal */
+    color: #262626; /* Color de texto principal */
+}
+
+/* --- Contenedor principal --- */
+.perfil-container {
+    background-color: #fff; /* Fondo blanco */
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    max-width: 600px; /* Ancho máximo del contenedor */
+    margin: 40px auto; /* Centrado */
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+    .perfil-container h2 {
+        font-size: 28px;
+        font-weight: 700; /* Roboto Bold */
+        color: #262626; /* Color de título principal */
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+/* Tipografía */
+.titulo-primario {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    color: #262626;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.titulo-secundario {
+    font-weight: 500;
+    color: #262626;
+}
+
+
+h1 {
+    text-align: center;
+    color: #2EA629;
+    margin: 20px 0;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Card de Pedido */
+.card {
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+    .card h3 {
+        margin: 0;
+        color: #F2A413;
+    }
+
+    .card p {
+        margin: 5px 0;
+        font-size: 14px;
+        color: #262626;
+    }
+
+    .card .bold-text {
+        font-weight: bold;
+        color: #262626;
+    }
+
+/* Dropdown */
+.status-dropdown {
+    margin-top: 10px;
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #F2EAD0;
+    cursor: pointer;
+}
+
+/* Botón de Guardar Cambios */
+.save-button {
+    background-color: #2EA629;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 10px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 10px;
+    text-align: center;
+}
+
+    .save-button:hover {
+        background-color: #1F7D1C;
+    }

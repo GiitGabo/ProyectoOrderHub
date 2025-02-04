@@ -1,0 +1,137 @@
+﻿<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="~/css/Carrito.css" />
+
+
+<!-- Contenedor principal del carrito -->
+<div class="carrito-container">
+    <h2>Mi Carrito</h2>
+
+    <!-- Producto en el carrito -->
+    <div class="producto">
+        <div class="info-producto">
+            <img src="https://imag.bonviveur.com/pizza-margarita.jpg" alt="Pizza Margarita" class="imagen-producto" />
+            <div class="detalles-producto">
+                <h3>Pizza Margarita</h3>
+                <p>Precio Unitario: <span class="precio-unitario">$10.00</span></p>
+            </div>
+        </div>
+
+        <!-- Control de cantidad -->
+        <div class="cantidad">
+            <button class="btn-cantidad" onclick="cambiarCantidad(-1)"><i class="fas fa-minus"></i></button>
+            <span id="cantidad">1</span>
+            <button class="btn-cantidad" onclick="cambiarCantidad(1)"><i class="fas fa-plus"></i></button>
+        </div>
+
+        <!-- Precio total -->
+        <div class="precio-total">
+            <span>Total: $<span id="precio-total">10.00</span></span>
+        </div>
+
+        <!-- Botón para eliminar el producto -->
+        <button class="btn-eliminar" onclick="eliminarProducto()"><i class="fas fa-trash"></i> Eliminar</button>
+    </div>
+
+
+    <!-- Botón de Pagar -->
+    <div class="pagar">
+        <button class="btn-pagar" onclick="mostrarResumen()"><i class="fas fa-credit-card"></i> Pagar</button>
+    </div>
+</div>
+
+
+<!-- Contenedor del popup para el resumen del pedido -->
+<div id="popup-resumen" class="popup">
+    <div class="popup-contenido">
+        <h3>Resumen del Pedido</h3>
+        <p><strong>Plato:</strong> Pizza Margarita</p>
+        <p><strong>Cantidad:</strong> <span id="resumen-cantidad">1</span></p>
+        <p><strong>Ingredientes:</strong> Queso, Tomate, Albahaca</p>
+        <p><strong>Precio Total:</strong> $<span id="resumen-precio">10.00</span></p>
+
+        <!-- Comentarios -->
+        <label for="comentarios">Comentarios sobre el pedido:</label>
+        <textarea id="comentarios" rows="3" placeholder="Ej. Sin albahaca, extra queso..."></textarea>
+
+        <!-- Código de Descuento -->
+        <div class="descuento">
+            <label for="codigo-descuento">Código de descuento:</label>
+            <input type="text" id="codigo-descuento" placeholder="Ingresa tu código aquí..." />
+            <button class="btn-aplicar-descuento" onclick="aplicarDescuento()">Aplicar</button>
+        </div>
+
+        <br>
+
+        <!-- Método de Pago -->
+        <label>Selecciona el método de pago:</label>
+        <div class="metodo-pago">
+            <button class="btn-pago" onclick="pagarConEfectivo()"><i class="fas fa-cash-register"></i> Efectivo</button>
+            <button class="btn-pago" onclick="pagarConTarjeta()"><i class="fas fa-credit-card"></i> Tarjeta</button>
+            <button class="btn-pago" onclick="pagarConPaypal()"><i class="fab fa-paypal"></i> PayPal</button>
+        </div>
+
+        <!-- Botón de cerrar -->
+        <button class="btn-cerrar" onclick="cerrarResumen()">Cerrar</button>
+    </div>
+</div>
+
+<script>
+    let cantidad = 1;
+    const precioUnitario = 10.00;
+
+    function cambiarCantidad(valor) {
+        cantidad = Math.max(1, cantidad + valor);
+        document.getElementById('cantidad').innerText = cantidad;
+        document.getElementById('precio-total').innerText = (cantidad * precioUnitario).toFixed(2);
+    }
+
+    function eliminarProducto() {
+        alert("El producto ha sido eliminado del carrito.");
+    }
+
+    function mostrarPopup() {
+        document.getElementById('popup-descuento').style.display = 'flex';
+    }
+
+    function cerrarPopup() {
+        document.getElementById('popup-descuento').style.display = 'none';
+    }
+
+    function aplicarDescuento() {
+        const codigo = document.getElementById('codigo-descuento').value;
+        alert("Código " + codigo + " aplicado (ejemplo).");
+        let descuento = 0;
+        if (codigo === "DESCUENTO10") {
+            descuento = 0.1;
+        }
+        const precioFinal = (cantidad * precioUnitario * (1 - descuento)).toFixed(2);
+        document.getElementById('precio-total').innerText = precioFinal;
+        cerrarPopup();
+    }
+
+    function mostrarResumen() {
+        document.getElementById('resumen-cantidad').innerText = cantidad;
+        document.getElementById('resumen-precio').innerText = (cantidad * precioUnitario).toFixed(2);
+        document.getElementById('popup-resumen').style.display = 'flex';
+    }
+
+    function cerrarResumen() {
+        document.getElementById('popup-resumen').style.display = 'none';
+    }
+
+    function pagarConEfectivo() {
+        alert("Pedido realizado con éxito. Puedes pagar en efectivo.");
+        cerrarResumen();
+    }
+
+    function pagarConTarjeta() {
+        const datosTarjeta = prompt("Introduce los datos de tu tarjeta: ");
+        alert("Datos recibidos. Pago procesado con tarjeta.");
+        cerrarResumen();
+    }
+
+    function pagarConPaypal() {
+        alert("Redirigiendo a PayPal...");
+        cerrarResumen();
+    }
+</script>
