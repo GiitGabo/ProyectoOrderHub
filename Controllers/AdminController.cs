@@ -2,12 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using JarredsOrderHub.DbaseContext;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace JarredsOrderHub.Controllers
 {
     public class AdminController : Controller
     {
+        private readonly ApplicationDbContext _context;
+
+        public AdminController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
         public ActionResult AdministrarUsuarios()
         {
             return View();
@@ -24,10 +32,10 @@ namespace JarredsOrderHub.Controllers
             return View();
         }
 
-        public ActionResult AdministrarRoles()
+        public async Task<IActionResult> AdministrarRoles()
         {
-
-            return View();
+            var roles = await _context.Roles.ToListAsync();
+            return View(roles);
         }
     }
 }

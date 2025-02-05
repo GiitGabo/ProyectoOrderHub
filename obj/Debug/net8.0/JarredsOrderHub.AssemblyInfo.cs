@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("JarredsOrderHub")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1e31112a91d8d0ac27359c53bee898237c08cc56")]
 [assembly: System.Reflection.AssemblyProductAttribute("JarredsOrderHub")]
 [assembly: System.Reflection.AssemblyTitleAttribute("JarredsOrderHub")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
