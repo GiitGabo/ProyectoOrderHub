@@ -1,0 +1,49 @@
+/* _content/JarredsOrderHub/Views/Shared/_Layout.cshtml.rz.scp.css */
+/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+a.navbar-brand[b-ynz8n1qymf] {
+  white-space: normal;
+  text-align: center;
+  word-break: break-all;
+}
+
+a[b-ynz8n1qymf] {
+  color: #0077cc;
+}
+
+.btn-primary[b-ynz8n1qymf] {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.nav-pills .nav-link.active[b-ynz8n1qymf], .nav-pills .show > .nav-link[b-ynz8n1qymf] {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.border-top[b-ynz8n1qymf] {
+  border-top: 1px solid #e5e5e5;
+}
+.border-bottom[b-ynz8n1qymf] {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow[b-ynz8n1qymf] {
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy[b-ynz8n1qymf] {
+  font-size: 1rem;
+  line-height: inherit;
+}
+
+.footer[b-ynz8n1qymf] {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px;
+}

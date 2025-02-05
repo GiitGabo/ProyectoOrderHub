@@ -1,0 +1,180 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://kit.fontawesome.com/ddc6aa5d21.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/Layout.css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ICONO -->
+    <link rel="icon" type="image/png" href="~/LOGO-JARREDS.ico" />
+
+    <title>@ViewBag.Title - Jarred's Order Hub</title>
+
+</head>
+<body>
+    <!--Header -->
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
+        <div class="container">
+            <!-- Logo -->
+            <a class="navbar-brand" href="@Url.Action("Index","Home")">
+                <i class="fas fa-box-open me-2"></i>Jarred's Order Hub
+            </a>
+
+            <!-- Toggler Button -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Menu -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <!-- Admin -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-cog me-1"></i>Admin
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                            <li><a class="dropdown-item" href="@Url.Action("AdministrarEmpleados","Admin")">Empleados</a></li>
+                            <li><a class="dropdown-item" href="@Url.Action("AdministrarRoles","Admin")">Roles</a></li>
+                            <li><a class="dropdown-item" href="@Url.Action("AdministrarTareas","Admin")">Tareas</a></li>
+                            <li><a class="dropdown-item" href="@Url.Action("AdministrarUsuarios","Admin")">Usuarios</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Catálogo -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="catalogoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-boxes me-1"></i>Catálogo
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="catalogoDropdown">
+                            <li><a class="dropdown-item" href="@Url.Action("AdministrarCategorias","Catalogo")">Administrar Categorias</a></li>
+                            <li><a class="dropdown-item" href="@Url.Action("AdministrarPlatos","Catalogo")">Administrar Platos</a></li>
+                            <li><a class="dropdown-item" href="@Url.Action("Menu","Catalogo")">Menu</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Envío -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="envioDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-truck me-1"></i>Envío
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="envioDropdown">
+                            <li><a class="dropdown-item" href="@Url.Action("EstadoPedido","Envio")">Estado Pedido</a></li>
+                            <li><a class="dropdown-item" href="@Url.Action("ListadoPedidos","Envio")">Listado de Pedidos</a></li>
+                            <li><a class="dropdown-item" href="@Url.Action("ReportarProblema","Envio")">Reportar Problema</a></li>
+                            <li><a class="dropdown-item" href="@Url.Action("VisualizarRetroalimentaciones","Envio")">Ver Retroalimentacion</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Información -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="infoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-info-circle me-1"></i>Información
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="infoDropdown">
+                            <li><a class="dropdown-item" href="@Url.Action("EdicionInformacion","Informacion")">Apartados Informativos</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Pago -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="pagoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-credit-card me-1"></i>Pago
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="pagoDropdown">
+                            <li><a class="dropdown-item" href="@Url.Action("HistorialPagosPedidos","Pago")">Historia de pedidos pagados</a></li>
+                            <li><a class="dropdown-item" href="@Url.Action("HistorialPagosPedidosAdministracion","Pago")">Historial de Pagos Administracion</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Pedido -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Carrito", "Pedido")" id="pedidoDropdown" role="button">
+                            <i class="fas fa-clipboard-list me-1"></i>Carrito
+                        </a>
+                    </li>
+
+
+                    <!-- Reporte -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="reporteDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-chart-bar me-1"></i>Reporte
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="reporteDropdown">
+                            <li><a class="dropdown-item" href="@Url.Action("AdministracionReportes","Reporte")"> Reportes </a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Mi Usuario -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="usuarioDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user me-1"></i>Mi Usuario
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="usuarioDropdown">
+                            <li><a class="dropdown-item" href="@Url.Action("GestionPerfil","Usuario")">Gestion Perfil</a></li>
+                            <li><a class="dropdown-item" href="@Url.Action("AccionesUsuario","Usuario")">Cerrar Sesión</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-5 mt-5">
+        <div class="container">
+            <div class="row">
+                <!-- ACERCA -->
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold">Acerca de Nosotros</h5>
+                    <p>Explora una amplia variedad de productos y servicios seleccionados especialmente para ti.</p>
+                </div>
+                <!-- FAQ -->
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold">Preguntas Frecuentes</h5>
+                    <ul class="list-unstyled">
+                        <li>¿Cada cuánto se realizan entregas?</li>
+                        <li class="text-muted">Dos veces al mes.</li>
+                    </ul>
+                </div>
+                <!-- CONTACTO -->
+                <div class="col-md-4 mb-4 text-center">
+                    <h5 class="fw-bold">Contacto</h5>
+                    <a href="#" class="text-light me-3"><i class="fab fa-facebook fa-2x"></i></a>
+                    <a href="#" class="text-light me-3"><i class="fab fa-twitter fa-2x"></i></a>
+                    <a href="#" class="text-light"><i class="fab fa-instagram fa-2x"></i></a>
+                    <br>
+                    <br>
+                    <a href="#" class="text-light">jarredsOrderHub@gmail.com</a>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <!-- TERMINOS Y CONDICIONES -->
+                <h5 class="fw-bold">Terminos y Condiciones</h5>
+                </ul>
+            </div>
+            <hr class="border-secondary">
+            <div class="text-center">
+                <p class="text-center">&copy; @DateTime.Now.Year Jarred's Order Hub. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    @RenderSection("scripts", required: false)
+
+</body>
+</html>

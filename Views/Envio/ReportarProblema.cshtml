@@ -1,0 +1,66 @@
+﻿<link rel="stylesheet" href="~/css/Estilos.css" />
+<h1>Realizar Reporte</h1>
+
+<!-- Formulario para Realizar un Reporte -->
+<form id="reportForm">
+
+
+    <label for="reportDate">Fecha del Reporte:</label>
+    <input type="date" id="reportDate" name="reportDate" required>
+
+    <label for="reportDescription">Descripción del Reporte:</label>
+    <textarea id="reportDescription" name="reportDescription" rows="4" placeholder="Describa el problema o reporte" required></textarea>
+
+    <button type="submit">Enviar Reporte</button>
+</form>
+
+<!-- Popup Modal de Confirmación -->
+<div id="reportConfirmationModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeReportConfirmation">&times;</span>
+        <h2>Confirmación</h2>
+        <p>Gracias por realizar tu reporte. Nuestro equipo lo revisará pronto.</p>
+    </div>
+</div>
+
+<!-- Script JS -->
+<script>
+    // Obtener elementos
+    const reportForm = document.getElementById("reportForm");
+    const reportConfirmationModal = document.getElementById("reportConfirmationModal");
+    const closeReportConfirmation = document.getElementById("closeReportConfirmation");
+
+    // Manejar el envío del formulario
+    reportForm.onsubmit = function (e) {
+        e.preventDefault();
+
+        // Obtener valores del formulario
+        const reportDate = document.getElementById("reportDate").value;
+        const reportDescription = document.getElementById("reportDescription").value;
+
+        // Aquí puedes enviar estos datos al servidor, guardarlos en la base de datos, etc.
+        console.log("Reporte Enviado:", {
+            reporterName,
+            reportDate,
+            reportDescription,
+            reportPriority
+        });
+
+        // Mostrar la modal de confirmación
+        reportConfirmationModal.style.display = "block";
+
+        // Limpiar el formulario
+        reportForm.reset();
+    }
+
+    // Cerrar modal de confirmación
+    closeReportConfirmation.onclick = function () {
+        reportConfirmationModal.style.display = "none";
+    }
+
+    window.onclick = function (event) {
+        if (event.target == reportConfirmationModal) {
+            reportConfirmationModal.style.display = "none";
+        }
+    }
+</script>
