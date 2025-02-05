@@ -3,6 +3,7 @@ using JarredsOrderHub.DbaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JarredsOrderHub.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250205181033_CatalogoRelacionados")]
+    partial class CatalogoRelacionados
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -144,8 +147,6 @@ namespace JarredsOrderHub.Migrations
 
                     b.HasKey("IdPlatillo");
 
-                    b.HasIndex("IdCategoria");
-
                     b.ToTable("Platillos");
                 });
 
@@ -172,22 +173,6 @@ namespace JarredsOrderHub.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
-                });
-
-            modelBuilder.Entity("JarredsOrderHub.Models.Platillo", b =>
-                {
-                    b.HasOne("JarredsOrderHub.Models.Categoria", "Categoria")
-                        .WithMany("Platillos")
-                        .HasForeignKey("IdCategoria")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Categoria");
-                });
-
-            modelBuilder.Entity("JarredsOrderHub.Models.Categoria", b =>
-                {
-                    b.Navigation("Platillos");
                 });
 #pragma warning restore 612, 618
         }

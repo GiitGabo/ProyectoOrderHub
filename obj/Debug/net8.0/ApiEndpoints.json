@@ -1,5 +1,223 @@
 [
   {
+    "ContainingType": "JarredsOrderHub.Controllers.Service.CatalogoService",
+    "Method": "ObtenerTodasCategorias",
+    "RelativePath": "api/CatalogoService/categorias",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[JarredsOrderHub.Models.Categoria, JarredsOrderHub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "JarredsOrderHub.Controllers.Service.CatalogoService",
+    "Method": "CrearCategoria",
+    "RelativePath": "api/CatalogoService/categorias",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "categoria",
+        "Type": "JarredsOrderHub.Models.Categoria",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "JarredsOrderHub.Models.Categoria",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "JarredsOrderHub.Controllers.Service.CatalogoService",
+    "Method": "ObtenerCategoriaPorId",
+    "RelativePath": "api/CatalogoService/categorias/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "JarredsOrderHub.Models.Categoria",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "JarredsOrderHub.Controllers.Service.CatalogoService",
+    "Method": "ActualizarCategoria",
+    "RelativePath": "api/CatalogoService/categorias/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "categoria",
+        "Type": "JarredsOrderHub.Models.Categoria",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JarredsOrderHub.Controllers.Service.CatalogoService",
+    "Method": "EliminarCategoria",
+    "RelativePath": "api/CatalogoService/categorias/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JarredsOrderHub.Controllers.Service.CatalogoService",
+    "Method": "ObtenerTodosPlatos",
+    "RelativePath": "api/CatalogoService/platillos",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[JarredsOrderHub.Models.Platillo, JarredsOrderHub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "JarredsOrderHub.Controllers.Service.CatalogoService",
+    "Method": "CrearPlatillo",
+    "RelativePath": "api/CatalogoService/platillos",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "platillo",
+        "Type": "JarredsOrderHub.Models.Platillo",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "JarredsOrderHub.Models.Platillo",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "JarredsOrderHub.Controllers.Service.CatalogoService",
+    "Method": "ObtenerPlatoPorId",
+    "RelativePath": "api/CatalogoService/platillos/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "JarredsOrderHub.Models.Platillo",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "JarredsOrderHub.Controllers.Service.CatalogoService",
+    "Method": "ActualizarPlatillo",
+    "RelativePath": "api/CatalogoService/platillos/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "platillo",
+        "Type": "JarredsOrderHub.Models.Platillo",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JarredsOrderHub.Controllers.Service.CatalogoService",
+    "Method": "EliminarPlatillo",
+    "RelativePath": "api/CatalogoService/platillos/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "JarredsOrderHub.Controllers.Service.RolService",
     "Method": "ObtenerTodos",
     "RelativePath": "api/RolService",

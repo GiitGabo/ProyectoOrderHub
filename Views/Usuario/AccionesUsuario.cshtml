@@ -1,58 +1,83 @@
-﻿<link rel="stylesheet" href="~/css/InicioSesion.css" />
+﻿@model JarredsOrderHub.Models.Cliente
+@{
+    Layout = "~/Views/Shared/_LayoutExterno.cshtml"; //Layout externo
+}
+
+<link rel="stylesheet" href="~/css/InicioSesion.css" />
 <script src="https://kit.fontawesome.com/ddc6aa5d21.js" crossorigin="anonymous"></script>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
 <div class="login-wrap">
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            <ul>
+                @foreach (var modelError in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <li>@modelError.ErrorMessage</li>
+                }
+            </ul>
+        </div>
+    }
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
     <div class="login-html">
-        <input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab">Iniciar Sesión</label>
-        <input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab">Registrarse</label>
+        <input id="tab-1" type="radio" name="tab" class="sign-in" checked>
+        <label for="tab-1" class="tab">Iniciar Sesión</label>
+        <input id="tab-2" type="radio" name="tab" class="sign-up">
+        <label for="tab-2" class="tab">Registrarse</label>
         <div class="login-form">
-            <div class="sign-in-htm">
-                <div class="group">
-                    <label for="user" class="label">Correo Electronico</label>
-                    <input id="user" type="text" class="input">
+            <!-- Login -->
+            <form method="post" asp-action="Login" asp-controller="Usuario">
+                <div class="sign-in-htm">
+                    <div class="group">
+                        <label for="user" class="label">Correo Electrónico</label>
+                        <input id="user" type="text" name="email" class="input">
+                    </div>
+                    <div class="group">
+                        <label for="pass" class="label">Contraseña</label>
+                        <input id="pass" type="password" name="contrasena" class="input">
+                    </div>
+                    <div class="group">
+                        <input type="submit" class="button" value="Iniciar Sesión">
+                    </div>
                 </div>
-                <div class="group">
-                    <label for="pass" class="label">Contraseña</label>
-                    <input id="pass" type="password" class="input" data-type="password">
+            </form>
+
+            <!-- Registro -->
+            <form method="post" asp-action="RegistrarCliente" asp-controller="Usuario">
+                <div class="sign-up-htm">
+                    <div class="group">
+                        <label class="label">Nombre</label>
+                        <input type="text" name="Nombre" class="input" required>
+                    </div>
+                    <div class="group">
+                        <label class="label">Apellido</label>
+                        <input type="text" name="Apellido" class="input" required>
+                    </div>
+                    <div class="group">
+                        <label class="label">Correo Electrónico</label>
+                        <input type="email" name="Email" class="input" required>
+                    </div>
+                    <div class="group">
+                        <label class="label">Contraseña</label>
+                        <input type="password" name="Contrasenia" class="input" required>
+                    </div>
+                    <div class="group">
+                        <label class="label">Confirmar Contraseña</label>
+                        <input type="password" name="ConfirmarContrasenia" class="input" required>
+                    </div>
+                    <div class="group">
+                        <input type="submit" class="button" value="Registrarse">
+                    </div>
                 </div>
-                <div class="group">
-                    <input id="check" type="checkbox" class="check" checked>
-                    <label for="check"><span class="icon"></span> Mantener Sesión Iniciada</label>
-                </div>
-                <div class="group">
-                    <input type="submit" class="button" value="Iniciar Sesión">
-                </div>
-                <div class="hr"></div>
-                <div class="foot-lnk">
-                    <a href="#forgot">¿Olvidaste tu Contraseña?</a>
-                </div>
-            </div>
-            <div class="sign-up-htm">
-                <div class="group">
-                    <label for="user" class="label">Nombre</label>
-                    <input id="user" type="text" class="input">
-                </div>
-                <div class="group">
-                    <label for="user" class="label">Apellido</label>
-                    <input id="user" type="text" class="input">
-                </div>
-                <div class="group">
-                    <label for="pass" class="label">Contraseña</label>
-                    <input id="pass" type="password" class="input" data-type="password">
-                </div>
-                <div class="group">
-                    <label for="pass" class="label">Correo Electrónico</label>
-                    <input id="pass" type="text" class="input">
-                </div>
-                <div class="group">
-                    <input type="submit" class="button" value="Registrarse">
-                </div>
-                <div class="hr"></div>
-                <div class="foot-lnk">
-                    <label for="tab-1">¿Ya eres miembro?</label>
-                </div>
-            </div>
+            </form>
+
         </div>
     </div>
 </div>

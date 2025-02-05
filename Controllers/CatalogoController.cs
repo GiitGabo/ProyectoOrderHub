@@ -1,28 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Threading.Tasks;
+using JarredsOrderHub.DbaseContext;
+using JarredsOrderHub.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace JarredsOrderHub.Controllers
 {
     public class CatalogoController : Controller
     {
-        public ActionResult AdministrarPlatos()
+        private readonly ApplicationDbContext _context;
+
+        public CatalogoController(ApplicationDbContext context)
         {
-            return View();
+            _context = context;
         }
 
-        public ActionResult AdministrarCategorias()
+        public async Task<IActionResult> AdministrarPlatos()
         {
-
-            return View();
+            var platillos = await _context.Platillos
+                .Include(p => p.Categoria)
+                .ToListAsync();
+            return View(platillos);
         }
 
-        public ActionResult Menu()
+        public async Task<IActionResult> AdministrarCategorias()
         {
+            var categorias = await _context.Categorias
+                .ToListAsync();
+            return View(categorias);
+        }
 
-            return View();
+        public async Task<IActionResult> Menu()
+        {
+            var platillos = await _context.Platillos
+                .Include(p => p.Categoria)
+                .Where(p => p.Activo && p.Categoria.Activa)
+                .ToListAsync();
+            return View(platillos);
         }
     }
 }

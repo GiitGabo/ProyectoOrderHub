@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var userName = Context.Session.GetString("UserName");
+    var userType = Context.Session.GetString("UserType");
+}
+
+<!DOCTYPE html>
 <html>
 <head>
     <script src="https://kit.fontawesome.com/ddc6aa5d21.js" crossorigin="anonymous"></script>
@@ -12,10 +17,11 @@
     <!-- ICONO -->
     <link rel="icon" type="image/png" href="~/LOGO-JARREDS.ico" />
 
-    <title>@ViewBag.Title - Jarred's Order Hub</title>
+    <title>JarredsOrderHub - @(userType)</title>
 
 </head>
 <body>
+
     <!--Header -->
     <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
         <div class="container">
@@ -112,11 +118,11 @@
                     <!-- Mi Usuario -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="usuarioDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-user me-1"></i>Mi Usuario
+                            <i class="fas fa-user me-1"></i>Bienvenido, @userName
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="usuarioDropdown">
                             <li><a class="dropdown-item" href="@Url.Action("GestionPerfil","Usuario")">Gestion Perfil</a></li>
-                            <li><a class="dropdown-item" href="@Url.Action("AccionesUsuario","Usuario")">Cerrar Sesión</a></li>
+                            <li><a class="dropdown-item" href="/Usuario/Logout">Cerrar Sesión</a></li>
                         </ul>
                     </li>
                 </ul>
