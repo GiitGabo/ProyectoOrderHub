@@ -1,0 +1,299 @@
+﻿<link rel="stylesheet" href="~/css/Estilos.css" />
+@model List<JarredsOrderHub.Models.Rol>
+
+@{
+    ViewData["Title"] = "Administrar Roles";
+}
+
+
+<h1>Roles</h1>
+
+<!-- Tabla de Roles -->
+<table id="employeeTable">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Descripcion</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var rol in Model)
+
+        {
+            <tr id="rol-@rol.Id">
+                <td>@rol.Id</td>
+                <td>@rol.Nombre</td>
+                <td>@rol.Descripcion</td>
+                <td>
+                    <button class="icon-btn edit" onclick="editarRol(@rol.Id)"><i class="fas fa-edit"></i></button>
+                    <button class="icon-btn delete" onclick="eliminarRol(@rol.Id)"><i class="fas fa-trash-alt"></i></button>
+
+                    <button class="icon-btn add-task" onclick="openTaskPopup(@rol.Id)">
+                        <i class="fas fa-plus"></i> Ver Permisos
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Botón Añadir Rol -->
+<button id="addRoleBtn" class="btn-add-role">
+    Añadir Rol
+</button>
+
+<div id="permissionsModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Permisos del Rol</h2>
+            <span class="close" id="closePermissionsModal">&times;</span>
+        </div>
+        <div class="modal-body">
+            <ul id="permissionsList"></ul>
+        </div>
+    </div>
+</div>
+
+<!-- Popup Modal para Añadir Rol -->
+<div id="roleModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="title-modal">Añadir Rol</h2>
+            <span class="close" id="closeRoleModal">&times;</span>
+        </div>
+
+
+        <form id="roleForm">
+            <!-- Nombre del Rol -->
+            <label for="rolNombre">Nombre del Rol:</label>
+            <input type="text" id="rolNombre" placeholder="Ej: Administrador" required>
+
+            <!-- Descripción del Rol -->
+            <label for="rolDescripcion">Descripción:</label>
+<textarea id="rolDescripcion" placeholder="Breve descripción del rol" rows="3" required></textarea>
+
+            <!-- Permisos del Rol -->
+            <fieldset>
+                <legend>Permisos</legend>
+                <div class="checkbox-group d-flex flex-row justify-content-between">
+                    <label>
+                        <input type="checkbox" id="permisoAdminUsuarios" value="Administrar usuarios">
+                        Usuarios
+                    </label>
+                    <label>
+                        <input type="checkbox" id="permisoVerEmpleados" value="Ver empleados">
+                        Empleados
+                    </label>
+                    <label>
+                        <input type="checkbox" id="permisoVerTareas" value="Ver tareas">
+                        Tareas
+                    </label>
+                    <label>
+                        <input type="checkbox" id="permisoAdminTareas" value="Administrar tareas">
+                        Ver Tareas
+                    </label>
+
+                </div>
+            </fieldset>
+
+            <!-- Botón de Guardar -->
+            <button type="submit">Guardar</button>
+        </form>
+    </div>
+</div>
+
+<!-- Script JS -->
+<script>
+        const roleModal = document.getElementById("roleModal");
+        const addRoleBtn = document.getElementById("addRoleBtn"); // Botón para abrir modal
+        const closeRoleModal = document.getElementById("closeRoleModal");
+        const roleForm = document.getElementById("roleForm");
+        let rolEditandoId = null;
+
+        addRoleBtn.onclick = function () {
+            rolEditandoId = null;
+
+            document.getElementById("rolNombre").value = '';
+            document.getElementById("rolDescripcion").value = '';
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => checkbox.checked = false);
+
+            document.querySelector("#roleForm button[type='submit']").textContent = "Guardar";
+            document.getElementById("title-modal").textContent = "Añadir Rol";
+
+            roleModal.style.display = "block";
+        }
+
+        // Cerrar modal
+        closeRoleModal.onclick = function () {
+            roleModal.style.display = "none";
+        }
+
+        window.onclick = function (event) {
+            if (event.target == roleModal) {
+                roleModal.style.display = "none";
+            }
+        }
+
+        roleForm.onsubmit = function (e) {
+            e.preventDefault();
+
+            const rolNombre = document.getElementById("rolNombre").value;
+            const rolDescripcion = document.getElementById("rolDescripcion").value;
+
+            const permisosSeleccionados = [];
+            document.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
+                permisosSeleccionados.push(checkbox.value);
+            });
+
+            const rolData = {
+                Nombre: rolNombre,
+                Descripcion: rolDescripcion,
+                Permisos: permisosSeleccionados.join(', ')
+            };
+
+            if (rolEditandoId) {
+                fetch(`/api/RolService/${rolEditandoId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(rolData)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("Rol actualizado: ", data);
+
+                        const row = document.getElementById(`rol-${rolEditandoId}`);
+                        row.innerHTML = `
+    <td>${data.id}</td>
+    <td>${data.nombre}</td>
+    <td>${data.descripcion}</td>
+    <td>
+    <button class="icon-btn edit" onclick="editarRol(${data.id})"><i class="fas fa-edit"></i></button>
+    <button class="icon-btn delete" onclick="eliminarRol(${data.id})"><i class="fas fa-trash-alt"></i></button>
+    <button class="icon-btn add-task" onclick="openTaskPopup(1)">
+    <i class="fas fa-plus"></i> Ver Permisos
+    </button>
+    </td>
+                        `;
+
+                        roleModal.style.display = "none";
+                        roleForm.reset();
+                        rolEditandoId = null;
+                    })
+                    .catch(error => console.error('Error al actualizar el rol:', error));
+            } else {
+                fetch('/api/RolService/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(rolData)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("Rol creado: ", data);
+
+                        const table = document.querySelector("table tbody");
+                        const newRow = `
+    <tr id="rol-${data.id}">
+    <td>${data.id}</td>
+    <td>${data.nombre}</td>
+    <td>${data.descripcion}</td>
+    <td>
+    <button class="icon-btn edit" onclick="editarRol(${data.id})"><i class="fas fa-edit"></i></button>
+    <button class="icon-btn delete" onclick="eliminarRol(${data.id})"><i class="fas fa-trash-alt"></i></button>
+    <button class="icon-btn add-task" onclick="openTaskPopup(${data.id})">
+    <i class="fas fa-plus"></i> Ver Permisos
+    </button>
+    </td>
+    </tr>
+                        `;
+                        table.insertAdjacentHTML('beforeend', newRow);
+
+                        roleModal.style.display = "none";
+                        roleForm.reset();
+                    })
+                    .catch(error => console.error('Error al agregar el rol:', error));
+            }
+        };
+
+
+        function editarRol(rolId) {
+            rolEditandoId = rolId;
+
+            fetch(`/api/RolService/ObtenerRol/${rolId}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("rolNombre").value = data.nombre;
+                    document.getElementById("rolDescripcion").value = data.descripcion;
+
+                    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                        checkbox.checked = data.permisos.includes(checkbox.value);
+                    });
+
+                    document.getElementById("title-modal").textContent = "Editar Rol";
+                    document.querySelector("#roleForm button[type='submit']").textContent = "Actualizar";
+
+                    roleModal.style.display = "block";
+                })
+                .catch(error => console.error('Error al obtener el rol:', error));
+        }
+
+        function eliminarRol(rolId) {
+            const row = document.getElementById(`rol-${rolId}`);
+
+            fetch(`/api/RolService/${rolId}`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error al eliminar el rol');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    row.remove();
+                })
+                .catch(error => {
+                    console.error('Error al eliminar el rol:', error);
+                });
+        }
+
+
+        const permissionsModal = document.getElementById("permissionsModal");
+        const closePermissionsModal = document.getElementById("closePermissionsModal");
+
+        function openTaskPopup(rolId) {
+            fetch(`/api/RolService/ObtenerRol/${rolId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const permissionsList = document.getElementById("permissionsList");
+                    permissionsList.innerHTML = "";
+
+                    if (data.permisos.length > 0) {
+                        data.permisos.split(', ').forEach(permiso => {
+                            const listItem = document.createElement("li");
+                            listItem.textContent = permiso;
+                            permissionsList.appendChild(listItem);
+                        });
+                    } else {
+                        permissionsList.innerHTML = "<li>Este rol no tiene permisos asignados.</li>";
+                    }
+
+                    permissionsModal.style.display = "block";
+                })
+                .catch(error => console.error('Error al obtener los permisos del rol:', error));
+        }
+
+        closePermissionsModal.onclick = function () {
+            permissionsModal.style.display = "none";
+        }
+
+        window.onclick = function (event) {
+            if (event.target == permissionsModal) {
+                permissionsModal.style.display = "none";
+            }
+        }
+</script>
+
+                    @* dotnet ef migrations add Migrations
+                    dotnet ef database update *@
