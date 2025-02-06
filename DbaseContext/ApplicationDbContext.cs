@@ -24,7 +24,8 @@ namespace JarredsOrderHub.DbaseContext
             modelBuilder.Entity<Platillo>()
                 .HasOne(p => p.Categoria)
                 .WithMany(c => c.Platillos)
-                .HasForeignKey(p => p.IdCategoria);
+                .HasForeignKey(p => p.IdCategoria)
+                .IsRequired(false);
         }
     }
 }

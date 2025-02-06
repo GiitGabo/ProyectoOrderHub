@@ -65,14 +65,14 @@
 
             <!-- Descripción del Plato -->
             <label for="platilloDescripcion">Descripción:</label>
-            <textarea id="platilloDescripcion" placeholder="Descripción del plato" rows="3"></textarea>
+            <textarea id="platilloDescripcion" placeholder="Descripción del plato" rows="3" required></textarea>
 
             <!-- Precio -->
             <label for="platilloPrecio">Precio:</label>
             <input type="number" id="platilloPrecio" step="0.01" required>
 
             <!-- URL de la Imagen -->
-            <label for="platilloImagen">URL de la Imagen:</label>
+            <label for="platilloImagen">URL de la Imagen: </label>
             <input type="text" id="platilloImagen">
 
             <!-- Categoría -->
@@ -101,6 +101,7 @@
 </div>
 
 <!-- Scripts para manejar el POPUP y AJAX -->
+<!-- Scripts para manejar el POPUP y AJAX -->
 <script>
     const plateModal = document.getElementById("plateModal");
     const addPlateBtn = document.getElementById("addPlateBtn");
@@ -118,8 +119,8 @@
                 categorias.forEach(categoria => {
                     if (categoria.activa) {
                         const option = document.createElement('option');
-                        option.value = categoria.idCategoria; // Se asume que la API devuelve 'idCategoria'
-                        option.textContent = categoria.nombre;  // Se asume que la API devuelve 'nombre'
+                        option.value = categoria.idCategoria;
+                        option.textContent = categoria.nombre;
                         select.appendChild(option);
                     }
                 });
@@ -165,12 +166,12 @@
         e.preventDefault();
 
         const platilloData = {
-            Nombre: document.getElementById("platilloNombre").value,
-            Descripcion: document.getElementById("platilloDescripcion").value,
-            Precio: parseFloat(document.getElementById("platilloPrecio").value),
-            Imagen: document.getElementById("platilloImagen").value,
-            IdCategoria: parseInt(document.getElementById("platilloCategoria").value),
-            Activo: document.querySelector('input[name="estado"]:checked').value === 'true'
+            nombre: document.getElementById("platilloNombre").value,
+            descripcion: document.getElementById("platilloDescripcion").value,
+            precio: parseFloat(document.getElementById("platilloPrecio").value),
+            imagen: document.getElementById("platilloImagen").value,
+            idCategoria: parseInt(document.getElementById("platilloCategoria").value),
+            activo: document.querySelector('input[name="estado"]:checked').value === 'true'
         };
 
         const url = platilloEditandoId ? `/api/CatalogoService/platillos/${platilloEditandoId}` : '/api/CatalogoService/platillos';
@@ -181,41 +182,26 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(platilloData)
         })
-        .then(response => response.json())
-        .then(data => {
-            // Asegurarse de usar las propiedades en minúsculas si el JSON se serializa en camelCase
-            if (platilloEditandoId) {
-                // Actualizar la fila existente
-                const row = document.getElementById(`platillo-${platilloEditandoId}`);
-                row.innerHTML = `
-                    <td>${data.idPlatillo}</td>
-                    <td>${data.Nombre}</td>
-                    <td>${data.Descripcion}</td>
-                        <<td>${data.Precio ? data.Precio.toLocaleString('es-ES', { style: 'currency', currency: 'CR' }) : 'N/A'}</td>
-                    <td><img src="${data.Imagen}" alt="${data.Nombre}" width="50" /></td>
-                    <td>${data.IdCategoria}</td>
-                    <td>${data.Activo ? "Disponible" : "No Disponible"}</td>
-                    <td>
-                        <button class="icon-btn edit" onclick="editarPlatillo(${data.idPlatillo})">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="icon-btn delete" onclick="eliminarPlatillo(${data.idPlatillo})">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </td>
-                `;
-            } else {
-                // Agregar una nueva fila
-                const table = document.querySelector("table tbody");
-                const newRow = `
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => Promise.reject(err));
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (!data.idPlatillo || !data.nombre) {
+                    throw new Error('Respuesta incompleta del servidor');
+                }
+
+                const rowHtml = `
                     <tr id="platillo-${data.idPlatillo}">
                         <td>${data.idPlatillo}</td>
-                        <td>${data.Nombre}</td>
-                        <td>${data.Descripcion}</td>
-                           <td>${data.Precio ? data.Precio.toLocaleString('es-ES', { style: 'currency', currency: 'CR' }) : 'N/A'}</td>
-                        <td><img src="${data.Imagen}" alt="${data.Nombre}" width="50" /></td>
-                        <td>${data.IdCategoria}</td>
-                        <td>${data.Activo ? "Disponible" : "No Disponible"}</td>
+                        <td>${data.nombre}</td>
+                        <td>${data.descripcion || ''}</td>
+                        <td>${data.precio ? data.precio.toLocaleString('es-ES', { style: 'currency', currency: 'CRC' }) : 'N/A'}</td>
+                        <td><img src="${data.imagen}" alt="${data.nombre}" width="50" /></td>
+                        <td>${data.idCategoria}</td>
+                        <td>${data.activo ? "Disponible" : "No Disponible"}</td>
                         <td>
                             <button class="icon-btn edit" onclick="editarPlatillo(${data.idPlatillo})">
                                 <i class="fas fa-edit"></i>
@@ -225,15 +211,28 @@
                             </button>
                         </td>
                     </tr>
-                `;
-                table.insertAdjacentHTML('beforeend', newRow);
-            }
 
-            plateModal.style.display = "none";
-            plateForm.reset();
-            platilloEditandoId = null;
-        })
-        .catch(error => console.error('Error al guardar el platillo:', error));
+                `;
+            
+
+
+                if (platilloEditandoId) {
+                    document.getElementById(`platillo-${platilloEditandoId}`).outerHTML = rowHtml;
+                } else {
+                    document.querySelector("table tbody").insertAdjacentHTML('beforeend', rowHtml);
+                }
+
+                plateModal.style.display = "none";
+                plateForm.reset();
+                platilloEditandoId = null;
+
+                alert(platilloEditandoId ? 'Platillo actualizado con éxito' : 'Platillo creado con éxito');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al procesar el platillo: ' + (error.message || 'Error desconocido'));
+                console.log(platilloData);
+            });
     };
 
     // Función para editar un platillo
@@ -241,36 +240,40 @@
         platilloEditandoId = platilloId;
 
         fetch(`/api/CatalogoService/platillos/${platilloId}`)
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById("platilloNombre").value = data.Nombre;
-            document.getElementById("platilloDescripcion").value = data.Descripcion;
-            document.getElementById("platilloPrecio").value = data.Precio;
-            document.getElementById("platilloImagen").value = data.Imagen;
-            document.getElementById("platilloCategoria").value = data.IdCategoria;
-            document.getElementById(data.Activo ? "estadoActivo" : "estadoInactivo").checked = true;
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("platilloNombre").value = data.nombre;
+                document.getElementById("platilloDescripcion").value = data.descripcion;
+                document.getElementById("platilloPrecio").value = data.precio;
+                document.getElementById("platilloImagen").value = data.imagen;
+                document.getElementById("platilloCategoria").value = data.idCategoria;
+                document.getElementById(data.activo ? "estadoActivo" : "estadoInactivo").checked = true;
 
-            document.getElementById("title-modal").textContent = "Editar Plato";
-            document.querySelector("#plateForm button[type='submit']").textContent = "Actualizar";
+                document.getElementById("title-modal").textContent = "Editar Plato";
+                document.querySelector("#plateForm button[type='submit']").textContent = "Actualizar";
 
-            plateModal.style.display = "block";
-        })
-        .catch(error => console.error('Error al obtener el plato:', error));
+                plateModal.style.display = "block";
+            })
+            .catch(error => console.error('Error al obtener el plato:', error));
     }
 
     // Función para eliminar un platillo
     function eliminarPlatillo(platilloId) {
-        if (confirm('¿Estás seguro de que deseas eliminar este plato?')) {
-            fetch(`/api/CatalogoService/platillos/${platilloId}`, { method: 'DELETE' })
-            .then(response => {
-                if (response.ok) {
-                    const row = document.getElementById(`platillo-${platilloId}`);
-                    row.remove();
-                } else {
-                    alert('Error al eliminar el platillo');
-                }
-            })
-            .catch(error => console.error('Error al eliminar el platillo:', error));
+        if (!confirm('¿Está seguro de que desea eliminar este plato?')) {
+            return;
         }
+
+        fetch(`/api/CatalogoService/platillos/${platilloId}`, { method: 'DELETE' })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => Promise.reject(err));
+                }
+                document.getElementById(`platillo-${platilloId}`).remove();
+                alert('Platillo eliminado con éxito');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al eliminar el platillo: ' + (error.message || 'Error desconocido'));
+            });
     }
 </script>

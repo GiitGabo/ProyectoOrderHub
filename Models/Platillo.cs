@@ -28,6 +28,6 @@ namespace JarredsOrderHub.Models
 
         // PropiedadForeign
         [ForeignKey("IdCategoria")]
-        public virtual Categoria Categoria { get; set; }
+        public virtual Categoria? Categoria { get; set; }
     }
 }
