@@ -21,9 +21,14 @@ namespace JarredsOrderHub.Controllers
             return View();
         }
 
-        public ActionResult AdministrarEmpleados()
+        public async Task<IActionResult> AdministrarEmpleados()
         {
-            return View();
+            var empleados = await _context.Empleados
+                                          .Include(e => e.Rol)     
+                                          .Include(e => e.Horario)  
+                                          .ToListAsync();
+
+            return View(empleados);
         }
 
         public ActionResult AdministrarTareas()
