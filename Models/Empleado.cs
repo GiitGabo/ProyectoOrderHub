@@ -18,6 +18,8 @@ namespace JarredsOrderHub.Models
         public int? IdRol { get; set; }
         public int? IdHorario { get; set; }
 
+        public Rol Rol { get; set; } 
+        public Horario Horario { get; set; } 
         public int? Salario { get; set; }
 
         public string Contrasenia { get; set; }
