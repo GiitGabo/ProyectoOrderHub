@@ -23,13 +23,17 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 // Agregar autorización
 builder.Services.AddAuthorization();
 
+//Soporte para acceder al HttpContext en servicios
+builder.Services.AddHttpContextAccessor();
+
 // Servicios
 builder.Services.AddScoped<RolService>();
 builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<CatalogoService>();
+builder.Services.AddScoped<AuditService>();
 
 
-// 🔹 Agregar sesiones (AHORA está antes de `builder.Build()`)
+//Agregar sesiones 
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -52,7 +56,9 @@ app.UseRouting();
 
 app.UseSession();  // Sesiones habilitadas
 app.UseAuthentication();  
-app.UseAuthorization();  
+app.UseAuthorization();
+
+
 
 // Configurar rutas
 app.MapControllerRoute(
