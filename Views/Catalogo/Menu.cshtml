@@ -4,24 +4,52 @@
 
 <h1>Menú de Platos</h1>
 <tbody>
-<div class="menu-container">
- 
-
-     @foreach (var platillo in Model)
+    <div class="menu-container">
+        @foreach (var platillo in Model)
         {
             <div class="menu-card">
                 <img src="@platillo.Imagen" alt="@platillo.Nombre" class="menu-image">
                 <div class="menu-info">
                     <h3>@platillo.Nombre</h3>
                     <p><strong>Descripción:</strong> @platillo.Descripcion</p>
-                    <p><strong>Precio:</strong>@platillo.Precio.ToString("C")</p>
-                    <p><strong>Categoría:</strong>@platillo.IdCategoria</p>
-                    <p><strong>Disponible:</strong>@(platillo.Activo ? "Si" : "No Disponible")</p>
+                    <p><strong>Precio:</strong> @platillo.Precio.ToString("C")</p>
+                    <p><strong>Categoría:</strong> @platillo.IdCategoria</p>
+                    <p><strong>Disponible:</strong> @(platillo.Activo ? "Si" : "No Disponible")</p>
                 </div>
-                <button class="add-to-cart-btn">
+                <button class="add-to-cart-btn"
+                        onclick="agregarAlCarrito('@platillo.IdPlatillo', '@platillo.Nombre', @platillo.Precio, '@platillo.Imagen')">
                     <i class="fas fa-cart-plus"></i> Añadir al Carrito
                 </button>
             </div>
-    }
+        }
     </div>
-    </tbody>
+
+    <script>
+        function agregarAlCarrito(id, nombre, precio, imagen) {
+            // Convertir el precio a número
+            precio = parseFloat(precio);
+
+            // Obtener el carrito actual del LocalStorage (o un array vacío si no existe)
+            let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+
+            // Buscar si el producto ya está en el carrito
+            let productoExistente = carrito.find(p => p.id === id);
+            if (productoExistente) {
+                // Si ya existe, incrementar la cantidad
+                productoExistente.cantidad += 1;
+            } else {
+                // Sino, agregarlo con cantidad 1
+                carrito.push({
+                    id: id,
+                    nombre: nombre,
+                    precio: precio,
+                    imagen: imagen,
+                    cantidad: 1
+                });
+            }
+            // Guardar el carrito actualizado en el LocalStorage
+            localStorage.setItem('carrito', JSON.stringify(carrito));
+
+            alert(nombre + " se ha añadido al carrito.");
+        }
+    </script>
