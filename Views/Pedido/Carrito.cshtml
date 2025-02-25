@@ -2,119 +2,124 @@
 <link rel="stylesheet" href="~/css/Carrito.css" />
 
 
-<!-- Contenedor principal del carrito -->
+
 <div class="carrito-container">
     <h2>Mi Carrito</h2>
-
-    <!-- Producto en el carrito -->
-    <div class="producto">
-        <div class="info-producto">
-            <img src="https://imag.bonviveur.com/pizza-margarita.jpg" alt="Pizza Margarita" class="imagen-producto" />
-            <div class="detalles-producto">
-                <h3>Pizza Margarita</h3>
-                <p>Precio Unitario: <span class="precio-unitario">$10.00</span></p>
-            </div>
-        </div>
-
-        <!-- Control de cantidad -->
-        <div class="cantidad">
-            <button class="btn-cantidad" onclick="cambiarCantidad(-1)"><i class="fas fa-minus"></i></button>
-            <span id="cantidad">1</span>
-            <button class="btn-cantidad" onclick="cambiarCantidad(1)"><i class="fas fa-plus"></i></button>
-        </div>
-
-        <!-- Precio total -->
-        <div class="precio-total">
-            <span>Total: $<span id="precio-total">10.00</span></span>
-        </div>
-
-        <!-- Botón para eliminar el producto -->
-        <button class="btn-eliminar" onclick="eliminarProducto()"><i class="fas fa-trash"></i> Eliminar</button>
+    <div id="productos-carrito">
+        <!-- Aquí se inyectarán los productos -->
     </div>
-
-
-    <!-- Botón de Pagar -->
     <div class="pagar">
-        <button class="btn-pagar" onclick="mostrarResumen()"><i class="fas fa-credit-card"></i> Pagar</button>
+        <button class="btn-pagar" onclick="mostrarResumen()">
+            <i class="fas fa-credit-card"></i> Pagar
+        </button>
     </div>
 </div>
 
-
-<!-- Contenedor del popup para el resumen del pedido -->
+<!-- Popup para el resumen del pedido -->
 <div id="popup-resumen" class="popup">
     <div class="popup-contenido">
         <h3>Resumen del Pedido</h3>
-        <p><strong>Plato:</strong> Pizza Margarita</p>
-        <p><strong>Cantidad:</strong> <span id="resumen-cantidad">1</span></p>
-        <p><strong>Ingredientes:</strong> Queso, Tomate, Albahaca</p>
-        <p><strong>Precio Total:</strong> $<span id="resumen-precio">10.00</span></p>
-
-        <!-- Comentarios -->
+        <div id="resumen-productos"></div>
+        <p><strong>Total:</strong> $<span id="resumen-total">0.00</span></p>
         <label for="comentarios">Comentarios sobre el pedido:</label>
         <textarea id="comentarios" rows="3" placeholder="Ej. Sin albahaca, extra queso..."></textarea>
-
-        <!-- Código de Descuento -->
-        <div class="descuento">
-            <label for="codigo-descuento">Código de descuento:</label>
-            <input type="text" id="codigo-descuento" placeholder="Ingresa tu código aquí..." />
-            <button class="btn-aplicar-descuento" onclick="aplicarDescuento()">Aplicar</button>
-        </div>
-
-        <br>
-
-        <!-- Método de Pago -->
-        <label>Selecciona el método de pago:</label>
         <div class="metodo-pago">
             <button class="btn-pago" onclick="pagarConEfectivo()"><i class="fas fa-cash-register"></i> Efectivo</button>
             <button class="btn-pago" onclick="pagarConTarjeta()"><i class="fas fa-credit-card"></i> Tarjeta</button>
             <button class="btn-pago" onclick="pagarConPaypal()"><i class="fab fa-paypal"></i> PayPal</button>
         </div>
-
-        <!-- Botón de cerrar -->
         <button class="btn-cerrar" onclick="cerrarResumen()">Cerrar</button>
     </div>
 </div>
 
 <script>
-    let cantidad = 1;
-    const precioUnitario = 10.00;
+    // Función para mostrar el carrito
+    function mostrarCarrito() {
+        const contenedor = document.getElementById('productos-carrito');
+        contenedor.innerHTML = ''; // Limpiar contenido
+        let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
 
-    function cambiarCantidad(valor) {
-        cantidad = Math.max(1, cantidad + valor);
-        document.getElementById('cantidad').innerText = cantidad;
-        document.getElementById('precio-total').innerText = (cantidad * precioUnitario).toFixed(2);
-    }
-
-    function eliminarProducto() {
-        alert("El producto ha sido eliminado del carrito.");
-    }
-
-    function mostrarPopup() {
-        document.getElementById('popup-descuento').style.display = 'flex';
-    }
-
-    function cerrarPopup() {
-        document.getElementById('popup-descuento').style.display = 'none';
-    }
-
-    function aplicarDescuento() {
-        const codigo = document.getElementById('codigo-descuento').value;
-        alert("Código " + codigo + " aplicado (ejemplo).");
-        let descuento = 0;
-        if (codigo === "DESCUENTO10") {
-            descuento = 0.1;
+        if (carrito.length === 0) {
+            contenedor.innerHTML = '<p>El carrito está vacío</p>';
+            return;
         }
-        const precioFinal = (cantidad * precioUnitario * (1 - descuento)).toFixed(2);
-        document.getElementById('precio-total').innerText = precioFinal;
-        cerrarPopup();
+
+        carrito.forEach((producto, index) => {
+            contenedor.innerHTML += `
+                    <div class="producto">
+                        <div class="info-producto">
+                            <img src="${producto.imagen}" alt="${producto.nombre}" class="imagen-producto">
+                            <div class="detalles-producto">
+                                <h3>${producto.nombre}</h3>
+                                <p>Precio Unitario: $${producto.precio.toFixed(2)}</p>
+                            </div>
+                        </div>
+                        <div class="cantidad">
+                            <button class="btn-cantidad" onclick="cambiarCantidad(${index}, -1)"><i class="fas fa-minus"></i></button>
+                            <span id="cantidad-${index}">${producto.cantidad}</span>
+                            <button class="btn-cantidad" onclick="cambiarCantidad(${index}, 1)"><i class="fas fa-plus"></i></button>
+                        </div>
+                        <div class="precio-total">
+                            <span>Total: $<span id="precio-total-${index}">${(producto.cantidad * producto.precio).toFixed(2)}</span></span>
+                        </div>
+                        <button class="btn-eliminar" onclick="eliminarProducto(${index})"><i class="fas fa-trash"></i> Eliminar</button>
+                    </div>
+                `;
+        });
     }
 
+    // Función para cambiar la cantidad de un producto en el carrito
+    function cambiarCantidad(index, cambio) {
+        let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+        carrito[index].cantidad = Math.max(1, carrito[index].cantidad + cambio);
+        localStorage.setItem('carrito', JSON.stringify(carrito));
+        mostrarCarrito();
+    }
+
+    // Función para eliminar un producto del carrito
+    function eliminarProducto(index) {
+        let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+        carrito.splice(index, 1);
+        localStorage.setItem('carrito', JSON.stringify(carrito));
+        mostrarCarrito();
+    }
+
+    // Función para mostrar el resumen del pedido en un popup
     function mostrarResumen() {
-        document.getElementById('resumen-cantidad').innerText = cantidad;
-        document.getElementById('resumen-precio').innerText = (cantidad * precioUnitario).toFixed(2);
+        let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+        let resumenProductos = document.getElementById('resumen-productos');
+        let total = 0;
+        let totalProductos = 0;
+        let nombres = [];
+
+        // Limpiar el contenedor
+        resumenProductos.innerHTML = '';
+
+        carrito.forEach(producto => {
+            const subtotal = producto.cantidad * producto.precio;
+            total += subtotal;
+            totalProductos += producto.cantidad;
+            nombres.push(producto.nombre);
+            resumenProductos.innerHTML += `
+                <p>${producto.nombre} x ${producto.cantidad} = $${subtotal.toFixed(2)}</p>
+            `;
+        });
+
+        // Crear un resumen general al inicio
+        const resumenGeneral = `
+            <p><strong>Total de productos:</strong> ${totalProductos}</p>
+            <p><strong>Productos:</strong> ${nombres.join(", ")}</p>
+        `;
+
+        // Insertar el resumen general antes del detalle de cada producto
+        resumenProductos.insertAdjacentHTML('afterbegin', resumenGeneral);
+
+        document.getElementById('resumen-total').innerText = total.toFixed(2);
         document.getElementById('popup-resumen').style.display = 'flex';
     }
 
+
+    // Función para cerrar el resumen del pedido
     function cerrarResumen() {
         document.getElementById('popup-resumen').style.display = 'none';
     }
@@ -125,7 +130,7 @@
     }
 
     function pagarConTarjeta() {
-        const datosTarjeta = prompt("Introduce los datos de tu tarjeta: ");
+        const datosTarjeta = prompt("Introduce los datos de tu tarjeta:");
         alert("Datos recibidos. Pago procesado con tarjeta.");
         cerrarResumen();
     }
@@ -134,4 +139,7 @@
         alert("Redirigiendo a PayPal...");
         cerrarResumen();
     }
+
+    // Cargar el carrito cuando se cargue la página
+    document.addEventListener("DOMContentLoaded", mostrarCarrito);
 </script>
