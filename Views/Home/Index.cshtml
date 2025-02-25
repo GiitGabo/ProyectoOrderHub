@@ -1,42 +1,57 @@
 ﻿<link rel="stylesheet" href="~/css/Estilos.css" />
-
+@model List<JarredsOrderHub.Models.Platillo>
 
 <!-- Barra de Búsqueda -->
 <div class="search-container">
     <input type="text" id="searchInput" placeholder="Buscar platos..." />
 </div>
 
-
 <div class="menu-container">
-    <!-- Card de Plato 1 -->
-    <div class="menu-card">
-        <img src="https://imag.bonviveur.com/pizza-margarita.jpg" alt="Pizza Margarita" class="menu-image">
-        <div class="menu-info">
-            <h3>Pizza Margarita</h3>
-            <p><strong>Descripción:</strong> Pizza con tomate, queso y albahaca</p>
-            <p><strong>Precio:</strong> $12.99</p>
-            <p><strong>Ingredientes:</strong> Tomate, Queso, Albahaca</p>
-            <p><strong>Categoría:</strong> Principal</p>
-            <p><strong>Disponible:</strong> Sí</p>
+    @foreach (var platillo in Model)
+    {
+        <div class="menu-card">
+            <img src="@platillo.Imagen" alt="@platillo.Nombre" class="menu-image">
+            <div class="menu-info">
+                <h3>@platillo.Nombre</h3>
+                <p><strong>Descripción:</strong> @platillo.Descripcion</p>
+                <p><strong>Precio:</strong> @platillo.Precio.ToString("C")</p>
+                <p><strong>Categoría:</strong> @platillo.IdCategoria</p>
+                <p><strong>Disponible:</strong> @(platillo.Activo ? "Si" : "No Disponible")</p>
+            </div>
+            <button class="add-to-cart-btn" 
+                    onclick="agregarAlCarrito('@platillo.IdPlatillo', '@platillo.Nombre', @platillo.Precio, '@platillo.Imagen')">
+                <i class="fas fa-cart-plus"></i> Añadir al Carrito
+            </button>
         </div>
-        <button class="add-to-cart-btn">
-            <i class="fas fa-cart-plus"></i> Añadir al Carrito
-        </button>
-    </div>
-
-    <!-- Card de Plato 2 -->
-    <div class="menu-card">
-        <img src="https://www.recetascostarica.com/base/stock/Recipe/rice-and-beans/rice-and-beans_web.jpg" alt="Ensalada César" class="menu-image">
-        <div class="menu-info">
-            <h3>Rice and Beans</h3>
-            <p><strong>Descripción:</strong> Delicioso Rice and Beans con gran cantidad</p>
-            <p><strong>Precio:</strong> $8.50</p>
-            <p><strong>Ingredientes:</strong> Pechuga de pollo, Lechuga, Arroz</p>
-            <p><strong>Categoría:</strong> Principal</p>
-            <p><strong>Disponible:</strong> Sí</p>
-        </div>
-        <button class="add-to-cart-btn">
-            <i class="fas fa-cart-plus"></i> Añadir al Carrito
-        </button>
-    </div>
+    }
 </div>
+
+<script>
+    function agregarAlCarrito(id, nombre, precio, imagen) {
+        // Convertir el precio a número
+        precio = parseFloat(precio);
+
+        // Obtener el carrito actual del LocalStorage (o un array vacío si no existe)
+        let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+
+        // Buscar si el producto ya está en el carrito
+        let productoExistente = carrito.find(p => p.id === id);
+        if (productoExistente) {
+            // Si ya existe, incrementar la cantidad
+            productoExistente.cantidad += 1;
+        } else {
+            // Sino, agregarlo con cantidad 1
+            carrito.push({
+                id: id,
+                nombre: nombre,
+                precio: precio,
+                imagen: imagen,
+                cantidad: 1
+            });
+        }
+        // Guardar el carrito actualizado en el LocalStorage
+        localStorage.setItem('carrito', JSON.stringify(carrito));
+
+        alert(nombre + " se ha añadido al carrito.");
+    }
+</script>
