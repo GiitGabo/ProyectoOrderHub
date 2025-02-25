@@ -31,6 +31,7 @@ builder.Services.AddScoped<RolService>();
 builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<CatalogoService>();
 builder.Services.AddScoped<AuditService>();
+builder.Services.AddScoped<EmailService>();
 
 
 //Agregar sesiones 
@@ -39,6 +40,12 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Asegura que la cookie solo se envíe vía HTTPS
+});
+
+builder.Services.AddAntiforgery(options =>
+{
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 
 var app = builder.Build();

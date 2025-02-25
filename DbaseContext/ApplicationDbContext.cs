@@ -18,7 +18,7 @@ namespace JarredsOrderHub.DbaseContext
         public DbSet<Categoria> Categorias { get; set; }
         public DbSet<Platillo> Platillos { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
-
+        public DbSet<RecuperacionContrasenia> RecuperacionesContrasenias { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
