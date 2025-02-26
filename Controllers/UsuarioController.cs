@@ -10,6 +10,9 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
 using JarredsOrderHub.Controllers.Service;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
 
 namespace JarredsOrderHub.Controllers
 {
@@ -84,6 +87,19 @@ namespace JarredsOrderHub.Controllers
             var cliente = await _usuarioService.VerificarLoginCliente(email, contrasena);
             if (cliente != null)
             {
+
+                // Crear claims y principal para la autenticación
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, cliente.Nombre),
+                    new Claim("UserType", "Cliente")
+                };
+                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var principal = new ClaimsPrincipal(identity);
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+
                 HttpContext.Session.SetString("UserName", cliente.Nombre);
                 HttpContext.Session.SetString("UserType", "Cliente");
                 return RedirectToAction("Menu", "Catalogo");
@@ -93,6 +109,19 @@ namespace JarredsOrderHub.Controllers
             var empleado = await _usuarioService.VerificarLoginEmpleado(email, contrasena);
             if (empleado != null)
             {
+
+               var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, empleado.Nombre),
+                    new Claim("UserType", "Empleado")
+                };
+
+                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var principal = new ClaimsPrincipal(identity);
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+
                 HttpContext.Session.SetString("UserName", empleado.Nombre);
                 HttpContext.Session.SetString("UserType", "Empleado");
                 return RedirectToAction("Menu", "Catalogo");
@@ -102,8 +131,9 @@ namespace JarredsOrderHub.Controllers
             return View("AccionesUsuario");
         }
 
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             HttpContext.Session.Clear();
             return RedirectToAction("AccionesUsuario");
         }
@@ -118,7 +148,7 @@ namespace JarredsOrderHub.Controllers
             return View();
         }
 
-        // Acción POST para enviar correo (adaptado a tu formulario)
+        // Acción POST para enviar correo 
         [HttpPost]
         public async Task<IActionResult> RestablecerConfirmar(string email)
         {
