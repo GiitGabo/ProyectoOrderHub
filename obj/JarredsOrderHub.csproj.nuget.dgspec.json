@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Keilyn\\Downloads\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub.csproj": {}
+    "C:\\Users\\Keilyn\\Desktop\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Keilyn\\Downloads\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub.csproj": {
+    "C:\\Users\\Keilyn\\Desktop\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Keilyn\\Downloads\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub.csproj",
+        "projectUniqueName": "C:\\Users\\Keilyn\\Desktop\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub.csproj",
         "projectName": "JarredsOrderHub",
-        "projectPath": "C:\\Users\\Keilyn\\Downloads\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub.csproj",
+        "projectPath": "C:\\Users\\Keilyn\\Desktop\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub.csproj",
         "packagesPath": "C:\\Users\\Keilyn\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Keilyn\\Downloads\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub\\obj\\",
+        "outputPath": "C:\\Users\\Keilyn\\Desktop\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -58,7 +58,7 @@
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[9.0.1, )"
+              "version": "[9.0.2, )"
             }
           },
           "imports": [

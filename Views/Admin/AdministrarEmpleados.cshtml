@@ -35,9 +35,6 @@
                     <button class="icon-btn delete" onclick="eliminarEmpleado(@empleado.IdEmpleado)">
                         <i class="fas fa-trash-alt"></i>
                     </button>
-                    <button class="icon-btn add-task" onclick="openTaskPopup(@empleado.IdEmpleado)">
-                        <i class="fas fa-plus-circle"></i> Añadir Tarea
-                    </button>
                 </td>
             </tr>
         }
@@ -47,37 +44,13 @@
 <!-- Botón Añadir Empleado -->
 <button class="add-employee" id="addEmployeeBtn">Añadir Empleado</button>
 
-<!-- Popup para añadir tarea -->
-<div class="overlay" id="overlay"></div>
-<div class="popup" id="taskPopup">
-    <h3>Añadir Tarea</h3>
-
-    <label for="taskName">Nombre de la tarea:</label>
-    <input type="text" id="taskName" placeholder="Escribe el nombre de la tarea" required>
-
-    <label for="taskDescription">Descripción:</label>
-    <textarea id="taskDescription" placeholder="Escribe una breve descripción de la tarea" required></textarea>
-
-    <label for="taskDueDate">Fecha de Entrega:</label>
-    <input type="date" id="taskDueDate" required>
-
-    <label for="taskStatus">Estado:</label>
-    <select id="taskStatus" required>
-        <option value="Pendiente">Pendiente</option>
-        <option value="En Progreso">En Progreso</option>
-        <option value="Completado">Completado</option>
-    </select>
-
-    <button onclick="addTask()">Guardar Tarea</button>
-    <button onclick="closeTaskPopup()">Cerrar</button>
-</div>
-
-<!-- Modal para añadir empleado -->
+<!-- Modal para añadir/editar empleado -->
 <div id="employeeModal" class="modal">
     <div class="modal-content">
         <span class="close" id="closeModal">&times;</span>
-        <h2>Añadir Empleado</h2>
+        <h2 id="modalTitle">Añadir Empleado</h2>
         <form id="employeeForm">
+            <input type="hidden" id="idEmpleado">
             <label for="nombre">Nombre:</label>
             <input type="text" id="nombre" required>
             <label for="apellido">Apellido:</label>
@@ -88,11 +61,21 @@
             <select id="rol" required>
                 @foreach (var rol in ViewBag.Roles)
                 {
-                    <option value="@rol.Nombre">@rol.Nombre</option>
+                    <option value="@rol.Id">@rol.Nombre</option>
                 }
             </select>
+            
             <label for="horario">Horario:</label>
-            <input type="text" id="horario" placeholder="Ej: 8:00 AM - 5:00 PM" required>
+            <select id="horario" required>
+                @foreach (var horario in ViewBag.Horario)
+                {
+                    <option value="@horario.IdHorario">
+                        @horario.HoraInicio.ToString(@"hh\:mm") - @horario.HoraFin.ToString(@"hh\:mm")
+                    </option>
+                }
+            </select>
+
+
             <label for="salario">Salario:</label>
             <input type="number" id="salario" min="0" required>
             <button type="submit">Guardar</button>
@@ -101,63 +84,22 @@
 </div>
 
 <script>
-    let currentEmployeeId = null;
+    let isEditMode = false;
 
-    // Función para abrir el popup de añadir tarea
-    function openTaskPopup(employeeId) {
-        currentEmployeeId = employeeId;
-        document.getElementById('overlay').style.display = 'block';
-        document.getElementById('taskPopup').style.display = 'block';
-    }
+    document.getElementById("addEmployeeBtn").addEventListener("click", function () {
+        document.getElementById("employeeForm").reset();
+        document.getElementById("modalTitle").textContent = "Añadir Empleado";
+        document.getElementById("employeeModal").style.display = "block";
+    });
 
-    // Función para cerrar el popup
-    function closeTaskPopup() {
-        document.getElementById('overlay').style.display = 'none';
-        document.getElementById('taskPopup').style.display = 'none';
-        document.getElementById('taskName').value = '';
-        document.getElementById('taskDescription').value = '';
-        document.getElementById('taskDueDate').value = '';
-        document.getElementById('taskStatus').value = 'Pendiente';
-    }
+    document.getElementById("closeModal").addEventListener("click", function () {
+        cerrarModal();
+    });
 
-    // Función para añadir la tarea
-    function addTask() {
-        const taskName = document.getElementById('taskName').value;
-        const taskDescription = document.getElementById('taskDescription').value;
-        const taskDueDate = document.getElementById('taskDueDate').value;
-        const taskStatus = document.getElementById('taskStatus').value;
-
-        if (taskName && taskDescription && taskDueDate) {
-            alert(`Tarea añadida para el empleado ID ${currentEmployeeId}:\nNombre: ${taskName}\nDescripción: ${taskDescription}\nFecha de Entrega: ${taskDueDate}\nEstado: ${taskStatus}`);
-            closeTaskPopup();
-        } else {
-            alert("Por favor, ingresa todos los datos necesarios.");
-        }
-    }
-
-    // Abrir el modal para añadir un nuevo empleado
-    const modal = document.getElementById("employeeModal");
-    const addEmployeeBtn = document.getElementById("addEmployeeBtn");
-    const closeModal = document.getElementById("closeModal");
-    const employeeForm = document.getElementById("employeeForm");
-
-    addEmployeeBtn.onclick = function () {
-        modal.style.display = "block";
-    }
-
-    closeModal.onclick = function () {
-        modal.style.display = "none";
-    }
-
-    window.onclick = function (event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
-
-    employeeForm.onsubmit = function (e) {
+    document.getElementById("employeeForm").addEventListener("submit", function (e) {
         e.preventDefault();
 
+        const idEmpleado = document.getElementById("idEmpleado").value;
         const nombre = document.getElementById("nombre").value;
         const apellido = document.getElementById("apellido").value;
         const email = document.getElementById("email").value;
@@ -165,44 +107,72 @@
         const horario = document.getElementById("horario").value;
         const salario = document.getElementById("salario").value;
 
-        // Agregar una nueva fila en la tabla
-        const table = document.querySelector("#employeeTable tbody");
-        const newRow = `
-            <tr id="employee-new">
-                <td>Nuevo</td>
-                <td>${nombre}</td>
-                <td>${apellido}</td>
-                <td>${email}</td>
-                <td>${rol}</td>
-                <td>${horario}</td>
-                <td>$${salario}</td>
-                <td>
-                    <button class="icon-btn edit" onclick="editarEmpleado('Nuevo')">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="icon-btn delete" onclick="eliminarEmpleado('Nuevo')">
-                        <i class="fas fa-trash-alt"></i>
-                    </button>
-                    <button class="icon-btn add-task" onclick="openTaskPopup('Nuevo')">
-                        <i class="fas fa-plus-circle"></i> Añadir Tarea
-                    </button>
-                </td>
-            </tr>
-        `;
-        table.insertAdjacentHTML('beforeend', newRow);
+        let url = "/Admin/AgregarEmpleado";
+        let method = "POST";
+        let body = JSON.stringify({ nombre, apellido, email, IdRol: rol, IdHorario: horario, Salario: salario });
 
-        modal.style.display = "none";
-        employeeForm.reset();
+        if (isEditMode) {
+            url = "/Admin/ActualizarEmpleado";
+            method = "POST";
+            body = JSON.stringify({ idEmpleado, nombre, apellido, email, IdRol: rol, IdHorario: horario, Salario: salario });
+        }
+
+        fetch(url, {
+            method: method,
+            headers: { "Content-Type": "application/json" },
+            body: body
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    });
+
+    function editarEmpleado(id) {
+        fetch(`/Admin/ObtenerEmpleado/${id}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success !== false) {
+                    document.getElementById("idEmpleado").value = data.idEmpleado;
+                    document.getElementById("nombre").value = data.nombre;
+                    document.getElementById("apellido").value = data.apellido;
+                    document.getElementById("email").value = data.email;
+                    document.getElementById("rol").value = data.idRol;
+                    document.getElementById("horario").value = data.idHorario;
+                    document.getElementById("salario").value = data.salario;
+
+                    isEditMode = true;
+
+                    document.getElementById("modalTitle").textContent = "Editar Empleado";
+                    document.getElementById("employeeModal").style.display = "block";
+                } else {
+                    alert(data.message); // Muestra un mensaje si no se encuentra el empleado
+                }
+            });
     }
 
-    // Función para editar un empleado (por implementar)
-    function editarEmpleado(empleadoId) {
-        // Lógica de edición
+    function eliminarEmpleado(id) {
+        if (confirm("¿Estás seguro de que deseas eliminar este empleado?")) {
+            fetch(`/Admin/EliminarEmpleado/${id}`, { method: "POST" })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload(); // Recarga la página para actualizar la tabla
+                    } else {
+                        alert(data.message); // Muestra un mensaje si falla la eliminación
+                    }
+                });
+        }
     }
 
-    // Función para eliminar un empleado
-    function eliminarEmpleado(empleadoId) {
-        const row = document.getElementById(`employee-${empleadoId}`);
-        row.remove();
+    function cerrarModal() {
+        document.getElementById("employeeModal").style.display = "none"; // Cerrar el modal
+        isEditMode = false; // Resetear el modo de edición
+        document.getElementById("employeeForm").reset(); // Limpiar el formulario
     }
 </script>
