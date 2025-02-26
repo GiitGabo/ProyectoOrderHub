@@ -170,7 +170,6 @@ C:\Users\HP ProBook\Downloads\ProyectoOrderHub-main\ProyectoOrderHub-main\obj\De
 C:\Users\HP ProBook\Downloads\ProyectoOrderHub-main\ProyectoOrderHub-main\obj\Debug\net8.0\JarredsOrderHub.pdb
 C:\Users\HP ProBook\Downloads\ProyectoOrderHub-main\ProyectoOrderHub-main\obj\Debug\net8.0\JarredsOrderHub.genruntimeconfig.cache
 C:\Users\HP ProBook\Downloads\ProyectoOrderHub-main\ProyectoOrderHub-main\obj\Debug\net8.0\ref\JarredsOrderHub.dll
-C:\Users\HP ProBook\Downloads\ProyectoOrderHub-main\ProyectoOrderHub-main\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\bin\Debug\net8.0\appsettings.Development.json
 C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\bin\Debug\net8.0\appsettings.json
 C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\bin\Debug\net8.0\JarredsOrderHub.staticwebassets.runtime.json
@@ -515,3 +514,5 @@ C:\Users\Keilyn\Downloads\JarredsOrderHub\JarredsOrderHub\JarredsOrderHub\obj\De
 C:\Users\Keilyn\Downloads\JarredsOrderHub\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\JarredsOrderHub.pdb
 C:\Users\Keilyn\Downloads\JarredsOrderHub\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\JarredsOrderHub.genruntimeconfig.cache
 C:\Users\Keilyn\Downloads\JarredsOrderHub\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\ref\JarredsOrderHub.dll
+C:\Users\HP ProBook\Downloads\ProyectoOrderHub-main\ProyectoOrderHub-main\obj\Debug\net8.0\scopedcss\Views\Shared\_LayoutExterno.cshtml.rz.scp.css
+C:\Users\HP ProBook\Downloads\ProyectoOrderHub-main\ProyectoOrderHub-main\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
