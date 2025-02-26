@@ -148,7 +148,7 @@ namespace JarredsOrderHub.Controllers
             return View();
         }
 
-        // Acción POST para enviar correo (adaptado a tu formulario)
+        // Acción POST para enviar correo 
         [HttpPost]
         public async Task<IActionResult> RestablecerConfirmar(string email)
         {
