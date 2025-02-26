@@ -165,17 +165,24 @@
     plateForm.onsubmit = function (e) {
         e.preventDefault();
 
+
         const platilloData = {
-            nombre: document.getElementById("platilloNombre").value,
-            descripcion: document.getElementById("platilloDescripcion").value,
-            precio: parseFloat(document.getElementById("platilloPrecio").value),
-            imagen: document.getElementById("platilloImagen").value,
-            idCategoria: parseInt(document.getElementById("platilloCategoria").value),
-            activo: document.querySelector('input[name="estado"]:checked').value === 'true'
+        ...(platilloEditandoId && { idPlatillo: platilloEditandoId }), // Solo incluye el ID si existe
+        nombre: document.getElementById("platilloNombre").value,
+        descripcion: document.getElementById("platilloDescripcion").value,
+        precio: parseFloat(document.getElementById("platilloPrecio").value),
+        imagen: document.getElementById("platilloImagen").value,
+        idCategoria: parseInt(document.getElementById("platilloCategoria").value),
+        activo: document.querySelector('input[name="estado"]:checked').value === 'true'
         };
+
+    
+        console.log('Datos a enviar:', platilloData); // Añade este log
 
         const url = platilloEditandoId ? `/api/CatalogoService/platillos/${platilloEditandoId}` : '/api/CatalogoService/platillos';
         const method = platilloEditandoId ? 'PUT' : 'POST';
+
+        console.log('URL:', url); // Añade este log
 
         fetch(url, {
             method: method,
@@ -193,40 +200,39 @@
                     throw new Error('Respuesta incompleta del servidor');
                 }
 
-                const rowHtml = `
-                    <tr id="platillo-${data.idPlatillo}">
-                        <td>${data.idPlatillo}</td>
-                        <td>${data.nombre}</td>
-                        <td>${data.descripcion || ''}</td>
-                        <td>${data.precio ? data.precio.toLocaleString('es-ES', { style: 'currency', currency: 'CRC' }) : 'N/A'}</td>
-                        <td><img src="${data.imagen}" alt="${data.nombre}" width="50" /></td>
-                        <td>${data.idCategoria}</td>
-                        <td>${data.activo ? "Disponible" : "No Disponible"}</td>
-                        <td>
-                            <button class="icon-btn edit" onclick="editarPlatillo(${data.idPlatillo})">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="icon-btn delete" onclick="eliminarPlatillo(${data.idPlatillo})">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </td>
-                    </tr>
-
-                `;
+            const rowHtml = `
+                <tr id="platillo-${data.idPlatillo}">
+                    <td>${data.idPlatillo}</td>
+                    <td>${data.nombre}</td>
+                    <td>${data.descripcion || ''}</td>
+                    <td>${data.precio ? data.precio.toLocaleString('es-ES', { style: 'currency', currency: 'CRC' }) : 'N/A'}</td>
+                    <td><img src="${data.imagen}" alt="${data.nombre}" width="50" /></td>
+                    <td>${data.idCategoria}</td>
+                    <td>${data.activo ? "Disponible" : "No Disponible"}</td>
+                    <td>
+                        <button class="icon-btn edit" onclick="editarPlatillo(${data.idPlatillo})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="icon-btn delete" onclick="eliminarPlatillo(${data.idPlatillo})">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                </tr>
+             `;
             
 
 
                 if (platilloEditandoId) {
                     document.getElementById(`platillo-${platilloEditandoId}`).outerHTML = rowHtml;
-                } else {
+}                else {
                     document.querySelector("table tbody").insertAdjacentHTML('beforeend', rowHtml);
-                }
+                 }
 
                 plateModal.style.display = "none";
                 plateForm.reset();
                 platilloEditandoId = null;
 
-                alert(platilloEditandoId ? 'Platillo actualizado con éxito' : 'Platillo creado con éxito');
+                alert(platilloEditandoId ? 'Platillo actualizado con éxito' : 'Actualizacion de Platillos realizada con Exito!!');
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -235,27 +241,32 @@
             });
     };
 
-    // Función para editar un platillo
-    function editarPlatillo(platilloId) {
-        platilloEditandoId = platilloId;
+// función editarPlatillo
+function editarPlatillo(platilloId) {
+    console.log('Editando platillo ID:', platilloId); // Añade este log
+    platilloEditandoId = platilloId;
 
-        fetch(`/api/CatalogoService/platillos/${platilloId}`)
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById("platilloNombre").value = data.nombre;
-                document.getElementById("platilloDescripcion").value = data.descripcion;
-                document.getElementById("platilloPrecio").value = data.precio;
-                document.getElementById("platilloImagen").value = data.imagen;
-                document.getElementById("platilloCategoria").value = data.idCategoria;
-                document.getElementById(data.activo ? "estadoActivo" : "estadoInactivo").checked = true;
+    fetch(`/api/CatalogoService/platillos/${platilloId}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log('Datos obtenidos del servidor:', data); // Añade este log
+            document.getElementById("platilloNombre").value = data.nombre;
+            document.getElementById("platilloDescripcion").value = data.descripcion;
+            document.getElementById("platilloPrecio").value = data.precio;
+            document.getElementById("platilloImagen").value = data.imagen;
+            document.getElementById("platilloCategoria").value = data.idCategoria;
+            document.getElementById(data.activo ? "estadoActivo" : "estadoInactivo").checked = true;
 
-                document.getElementById("title-modal").textContent = "Editar Plato";
-                document.querySelector("#plateForm button[type='submit']").textContent = "Actualizar";
+            document.getElementById("title-modal").textContent = "Editar Plato";
+            document.querySelector("#plateForm button[type='submit']").textContent = "Actualizar";
 
-                plateModal.style.display = "block";
-            })
-            .catch(error => console.error('Error al obtener el plato:', error));
-    }
+            plateModal.style.display = "block";
+        })
+        .catch(error => {
+            console.error('Error al obtener el plato:', error);
+            alert('Error al cargar los datos del platillo');
+        });
+}
 
     // Función para eliminar un platillo
     function eliminarPlatillo(platilloId) {

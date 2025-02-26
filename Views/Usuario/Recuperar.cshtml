@@ -18,30 +18,30 @@
             </ul>
         </div>
     }
-
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="alert alert-success">
             @TempData["SuccessMessage"]
         </div>
     }
-    <div class="login-html">
-        <input  type="radio" name="tab" class="sign-in" checked>
-        <label class="tab">Recupera tu Contraseña</label>
-        <div class="login-form">
-            <!-- Login -->
-            <form method="post" asp-action="RestablecerConfirmar" asp-controller="Usuario">
-                <div class="sign-in-htm">
-                    <div class="group">
-                        <label for="user" class="label">Correo Electrónico</label>
-                        <input id="user" type="text" name="email" class="input">
-                    </div>
-                    <br />
-                    <div class="group">
-                        <input type="submit" class="button" value="Enviar al Correo">
-                    </div>
-                </div>
-            </form>
-        </div>
+
+<div class="login-html">
+    <h2>Recupera tu Contraseña</h2>
+    <div class="login-form">
+        <form method="post" asp-action="RestablecerConfirmar" asp-controller="Usuario">
+            <div class="group">
+                <label for="user" class="label">Correo Electrónico</label>
+                <input id="user" type="text" name="email" class="input" required>
+            </div>
+            <br />
+            <div class="group">
+                <input type="submit" class="button" value="Enviar al Correo">
+            </div>
+            <div class="hr"></div>
+            <div class="foot-lnk">
+                <a asp-action="AccionesUsuario">Volver a inicio de sesión</a>
+            </div>
+        </form>
     </div>
+</div>
 </div>

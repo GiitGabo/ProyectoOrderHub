@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Text.Json;
 
 namespace JarredsOrderHub.Controllers.Service
 {
@@ -12,10 +13,12 @@ namespace JarredsOrderHub.Controllers.Service
     public class CatalogoService : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly AuditService _auditService;
 
-        public CatalogoService(ApplicationDbContext context)
+        public CatalogoService(ApplicationDbContext context, AuditService auditService)
         {
             _context = context;
+            _auditService = auditService;
         }
 
         //-----------------------------------------------------------------------------//
@@ -54,6 +57,17 @@ namespace JarredsOrderHub.Controllers.Service
 
                 _context.Categorias.Add(categoria);
                 await _context.SaveChangesAsync();
+
+                string usuario = HttpContext.Session.GetString("UserName") ?? "Sistema";
+
+                await _auditService.RegistrarAuditoria(
+                    tipoEntidad: "Categoria",
+                    entidadId: categoria.IdCategoria,
+                    accion: "Creación",
+                    usuario: usuario,
+                    detallesCambios: JsonSerializer.Serialize(categoria),
+                    descripcion: $"Se creó la categoria: {categoria.Nombre}"
+                );
 
                 // Crear un objeto anónimo con solo los datos necesarios
                 var categoriaResponse = new
@@ -164,35 +178,50 @@ namespace JarredsOrderHub.Controllers.Service
         [HttpPut("platillos/{id}")]
         public async Task<IActionResult> ActualizarPlatillo(int id, [FromBody] Platillo platillo)
         {
-            if (id != platillo.IdPlatillo)
+            try
             {
-                return BadRequest();
-            }
+                if (id != platillo.IdPlatillo)
+                {
+                    return BadRequest(new { mensaje = "El ID en la URL no coincide con el ID del platillo" });
+                }
 
-            var platilloExistente = await _context.Platillos.FindAsync(id);
-            if (platilloExistente == null)
+                // Primero verificamos si el platillo existe
+                var platilloExistente = await _context.Platillos.FindAsync(id);
+                if (platilloExistente == null)
+                {
+                    return NotFound(new { mensaje = "Platillo no encontrado" });
+                }
+
+                // Verificar si la categoría existe
+                var categoriaExiste = await _context.Categorias.AnyAsync(c => c.IdCategoria == platillo.IdCategoria);
+                if (!categoriaExiste)
+                {
+                    return BadRequest(new { mensaje = "La categoría especificada no existe" });
+                }
+
+                // Actualizamos los campos uno por uno
+                platilloExistente.Nombre = platillo.Nombre;
+                platilloExistente.Descripcion = platillo.Descripcion;
+                platilloExistente.Precio = platillo.Precio;
+                platilloExistente.Imagen = platillo.Imagen;
+                platilloExistente.IdCategoria = platillo.IdCategoria;
+                platilloExistente.Activo = platillo.Activo;
+
+                // Marcamos la entidad como modificada
+                _context.Entry(platilloExistente).State = EntityState.Modified;
+
+                // Guardamos los cambios
+                await _context.SaveChangesAsync();
+
+                // Retornamos el platillo actualizado
+                return Ok(platilloExistente);
+            }
+            catch (Exception ex)
             {
-                return NotFound("Platillo no encontrado");
+                // Log del error
+                Console.WriteLine($"Error al actualizar platillo: {ex.Message}");
+                return StatusCode(500, new { mensaje = "Error interno al actualizar el platillo", error = ex.Message });
             }
-
-            // Verificar si la categoría existe
-            var categoriaExiste = await _context.Categorias.AnyAsync(c => c.IdCategoria == platillo.IdCategoria);
-            if (!categoriaExiste)
-            {
-                return BadRequest("La categoría especificada no existe");
-            }
-
-            platilloExistente.Nombre = platillo.Nombre;
-            platilloExistente.Descripcion = platillo.Descripcion;
-            platilloExistente.Precio = platillo.Precio;
-            platilloExistente.Imagen = platillo.Imagen;
-            platilloExistente.IdCategoria = platillo.IdCategoria;
-            platilloExistente.Activo = platillo.Activo;
-
-            _context.Entry(platilloExistente).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-
-            return Ok(platilloExistente);
         }
 
         [HttpDelete("platillos/{id}")]
