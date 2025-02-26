@@ -135,8 +135,7 @@ namespace JarredsOrderHub.Controllers.Service
             {
                 _context.Categorias.Remove(categoria);
                 await _context.SaveChangesAsync();
-                return Ok(new { mensaje = "Categoría eliminada exitosamente" });
-
+                
                 string usuario = HttpContext.Session.GetString("UserName") ?? "Sistema";
 
                 await _auditService.RegistrarAuditoria(
@@ -146,7 +145,12 @@ namespace JarredsOrderHub.Controllers.Service
                     usuario: usuario,
                     detallesCambios: JsonSerializer.Serialize(categoria),
                     descripcion: $"Se elimino la categoria: {categoria.Nombre}"
+
+
+                 
                 );
+
+                return Ok(new { mensaje = "Categoría eliminada exitosamente" });
 
             }
 

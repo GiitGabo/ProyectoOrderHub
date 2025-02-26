@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace JarredsOrderHub.Migrations
 {
     /// <inheritdoc />
-    public partial class Horarios : Migration
+    public partial class MigracionAct : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -45,6 +45,28 @@ namespace JarredsOrderHub.Migrations
                 oldClrType: typeof(string),
                 oldType: "nvarchar(max)");
 
+            migrationBuilder.CreateTable(
+                name: "Tareas",
+                columns: table => new
+                {
+                    IdTarea = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NombreTarea = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FechaEntrega = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IdEmpleado = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tareas", x => x.IdTarea);
+                    table.ForeignKey(
+                        name: "FK_Tareas_Empleados_IdEmpleado",
+                        column: x => x.IdEmpleado,
+                        principalTable: "Empleados",
+                        principalColumn: "IdEmpleado",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "Horarios",
                 columns: new[] { "IdHorario", "HoraFin", "HoraInicio" },
@@ -69,6 +91,11 @@ namespace JarredsOrderHub.Migrations
                 name: "IX_Empleados_IdRol",
                 table: "Empleados",
                 column: "IdRol");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tareas_IdEmpleado",
+                table: "Tareas",
+                column: "IdEmpleado");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Empleados_Horarios_IdHorario",
@@ -95,6 +122,9 @@ namespace JarredsOrderHub.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_Empleados_Roles_IdRol",
                 table: "Empleados");
+
+            migrationBuilder.DropTable(
+                name: "Tareas");
 
             migrationBuilder.DropIndex(
                 name: "IX_Empleados_IdHorario",

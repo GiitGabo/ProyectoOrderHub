@@ -266,6 +266,3 @@ namespace JarredsOrderHub.Controllers.Service
         }
     }
 }
-
-
-

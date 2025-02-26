@@ -16,7 +16,9 @@ namespace JarredsOrderHub.DbaseContext
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<Categoria> Categorias { get; set; }
         public DbSet<Platillo> Platillos { get; set; }
-        public DbSet<Horario> Horario { get; set; }
+        public DbSet<AuditLog> AuditLogs { get; set; }
+        public DbSet<RecuperacionContrasenia> RecuperacionesContrasenias { get; set; }
+        public DbSet<Horario> Horarios { get; set; }
         public DbSet<Tareas> Tareas { get; set; }
 
 

@@ -12,15 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JarredsOrderHub.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250226021104_Horarios")]
-    partial class Horarios
+    [Migration("20250226161629_Act")]
+    partial class Act
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.1")
+                .HasAnnotation("ProductVersion", "9.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -300,6 +300,35 @@ namespace JarredsOrderHub.Migrations
                         });
                 });
 
+            modelBuilder.Entity("JarredsOrderHub.Models.Tareas", b =>
+                {
+                    b.Property<int>("IdTarea")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdTarea"));
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("FechaEntrega")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("IdEmpleado")
+                        .HasColumnType("int");
+
+                    b.Property<string>("NombreTarea")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("IdTarea");
+
+                    b.HasIndex("IdEmpleado");
+
+                    b.ToTable("Tareas");
+                });
+
             modelBuilder.Entity("JarredsOrderHub.Models.Empleado", b =>
                 {
                     b.HasOne("JarredsOrderHub.Models.Horario", "Horario")
@@ -322,6 +351,16 @@ namespace JarredsOrderHub.Migrations
                         .HasForeignKey("IdCategoria");
 
                     b.Navigation("Categoria");
+                });
+
+            modelBuilder.Entity("JarredsOrderHub.Models.Tareas", b =>
+                {
+                    b.HasOne("JarredsOrderHub.Models.Empleado", "Empleado")
+                        .WithMany()
+                        .HasForeignKey("IdEmpleado")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Empleado");
                 });
 
             modelBuilder.Entity("JarredsOrderHub.Models.Categoria", b =>

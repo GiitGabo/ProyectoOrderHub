@@ -1,4 +1,10 @@
-﻿using JarredsOrderHub.DbaseContext;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
+using System.Web;
+using JarredsOrderHub.Controllers.Service;
+using JarredsOrderHub.DbaseContext;
 using JarredsOrderHub.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +14,7 @@ namespace JarredsOrderHub.Controllers
     public class AdminController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly AuditService _auditService;
 
         public AdminController(ApplicationDbContext context)
         {
@@ -29,7 +36,7 @@ namespace JarredsOrderHub.Controllers
                     .ToListAsync();
 
                 ViewBag.Roles = await _context.Roles.ToListAsync();
-                ViewBag.Horario = await _context.Horario.ToListAsync();
+                ViewBag.Horario = await _context.Horarios.ToListAsync();
 
                 return View(empleados);
             }
@@ -56,11 +63,23 @@ namespace JarredsOrderHub.Controllers
 
                 if (empleadoDuplicado)
                 {
+
                     return Json(new { success = false, message = "El empleado ya está registrado." });
                 }
 
                 _context.Empleados.Add(empleado);
                 await _context.SaveChangesAsync();
+                string usuario = HttpContext.Session.GetString("UserName") ?? "Sistema";
+
+                await _auditService.RegistrarAuditoria(
+                    tipoEntidad: "Empleado",
+                    entidadId: empleado.IdEmpleado,
+                    accion: "Agregar Emp",
+                    usuario: usuario,
+                    detallesCambios: JsonSerializer.Serialize(empleado),
+                    descripcion: $"Se agrego al empleado: {empleado.Nombre}"
+                );
+
                 return Json(new { success = true, message = "Empleado agregado correctamente." });
             }
             catch (Exception ex)
@@ -70,17 +89,22 @@ namespace JarredsOrderHub.Controllers
             }
         }
 
-
         [HttpGet]
         public async Task<IActionResult> ObtenerEmpleado(int id)
         {
+
             try
             {
-                var empleado = await _context.Empleados.FindAsync(id);
+                var empleado = await _context.Empleados
+                    .Include(e => e.Rol)
+                    .Include(e => e.Horario)
+                    .FirstOrDefaultAsync(e => e.IdEmpleado == id);
+
                 if (empleado == null)
                 {
                     return Json(new { success = false, message = "Empleado no encontrado" });
                 }
+
                 return Json(new { success = true, data = empleado });
             }
             catch (Exception ex)
@@ -114,6 +138,17 @@ namespace JarredsOrderHub.Controllers
                 empleadoExistente.Salario = empleado.Salario;
 
                 await _context.SaveChangesAsync();
+
+                string usuario = HttpContext.Session.GetString("UserName") ?? "Sistema";
+
+                await _auditService.RegistrarAuditoria(
+                    tipoEntidad: "Empleado",
+                    entidadId: empleado.IdEmpleado,
+                    accion: "Editcion",
+                    usuario: usuario,
+                    detallesCambios: JsonSerializer.Serialize(empleado),
+                    descripcion: $"Se edito al empleado con los siguientes datos: {empleado.Nombre}"
+                );
                 return Json(new { success = true });
             }
             catch (Exception ex)
@@ -122,6 +157,7 @@ namespace JarredsOrderHub.Controllers
                 return Json(new { success = false, message = "Error al actualizar el empleado." });
             }
         }
+
 
         [HttpPost]
         public async Task<IActionResult> EliminarEmpleado(int id)
@@ -136,6 +172,16 @@ namespace JarredsOrderHub.Controllers
 
                 _context.Empleados.Remove(empleado);
                 await _context.SaveChangesAsync();
+                string usuario = HttpContext.Session.GetString("UserName") ?? "Sistema";
+
+                await _auditService.RegistrarAuditoria(
+                    tipoEntidad: "Empleado",
+                    entidadId: empleado.IdEmpleado,
+                    accion: "Eliminacion",
+                    usuario: usuario,
+                    detallesCambios: JsonSerializer.Serialize(empleado),
+                    descripcion: $"Se elimino al empleado: {empleado.Nombre}"
+                );
                 return Json(new { success = true });
             }
             catch (Exception ex)
@@ -152,6 +198,7 @@ namespace JarredsOrderHub.Controllers
             ViewBag.Empleados = _context.Empleados.ToList();
             return View(tareas);
         }
+
 
         [HttpPost]
         public IActionResult AgregarTarea(Tareas nuevaTarea)
@@ -183,6 +230,7 @@ namespace JarredsOrderHub.Controllers
             var tareas = _context.Tareas.Include(t => t.Empleado).ToList();
             return View("AdministrarTareas", tareas);
         }
+
 
         [HttpPost]
         public IActionResult EditarTarea(Tareas tareaEditada)
@@ -225,7 +273,6 @@ namespace JarredsOrderHub.Controllers
             }
         }
 
-
         [HttpPost]
         public IActionResult EliminarTarea(int id)
         {
@@ -250,6 +297,7 @@ namespace JarredsOrderHub.Controllers
 
             return RedirectToAction("AdministrarTareas");
         }
+
 
         public async Task<IActionResult> AdministrarRoles()
         {

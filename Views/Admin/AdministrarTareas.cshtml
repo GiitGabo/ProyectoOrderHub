@@ -122,12 +122,12 @@
         console.log("Editando tarea ID: " + id);
     }
 
-    document.getElementById("closeTaskModal").onclick = function() {
+    document.getElementById("closeTaskModal").onclick = function () {
         document.getElementById("taskModal").style.display = "none";
     };
 
     // Verificar que los datos del formulario se envían correctamente
-        document.getElementById('taskForm').addEventListener('submit', function(e) {
+    document.getElementById('taskForm').addEventListener('submit', function (e) {
         if (!this.checkValidity()) {
             e.preventDefault();
             alert('Por favor, complete todos los campos obligatorios.');

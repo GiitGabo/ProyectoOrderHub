@@ -64,7 +64,7 @@
                     <option value="@rol.Id">@rol.Nombre</option>
                 }
             </select>
-            
+
             <label for="horario">Horario:</label>
             <select id="horario" required>
                 @foreach (var horario in ViewBag.Horario)
@@ -133,28 +133,37 @@
             .catch(error => console.error('Error:', error));
     });
 
-    function editarEmpleado(id) {
-        fetch(`/Admin/ObtenerEmpleado/${id}`)
+    function editarEmpleado(idEmpleado) {
+        fetch(`/Admin/ObtenerEmpleado?id=${idEmpleado}`)
             .then(response => response.json())
             .then(data => {
-                if (data.success !== false) {
-                    document.getElementById("idEmpleado").value = data.idEmpleado;
-                    document.getElementById("nombre").value = data.nombre;
-                    document.getElementById("apellido").value = data.apellido;
-                    document.getElementById("email").value = data.email;
-                    document.getElementById("rol").value = data.idRol;
-                    document.getElementById("horario").value = data.idHorario;
-                    document.getElementById("salario").value = data.salario;
+                if (data.success) {
+                    console.log("Empleado data:", data.data);
 
+                    const empleado = data.data;
+                    // Populate the modal with the employee data
+                    document.getElementById("idEmpleado").value = empleado.idEmpleado;
+                    document.getElementById("nombre").value = empleado.nombre;
+                    document.getElementById("apellido").value = empleado.apellido;
+                    document.getElementById("email").value = empleado.email;
+                    document.getElementById("rol").value = empleado.idRol;
+                    document.getElementById("horario").value = empleado.idHorario;
+                    document.getElementById("salario").value = empleado.salario;
+
+                    // Set edit mode flag
                     isEditMode = true;
-
                     document.getElementById("modalTitle").textContent = "Editar Empleado";
                     document.getElementById("employeeModal").style.display = "block";
                 } else {
-                    alert(data.message); // Muestra un mensaje si no se encuentra el empleado
+                    alert(data.message); // Show an error message if employee not found
                 }
+            })
+            .catch(error => {
+                console.error("Error al obtener los datos del empleado:", error);
+                alert("Error al cargar los datos del empleado.");
             });
     }
+
 
     function eliminarEmpleado(id) {
         if (confirm("¿Estás seguro de que deseas eliminar este empleado?")) {
@@ -171,8 +180,9 @@
     }
 
     function cerrarModal() {
-        document.getElementById("employeeModal").style.display = "none"; // Cerrar el modal
-        isEditMode = false; // Resetear el modo de edición
-        document.getElementById("employeeForm").reset(); // Limpiar el formulario
+        document.getElementById("employeeModal").style.display = "none";
+        document.getElementById("employeeForm").reset();
+        isEditMode = false;
     }
+
 </script>
