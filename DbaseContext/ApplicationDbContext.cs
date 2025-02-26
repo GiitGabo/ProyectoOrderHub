@@ -13,12 +13,13 @@ namespace JarredsOrderHub.DbaseContext
 
         public DbSet<Rol> Roles { get; set; }
         public DbSet<Empleado> Empleados { get; set; }
-        public DbSet<Horario> Horarios { get; set; }
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<Categoria> Categorias { get; set; }
         public DbSet<Platillo> Platillos { get; set; }
-        public DbSet<AuditLog> AuditLogs { get; set; }
-        public DbSet<RecuperacionContrasenia> RecuperacionesContrasenias { get; set; }
+        public DbSet<Horario> Horario { get; set; }
+        public DbSet<Tareas> Tareas { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -38,6 +39,12 @@ namespace JarredsOrderHub.DbaseContext
             modelBuilder.Entity<Rol>().HasData(
                 new Rol { Id = 1, Nombre = "Administrador", Descripcion = "Acceso total a la pagina.", Permisos = "Administrar usuarios, Ver empleados, Ver tareas, Administrar tareas" }
             );
+
+            modelBuilder.Entity<Tareas>()
+            .HasOne(t => t.Empleado)
+            .WithMany()
+            .HasForeignKey(t => t.IdEmpleado)
+            .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

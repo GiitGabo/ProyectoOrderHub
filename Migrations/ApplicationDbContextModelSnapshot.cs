@@ -17,54 +17,10 @@ namespace JarredsOrderHub.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.1")
+                .HasAnnotation("ProductVersion", "9.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("JarredsOrderHub.Models.AuditLog", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Accion")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Descripcion")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("DetallesCambios")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<int>("EntidadId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("FechaAccion")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("TipoEntidad")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Usuario")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AuditLogs");
-                });
 
             modelBuilder.Entity("JarredsOrderHub.Models.Categoria", b =>
                 {
@@ -178,7 +134,7 @@ namespace JarredsOrderHub.Migrations
 
                     b.HasKey("IdHorario");
 
-                    b.ToTable("Horarios");
+                    b.ToTable("Horario");
 
                     b.HasData(
                         new
@@ -236,33 +192,6 @@ namespace JarredsOrderHub.Migrations
                     b.ToTable("Platillos");
                 });
 
-            modelBuilder.Entity("JarredsOrderHub.Models.RecuperacionContrasenia", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("FechaExpiracion")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Utilizado")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("RecuperacionesContrasenias");
-                });
-
             modelBuilder.Entity("JarredsOrderHub.Models.Rol", b =>
                 {
                     b.Property<int>("Id")
@@ -297,6 +226,35 @@ namespace JarredsOrderHub.Migrations
                         });
                 });
 
+            modelBuilder.Entity("JarredsOrderHub.Models.Tareas", b =>
+                {
+                    b.Property<int>("IdTarea")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdTarea"));
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("FechaEntrega")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("IdEmpleado")
+                        .HasColumnType("int");
+
+                    b.Property<string>("NombreTarea")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("IdTarea");
+
+                    b.HasIndex("IdEmpleado");
+
+                    b.ToTable("Tareas");
+                });
+
             modelBuilder.Entity("JarredsOrderHub.Models.Empleado", b =>
                 {
                     b.HasOne("JarredsOrderHub.Models.Horario", "Horario")
@@ -319,6 +277,16 @@ namespace JarredsOrderHub.Migrations
                         .HasForeignKey("IdCategoria");
 
                     b.Navigation("Categoria");
+                });
+
+            modelBuilder.Entity("JarredsOrderHub.Models.Tareas", b =>
+                {
+                    b.HasOne("JarredsOrderHub.Models.Empleado", "Empleado")
+                        .WithMany()
+                        .HasForeignKey("IdEmpleado")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Empleado");
                 });
 
             modelBuilder.Entity("JarredsOrderHub.Models.Categoria", b =>
