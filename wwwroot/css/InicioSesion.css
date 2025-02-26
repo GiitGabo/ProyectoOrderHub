@@ -7,12 +7,6 @@ body {
     color: #262626; /* Color de texto principal */
 }
 
-/* Contenedor principal para el login */
-.login-container {
-    margin-top: 100px; /* Ajusta este valor según el alto del header */
-
-}
-
 /* --- Contenedor principal --- */
 .perfil-container {
     background-color: #fff; /* Fondo blanco */
@@ -73,33 +67,15 @@ a {
 /* Contenedor principal del formulario de inicio de sesión */
 .login-wrap {
     width: 100%;
+    margin: auto;
     max-width: 525px;
     min-height: 670px;
     position: relative;
-    background: url('https://animalgourmet.com/wp-content/uploads/2024/07/pollo-caribeno-cremoso-1.jpg') no-repeat center;
-    background-size: cover;
-    box-shadow: 0 12px 15px 0 rgba(0,0,0,.24), 0 17px 50px 0 rgba(0,0,0,.19);
-    border-radius: 10px;
+    background: url(https://animalgourmet.com/wp-content/uploads/2024/07/pollo-caribeno-cremoso-1.jpg) no-repeat center;
+    background-size: cover; /* Asegura que la imagen cubra toda el área */
+    box-shadow: 0 12px 15px 0 rgba(0,0,0,.24), 0 17px 50px 0 rgba(0,0,0,.19); /* Sombra en el contenedor */
+    border-radius: 10px; /* Bordes redondeados */
 }
-
-.login-html h2 {
-    color: #2EA629;
-    margin-bottom: 20px;
-}
-
-
-.recuperar-link {
-    display: block;
-    text-align: center;
-    margin-top: 10px;
-    color: #F2A413;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-    .recuperar-link:hover {
-        text-decoration: underline;
-    }
 
 /* Estilos para la estructura interna del formulario de inicio de sesión */
 .login-html {

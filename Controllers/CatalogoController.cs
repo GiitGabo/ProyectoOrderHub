@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using JarredsOrderHub.DbaseContext;
 using JarredsOrderHub.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,7 +29,6 @@ namespace JarredsOrderHub.Controllers
                 .ToListAsync();
             return View(categorias);
         }
-
 
         public async Task<IActionResult> Menu()
         {

@@ -14,7 +14,8 @@
             <div class="menu-info">
                 <h3>@platillo.Nombre</h3>
                 <p><strong>Descripción:</strong> @platillo.Descripcion</p>
-                <p><strong>Precio:</strong> @platillo.Precio.ToString("C", new System.Globalization.CultureInfo("es-CR"))</p>
+                <p><strong>Precio:</strong> @platillo.Precio.ToString("C")</p>
+                <p><strong>Categoría:</strong> @platillo.IdCategoria</p>
                 <p><strong>Disponible:</strong> @(platillo.Activo ? "Si" : "No Disponible")</p>
             </div>
             <button class="add-to-cart-btn" 

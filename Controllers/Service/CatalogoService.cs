@@ -107,18 +107,6 @@ namespace JarredsOrderHub.Controllers.Service
             _context.Entry(categoriaExistente).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
-            string usuario = HttpContext.Session.GetString("UserName") ?? "Sistema";
-
-            await _auditService.RegistrarAuditoria(
-                tipoEntidad: "Categoria",
-                entidadId: categoria.IdCategoria,
-                accion: "Edicion",
-                usuario: usuario,
-                detallesCambios: JsonSerializer.Serialize(categoria),
-                descripcion: $"Se edito la categoria: {categoria.Nombre}"
-            );
-
-
             return Ok(categoriaExistente);
         }
 
@@ -136,21 +124,7 @@ namespace JarredsOrderHub.Controllers.Service
                 _context.Categorias.Remove(categoria);
                 await _context.SaveChangesAsync();
                 return Ok(new { mensaje = "Categoría eliminada exitosamente" });
-
-                string usuario = HttpContext.Session.GetString("UserName") ?? "Sistema";
-
-                await _auditService.RegistrarAuditoria(
-                    tipoEntidad: "Categoria",
-                    entidadId: categoria.IdCategoria,
-                    accion: "Eliminacion",
-                    usuario: usuario,
-                    detallesCambios: JsonSerializer.Serialize(categoria),
-                    descripcion: $"Se elimino la categoria: {categoria.Nombre}"
-                );
-
             }
-
-
             catch (Exception ex)
             {
                 return StatusCode(500, new { mensaje = "Error al eliminar la categoría", error = ex.Message });
@@ -198,19 +172,6 @@ namespace JarredsOrderHub.Controllers.Service
             _context.Platillos.Add(platillo);
             await _context.SaveChangesAsync();
 
-            string usuario = HttpContext.Session.GetString("UserName") ?? "Sistema";
-
-            await _auditService.RegistrarAuditoria(
-                tipoEntidad: "Platillo",
-                entidadId: platillo.IdPlatillo,
-                accion: "Creación",
-                usuario: usuario,
-                detallesCambios: JsonSerializer.Serialize(platillo),
-                descripcion: $"Se creó el platilllo: {platillo.Nombre}"
-            );
-
-
-
             return CreatedAtAction(nameof(ObtenerPlatoPorId), new { id = platillo.IdPlatillo }, platillo);
         }
 
@@ -251,18 +212,6 @@ namespace JarredsOrderHub.Controllers.Service
 
                 // Guardamos los cambios
                 await _context.SaveChangesAsync();
-
-                string usuario = HttpContext.Session.GetString("UserName") ?? "Sistema";
-
-                await _auditService.RegistrarAuditoria(
-                    tipoEntidad: "Platillo",
-                    entidadId: platillo.IdPlatillo,
-                    accion: "Creación",
-                    usuario: usuario,
-                    detallesCambios: JsonSerializer.Serialize(platillo),
-                    descripcion: $"Se creó el platillo: {platillo.Nombre}"
-                );
-
 
                 // Retornamos el platillo actualizado
                 return Ok(platilloExistente);

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 
 
@@ -78,7 +77,6 @@ namespace JarredsOrderHub.Controllers.Service
             }
 
             return null;  //No Logeo
-
         }
 
         // Verificar Login Empleado
@@ -135,7 +133,7 @@ namespace JarredsOrderHub.Controllers.Service
                 {
                     Email = email,
                     Token = token,
-                    FechaExpiracion = DateTime.UtcNow.AddHours(1), // Token válido por 1 hora
+                    FechaExpiracion = DateTime.UtcNow.AddHours(24), // Token válido por 24 horas
                     Utilizado = false
                 };
 

@@ -1,5 +1,5 @@
 ﻿@{
-    Layout = "~/Views/Shared/_Layout.cshtml"; 
+    Layout = "~/Views/Shared/_LayoutExterno.cshtml"; //Layout externo
 }
 
 <link rel="stylesheet" href="~/css/InicioSesion.css" />
@@ -26,7 +26,7 @@
     }
 
 <div class="login-html">
-        <h2 style="color: #2EA629; margin-bottom: 20px;">Recupera tu Contraseña</h2>
+    <h2>Recupera tu Contraseña</h2>
     <div class="login-form">
         <form method="post" asp-action="RestablecerConfirmar" asp-controller="Usuario">
             <div class="group">
@@ -39,7 +39,7 @@
             </div>
             <div class="hr"></div>
             <div class="foot-lnk">
-                    <a style="color: #2EA629;"  asp-action="AccionesUsuario">Volver a inicio de sesión</a>
+                <a asp-action="AccionesUsuario">Volver a inicio de sesión</a>
             </div>
         </form>
     </div>

@@ -35,92 +35,27 @@ namespace JarredsOrderHub.Controllers.Service
                 var mensaje = new MailMessage
                 {
                     From = new MailAddress(fromEmail),
-                    Subject = "Restablecer contraseña - Jarred's Order Hub",
+                    Subject = "Recuperación de contraseña - Jarred's Order Hub",
                     Body = $@"
-        <html>
-        <head>
-            <style>
-                body {{
-                    font-family: 'Arial', sans-serif;
-                    margin: 0;
-                    padding: 0;
-                    background-color: #F2EAD0;
-                    color: #262626;
-                    text-align: center;
-                }}
-                .email-container {{
-                    width: 100%;
-                    padding: 20px;
-                    background-color: #F2EAD0;
-                    text-align: center;
-                }}
-                .email-content {{
-                    max-width: 600px;
-                    margin: auto;
-                    background-color: #ffffff;
-                    padding: 30px;
-                    border-radius: 10px;
-                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                    text-align: center;
-                }}
-                .header {{
-                    padding-bottom: 20px;
-                    border-bottom: 1px solid #eeeeee;
-                }}
-                .header h2 {{
-                    color: #2EA629;
-                    font-size: 28px;
-                    margin: 0;
-                }}
-                .content {{
-                    margin: 20px 0;
-                    line-height: 1.6;
-                }}
-                .btn {{
-                    display: inline-block;
-                    padding: 12px 20px;
-                    background-color: #F2A413;
-                    color: #ffffff !important;
-                    text-decoration: none;
-                    border-radius: 5px;
-                    font-weight: bold;
-                    margin: 20px 0;
-                }}
-                .footer {{
-                    margin-top: 30px;
-                    font-size: 12px;
-                    color: #999999;
-                    text-align: center;
-                }}
-            </style>
-            </head> 
-        </html>
-        <html>
-        <body>
-            <div class='email-container'>
-                <div class='email-content'>
-                    <div class='header'>
-                        <h2>Recuperación de Contraseña</h2>
-                    </div>
-                    <div class='content'>
-                        <p>Hola,</p>
-                        <p>Has solicitado recuperar tu contraseña para Jarred's Order Hub.</p>
-                        <p>Para restablecerla, haz clic en el siguiente botón:</p>
-                        <p>
-                            <a class='btn' style='color: #ffffff !important; background-color: #F2A413 !important;' href='{callbackUrl}'>
-                                Restablecer Contraseña
-                            </a>
-                        </p>
-                        <p>Si no solicitaste este cambio, por favor ignora este correo.</p>
-                        <p><em>Nota: Este enlace expirará en 1 hora.</em></p>
-                    </div>
-                    <div class='footer'>
-                        <p>&copy; {DateTime.Now.Year} Jarred's Order Hub. Todos los derechos reservados.</p>
-                    </div>
-                </div>
-            </div>
-        </body>
-        </html>",
+                        <html>
+                        <head>
+                            <style>
+                                body {{ font-family: Arial, sans-serif; }}
+                                .container {{ padding: 20px; }}
+                                .btn {{ padding: 10px 15px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px; }}
+                            </style>
+                        </head>
+                        <body>
+                            <div class='container'>
+                                <h2>Recuperación de contraseña</h2>
+                                <p>Has solicitado recuperar tu contraseña. Haz clic en el siguiente enlace para establecer una nueva contraseña:</p>
+                                <p><a class='btn' href='{callbackUrl}'>Restablecer contraseña</a></p>
+                                <p>Si no solicitaste recuperar tu contraseña, ignora este correo.</p>
+                                <p>Este enlace expirará en 24 horas.</p>
+                            </div>
+                        </body>
+                        </html>
+                    ",
                     IsBodyHtml = true
                 };
                 mensaje.To.Add(emailDestinatario);
