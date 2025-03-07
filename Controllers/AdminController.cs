@@ -16,9 +16,10 @@ namespace JarredsOrderHub.Controllers
         private readonly ApplicationDbContext _context;
         private readonly AuditService _auditService;
 
-        public AdminController(ApplicationDbContext context)
+        public AdminController(ApplicationDbContext context, AuditService auditService)
         {
             _context = context;
+            _auditService = auditService;
         }
         public ActionResult AdministrarUsuarios()
         {

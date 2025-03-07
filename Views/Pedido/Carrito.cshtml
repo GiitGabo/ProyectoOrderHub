@@ -20,7 +20,7 @@
         <div class="popup-contenido">
             <h3>Resumen del Pedido</h3>
             <div id="resumen-productos"></div>
-            <p><strong>Total:</strong> $<span id="resumen-total">0.00</span></p>
+            <p><strong>Total:</strong> <span id="resumen-total">0.00</span></p>
             <label for="comentarios">Comentarios sobre el pedido:</label>
             <textarea id="comentarios" rows="3" placeholder="Ej. Sin albahaca, extra queso..."></textarea>
             <div class="metodo-pago">
@@ -39,6 +39,14 @@
     </div>
 
     <script>
+        // Función para formatear precios en colones (CRC)
+        function formatearPrecio(precio) {
+            return new Intl.NumberFormat('es-CR', {
+                style: 'currency',
+                currency: 'CRC'
+            }).format(precio);
+        }
+
         // Función para mostrar el carrito
         function mostrarCarrito() {
             const contenedor = document.getElementById('productos-carrito');
@@ -57,7 +65,7 @@
                                     <img src="${producto.imagen}" alt="${producto.nombre}" class="imagen-producto">
                                     <div class="detalles-producto">
                                         <h3>${producto.nombre}</h3>
-                                        <p>Precio Unitario: $${producto.precio.toFixed(2)}</p>
+                                        <p>Precio Unitario: ${formatearPrecio(producto.precio)}</p>
                                     </div>
                                 </div>
                                 <div class="cantidad">
@@ -66,7 +74,7 @@
                                     <button class="btn-cantidad" onclick="cambiarCantidad(${index}, 1)"><i class="fas fa-plus"></i></button>
                                 </div>
                                 <div class="precio-total">
-                                    <span>Total: $<span id="precio-total-${index}">${(producto.cantidad * producto.precio).toFixed(2)}</span></span>
+                                    <span>Total: <span id="precio-total-${index}">${formatearPrecio(producto.cantidad * producto.precio)}</span></span>
                                 </div>
                                 <button class="btn-eliminar" onclick="eliminarProducto(${index})"><i class="fas fa-trash"></i> Eliminar</button>
                             </div>
@@ -107,7 +115,7 @@
                 totalProductos += producto.cantidad;
                 nombres.push(producto.nombre);
                 resumenProductos.innerHTML += `
-                            <p>${producto.nombre} x ${producto.cantidad} = $${subtotal.toFixed(2)}</p>
+                            <p>${producto.nombre} x ${producto.cantidad} = ${formatearPrecio(subtotal)}</p>
                         `;
             });
 
@@ -120,7 +128,7 @@
             // Insertar el resumen general antes del detalle de cada producto
             resumenProductos.insertAdjacentHTML('afterbegin', resumenGeneral);
 
-            document.getElementById('resumen-total').innerText = total.toFixed(2);
+            document.getElementById('resumen-total').innerText = formatearPrecio(total);
             document.getElementById('popup-resumen').style.display = 'flex';
         }
 

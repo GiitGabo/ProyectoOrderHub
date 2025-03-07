@@ -11,7 +11,7 @@
                 <img src="@platillo.Imagen" alt="@platillo.Nombre" class="menu-image">
                 <div class="menu-info">
                     <h3>@platillo.Nombre</h3>
-                    <p><strong>Descripción:</strong> @platillo.Descripcion</p>
+                    <p><strong>Descripción:</strong> @(platillo.Descripcion.Length > 100 ? platillo.Descripcion.Substring(0, 100) + "..." : platillo.Descripcion)</p>
                     <p><strong>Precio:</strong> @platillo.Precio.ToString("C", new System.Globalization.CultureInfo("es-CR"))</p>
                     <p><strong>Disponible:</strong> @(platillo.Activo ? "Si" : "No Disponible")</p>
                 </div>
