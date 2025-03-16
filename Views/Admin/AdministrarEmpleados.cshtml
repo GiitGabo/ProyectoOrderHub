@@ -47,8 +47,11 @@
 <!-- Modal para añadir/editar empleado -->
 <div id="employeeModal" class="modal">
     <div class="modal-content">
-        <span class="close" id="closeModal">&times;</span>
-        <h2 id="modalTitle">Añadir Empleado</h2>
+        <div class="modal-header">
+            <h2 id="modalTitle">Añadir Empleado</h2>
+            <span class="close" id="closeModal">&times;</span>
+        </div>      
+
         <form id="employeeForm">
             <input type="hidden" id="idEmpleado">
             <label for="nombre">Nombre:</label>
