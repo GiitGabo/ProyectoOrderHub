@@ -165,6 +165,10 @@ namespace JarredsOrderHub.Controllers.Service
         // Métodos para Platillos
         //-----------------------------------------------------------------------------//
 
+
+
+
+
         [HttpGet("platillos")]
         public async Task<ActionResult<IEnumerable<Platillo>>> ObtenerTodosPlatos()
         {
@@ -183,6 +187,12 @@ namespace JarredsOrderHub.Controllers.Service
 
             return platillo;
         }
+
+
+
+
+
+
 
         [HttpPost("platillos")]
         public async Task<ActionResult<Platillo>> CrearPlatillo([FromBody] Platillo platillo)

@@ -15,11 +15,13 @@ namespace JarredsOrderHub.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly AuditService _auditService;
+        private readonly UsuarioService _usuarioService;
 
-        public AdminController(ApplicationDbContext context, AuditService auditService)
+        public AdminController(ApplicationDbContext context, AuditService auditService, UsuarioService usuarioService)
         {
             _context = context;
             _auditService = auditService;
+            _usuarioService = usuarioService;
         }
         public ActionResult AdministrarUsuarios()
         {
@@ -72,6 +74,8 @@ namespace JarredsOrderHub.Controllers
                 await _context.SaveChangesAsync();
                 string usuario = HttpContext.Session.GetString("UserName") ?? "Sistema";
 
+                await _usuarioService.IniciarRecuperacionContrasenia(empleado.Email);
+
                 await _auditService.RegistrarAuditoria(
                     tipoEntidad: "Empleado",
                     entidadId: empleado.IdEmpleado,
@@ -80,6 +84,7 @@ namespace JarredsOrderHub.Controllers
                     detallesCambios: JsonSerializer.Serialize(empleado),
                     descripcion: $"Se agrego al empleado: {empleado.Nombre}"
                 );
+
 
                 return Json(new { success = true, message = "Empleado agregado correctamente." });
             }

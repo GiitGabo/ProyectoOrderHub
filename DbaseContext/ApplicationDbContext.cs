@@ -20,6 +20,7 @@ namespace JarredsOrderHub.DbaseContext
         public DbSet<RecuperacionContrasenia> RecuperacionesContrasenias { get; set; }
         public DbSet<Horario> Horarios { get; set; }
         public DbSet<Tareas> Tareas { get; set; }
+        public DbSet<Reporte> Reportes { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

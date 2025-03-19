@@ -63,7 +63,7 @@ namespace JarredsOrderHub.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AuditLogs");
+                    b.ToTable("AuditLogs", (string)null);
                 });
 
             modelBuilder.Entity("JarredsOrderHub.Models.Categoria", b =>
@@ -86,7 +86,7 @@ namespace JarredsOrderHub.Migrations
 
                     b.HasKey("IdCategoria");
 
-                    b.ToTable("Categorias");
+                    b.ToTable("Categorias", (string)null);
                 });
 
             modelBuilder.Entity("JarredsOrderHub.Models.Cliente", b =>
@@ -116,9 +116,12 @@ namespace JarredsOrderHub.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<bool>("estado")
+                        .HasColumnType("bit");
+
                     b.HasKey("IdCliente");
 
-                    b.ToTable("Clientes");
+                    b.ToTable("Clientes", (string)null);
                 });
 
             modelBuilder.Entity("JarredsOrderHub.Models.Empleado", b =>
@@ -153,13 +156,16 @@ namespace JarredsOrderHub.Migrations
                     b.Property<int?>("Salario")
                         .HasColumnType("int");
 
+                    b.Property<bool>("estado")
+                        .HasColumnType("bit");
+
                     b.HasKey("IdEmpleado");
 
                     b.HasIndex("IdHorario");
 
                     b.HasIndex("IdRol");
 
-                    b.ToTable("Empleados");
+                    b.ToTable("Empleados", (string)null);
                 });
 
             modelBuilder.Entity("JarredsOrderHub.Models.Horario", b =>
@@ -178,7 +184,7 @@ namespace JarredsOrderHub.Migrations
 
                     b.HasKey("IdHorario");
 
-                    b.ToTable("Horarios");
+                    b.ToTable("Horarios", (string)null);
 
                     b.HasData(
                         new
@@ -233,7 +239,7 @@ namespace JarredsOrderHub.Migrations
 
                     b.HasIndex("IdCategoria");
 
-                    b.ToTable("Platillos");
+                    b.ToTable("Platillos", (string)null);
                 });
 
             modelBuilder.Entity("JarredsOrderHub.Models.RecuperacionContrasenia", b =>
@@ -260,7 +266,36 @@ namespace JarredsOrderHub.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RecuperacionesContrasenias");
+                    b.ToTable("RecuperacionesContrasenias", (string)null);
+                });
+
+            modelBuilder.Entity("JarredsOrderHub.Models.Reporte", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DescripcionReporte")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("FechaReporte")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("IdCliente")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdCliente");
+
+                    b.ToTable("Reportes", (string)null);
                 });
 
             modelBuilder.Entity("JarredsOrderHub.Models.Rol", b =>
@@ -285,7 +320,7 @@ namespace JarredsOrderHub.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
 
                     b.HasData(
                         new
@@ -323,7 +358,7 @@ namespace JarredsOrderHub.Migrations
 
                     b.HasIndex("IdEmpleado");
 
-                    b.ToTable("Tareas");
+                    b.ToTable("Tareas", (string)null);
                 });
 
             modelBuilder.Entity("JarredsOrderHub.Models.Empleado", b =>
@@ -348,6 +383,15 @@ namespace JarredsOrderHub.Migrations
                         .HasForeignKey("IdCategoria");
 
                     b.Navigation("Categoria");
+                });
+
+            modelBuilder.Entity("JarredsOrderHub.Models.Reporte", b =>
+                {
+                    b.HasOne("JarredsOrderHub.Models.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("IdCliente");
+
+                    b.Navigation("Cliente");
                 });
 
             modelBuilder.Entity("JarredsOrderHub.Models.Tareas", b =>

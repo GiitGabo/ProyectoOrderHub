@@ -57,6 +57,7 @@
         margin-bottom: 20px;
         color: #2EA629;
     }
+
 * --- Producto --- */
 .producto {
     display: flex;
@@ -76,8 +77,7 @@
     width: 80px;
     height: 80px;
     object-fit: cover;
-    margin-right: 15px;
-    border-radius: 8px;
+    border: 1px solid #ddd;
 }
 
 .detalles-producto h3 {
@@ -97,16 +97,7 @@
 }
 
 .btn-cantidad {
-    background-color: #F2A413;
-    color: #fff;
-    border: none;
     border-radius: 4px;
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-    font-size: 16px;
-    margin: 0 5px;
-    transition: background-color 0.3s ease;
 }
 
     .btn-cantidad:hover {
@@ -137,6 +128,29 @@
     text-align: center;
     margin-top: 30px;
 }
+
+/* Ajusta la tarjeta del producto para mayor separación y sombra suave */
+.producto.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Espaciado para el contenido de la tarjeta */
+.card-body {
+    padding: 0.5rem 1rem;
+}
+
+/* Opcional: transiciones en los botones para mayor feedback */
+.btn-cantidad,
+.btn-eliminar {
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+    .btn-cantidad:hover,
+    .btn-eliminar:hover {
+        transform: scale(1.05);
+    }
 
 .btn-pagar {
     background-color: #2EA629;
@@ -458,3 +472,95 @@
         background-color: #4CAF50; /* Verde claro */
     }
 
+
+
+/*Modales*/
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #ffffff, #f3f3f3);
+    padding: 20px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-header {
+    margin: -20px;
+    margin-bottom: 20px;
+    background: #2EA629;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+}
+
+    .modal-header h2 {
+        margin: 0;
+        font-size: 22px;
+        color: white !important;
+    }
+
+    .modal-header span.close {
+        font-size: 24px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+        color: white;
+    }
+
+        .modal-header span.close:hover {
+            color: red;
+            transform: scale(1.2);
+        }
+
+    .modal-header p {
+        font-size: 16px;
+        color: #666;
+        margin: 20px 0;
+    }
+
+    .modal-header button {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+        .modal-header button:hover {
+            background: linear-gradient(135deg, #0056b3, #003b80);
+            transform: scale(1.05);
+        }
+
+/* Animación de entrada */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

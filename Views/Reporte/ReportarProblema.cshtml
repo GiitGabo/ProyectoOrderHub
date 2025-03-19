@@ -3,19 +3,14 @@
 
 <!-- Formulario para Realizar un Reporte -->
 <form id="reportForm">
-
-
-    <label for="reportDate">Fecha del Reporte:</label>
-    <input type="date" id="reportDate" name="reportDate" required>
-
+    <!-- Se elimina el campo de fecha, ya que se asigna automáticamente -->
     <label for="reportDescription">Descripción del Reporte:</label>
     <textarea id="reportDescription" name="reportDescription" rows="4" placeholder="Describa el problema o reporte" required></textarea>
-
     <button type="submit">Enviar Reporte</button>
 </form>
 
 <!-- Popup Modal de Confirmación -->
-<div id="reportConfirmationModal" class="modal">
+<div id="reportConfirmationModal" class="modal" style="display:none;">
     <div class="modal-content">
         <div class="modal-header">
             <h2 id="modalTitle">Confirmación</h2>
@@ -33,36 +28,49 @@
     const closeReportConfirmation = document.getElementById("closeReportConfirmation");
 
     // Manejar el envío del formulario
-    reportForm.onsubmit = function (e) {
+    reportForm.onsubmit = async function (e) {
         e.preventDefault();
 
-        // Obtener valores del formulario
-        const reportDate = document.getElementById("reportDate").value;
+        // Obtener el valor del reporte (solamente la descripción)
         const reportDescription = document.getElementById("reportDescription").value;
 
-        // Aquí puedes enviar estos datos al servidor, guardarlos en la base de datos, etc.
-        console.log("Reporte Enviado:", {
-            reporterName,
-            reportDate,
-            reportDescription,
-            reportPriority
-        });
+        // Construir el objeto reporte (la fecha y el Id del cliente se asignarán en el servidor)
+        const reporteData = {
+            DescripcionReporte: reportDescription
+        };
 
-        // Mostrar la modal de confirmación
-        reportConfirmationModal.style.display = "block";
+        try {
+            const response = await fetch('/Reporte/GuardarReporte', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(reporteData)
+            });
 
-        // Limpiar el formulario
-        reportForm.reset();
-    }
+            const result = await response.json();
+            if (result.success) {
+                // Mostrar la modal de confirmación
+                reportConfirmationModal.style.display = "block";
+                // Limpiar el formulario
+                reportForm.reset();
+            } else {
+                alert("Error: " + result.message);
+            }
+        } catch (error) {
+            console.error("Error al enviar reporte:", error);
+            alert("Error al enviar reporte.");
+        }
+    };
 
     // Cerrar modal de confirmación
     closeReportConfirmation.onclick = function () {
         reportConfirmationModal.style.display = "none";
-    }
+    };
 
     window.onclick = function (event) {
         if (event.target == reportConfirmationModal) {
             reportConfirmationModal.style.display = "none";
         }
-    }
+    };
 </script>

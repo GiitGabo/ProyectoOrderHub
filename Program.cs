@@ -32,6 +32,7 @@ builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<CatalogoService>();
 builder.Services.AddScoped<AuditService>();
 builder.Services.AddScoped<EmailService>();
+builder.Services.AddScoped<ReporteService>();
 
 
 //Agregar sesiones 
@@ -68,6 +69,6 @@ app.UseAuthorization();
 // Configurar rutas
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Usuario}/{action=AccionesUsuario}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

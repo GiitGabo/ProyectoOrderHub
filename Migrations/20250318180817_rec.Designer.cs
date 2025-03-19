@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JarredsOrderHub.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250314162039_Migrations")]
-    partial class Migrations
+    [Migration("20250318180817_rec")]
+    partial class rec
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -119,6 +119,9 @@ namespace JarredsOrderHub.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<bool>("estado")
+                        .HasColumnType("bit");
+
                     b.HasKey("IdCliente");
 
                     b.ToTable("Clientes");
@@ -155,6 +158,9 @@ namespace JarredsOrderHub.Migrations
 
                     b.Property<int?>("Salario")
                         .HasColumnType("int");
+
+                    b.Property<bool>("estado")
+                        .HasColumnType("bit");
 
                     b.HasKey("IdEmpleado");
 

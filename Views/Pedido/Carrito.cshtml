@@ -1,10 +1,12 @@
-﻿<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="~/css/Carrito.css" />
-
 
 <body>
     <div class="carrito-container">
-        <h2>Mi Carrito</h2>
+        <h2 style="color: #262626">Mi Carrito</h2>
         <div id="productos-carrito">
             <!-- Aquí se inyectarán los productos -->
         </div>
@@ -15,26 +17,31 @@
         </div>
     </div>
 
-    <!-- Popup para el resumen del pedido -->
-    <div id="popup-resumen" class="popup">
-        <div class="popup-contenido">
-            <h3>Resumen del Pedido</h3>
-            <div id="resumen-productos"></div>
-            <p><strong>Total:</strong> <span id="resumen-total">0.00</span></p>
-            <label for="comentarios">Comentarios sobre el pedido:</label>
-            <textarea id="comentarios" rows="3" placeholder="Ej. Sin albahaca, extra queso..."></textarea>
-            <div class="metodo-pago">
-                <button class="btn-pago" onclick="pagarConEfectivo()">
+    <!-- Modal de Resumen del Pedido con nuevo diseño -->
+
+    <div id="popup-resumen" class="modal" style="display: none; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5);">
+        <div class="modal-content" style="max-width: 600px; width: 90%; background: #fff; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); font-family: 'Roboto', sans-serif;">
+            <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ccc; padding-bottom: 0.5rem;">
+                <h2 style="font-size: 2rem; color: #262626;">Resumen del Pedido</h2>
+                <span class="close" onclick="cerrarResumen()" style="font-size: 2rem; cursor: pointer; color: #262626;">&times;</span>
+            </div>
+            <div id="resumen-productos" style="margin-top: 1.5rem; text-align: left; line-height: 1.5; color: #262626;">
+                <!-- Se inyecta el detalle de productos aquí -->
+            </div>
+            <p style="font-size: 1.25rem; margin-top: 1rem; text-align: left;"><strong>Total:</strong> <span id="resumen-total">0.00</span></p>
+            <label for="comentarios" style="display: block; margin-top: 1rem; font-weight: 500; text-align: left;">Comentarios sobre el pedido:</label>
+            <textarea id="comentarios" rows="3" placeholder="Ej. Sin albahaca..." style="width: 100%; padding: 0.5rem; margin-top: 0.5rem; border: 1px solid #ccc; border-radius: 5px;"></textarea>
+            <div class="metodo-pago" style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: flex-end;">
+                <button class="btn-pago" onclick="pagarConEfectivo()" style="background-color: #f2a413; color: #fff; padding: 0.8rem 1.5rem; border: none; border-radius: 30px; cursor: pointer;">
                     <i class="fas fa-cash-register"></i> Efectivo
                 </button>
-                <button class="btn-pago" onclick="pagarConTarjeta()">
+                <button class="btn-pago" onclick="pagarConTarjeta()" style="background-color: #f2a413; color: #fff; padding: 0.8rem 1.5rem; border: none; border-radius: 30px; cursor: pointer;">
                     <i class="fas fa-credit-card"></i> Tarjeta
                 </button>
-                <button class="btn-pago" onclick="pagarConPaypal()">
-                    <i class="fab fa-paypal"></i> PayPal
-                </button>
             </div>
-            <button class="btn-cerrar" onclick="cerrarResumen()">Cerrar</button>
+            <button class="btn-cerrar" onclick="cerrarResumen()" style="display: block; width: 100%; margin-top: 1.5rem; background: #262626; color: #fff; padding: 0.8rem; border: none; border-radius: 30px; font-weight: 700; cursor: pointer;">
+                Cerrar
+            </button>
         </div>
     </div>
 
@@ -54,33 +61,43 @@
             let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
 
             if (carrito.length === 0) {
-                contenedor.innerHTML = '<p>El carrito está vacío</p>';
+                contenedor.innerHTML = '<p class="text-center">El carrito está vacío</p>';
                 return;
             }
 
-            carrito.forEach((producto, index) => {
-                contenedor.innerHTML += `
-                            <div class="producto">
-                                <div class="info-producto">
-                                    <img src="${producto.imagen}" alt="${producto.nombre}" class="imagen-producto">
-                                    <div class="detalles-producto">
-                                        <h3>${producto.nombre}</h3>
-                                        <p>Precio Unitario: ${formatearPrecio(producto.precio)}</p>
-                                    </div>
-                                </div>
-                                <div class="cantidad">
-                                    <button class="btn-cantidad" onclick="cambiarCantidad(${index}, -1)"><i class="fas fa-minus"></i></button>
-                                    <span id="cantidad-${index}">${producto.cantidad}</span>
-                                    <button class="btn-cantidad" onclick="cambiarCantidad(${index}, 1)"><i class="fas fa-plus"></i></button>
-                                </div>
-                                <div class="precio-total">
-                                    <span>Total: <span id="precio-total-${index}">${formatearPrecio(producto.cantidad * producto.precio)}</span></span>
-                                </div>
-                                <button class="btn-eliminar" onclick="eliminarProducto(${index})"><i class="fas fa-trash"></i> Eliminar</button>
+    carrito.forEach((producto, index) => {
+        contenedor.innerHTML += `
+            <div class="producto card mb-3 p-2">
+                <div class="row g-0 align-items-left">
+                    <div class="col-auto">
+                        <img src="${producto.imagen}" alt="${producto.nombre}" class="imagen-producto img-fluid rounded">
+                    </div>
+                    <div class="col">
+                        <div class="card-body">
+                            <h5 class="card-title">${producto.nombre}</h5>
+                            <p class="precio-unitario card-text mb-1">${formatearPrecio(producto.precio)}</p>
+                            <div class="d-flex align-items-center">
+                                <button class="btn-cantidad btn btn-sm btn-warning me-2" onclick="cambiarCantidad(${index}, -1)">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <span id="cantidad-${index}" class="mx-2">${producto.cantidad}</span>
+                                <button class="btn-cantidad btn btn-sm btn-warning ms-2" onclick="cambiarCantidad(${index}, 1)">
+                                    <i class="fas fa-plus"></i>
+                                </button>
                             </div>
-                        `;
-            });
-        }
+                            <p class="precio-total card-text mt-2"><strong>Total: </strong><span id="precio-total-${index}">${formatearPrecio(producto.cantidad * producto.precio)}</span></p>
+                        </div>
+                    </div>
+                    <div class="col-auto pe-3">
+                        <button class="btn-eliminar btn btn-danger btn-sm" onclick="eliminarProducto(${index})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+}
 
         // Función para cambiar la cantidad de un producto en el carrito
         function cambiarCantidad(index, cambio) {
@@ -98,7 +115,7 @@
             mostrarCarrito();
         }
 
-        // Función para mostrar el resumen del pedido en un popup
+        // Función para mostrar el resumen del pedido en el modal
         function mostrarResumen() {
             let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
             let resumenProductos = document.getElementById('resumen-productos');
@@ -106,7 +123,6 @@
             let totalProductos = 0;
             let nombres = [];
 
-            // Limpiar el contenedor
             resumenProductos.innerHTML = '';
 
             carrito.forEach(producto => {
@@ -115,24 +131,21 @@
                 totalProductos += producto.cantidad;
                 nombres.push(producto.nombre);
                 resumenProductos.innerHTML += `
-                            <p>${producto.nombre} x ${producto.cantidad} = ${formatearPrecio(subtotal)}</p>
-                        `;
+                    <p>${producto.nombre} x ${producto.cantidad} = ${formatearPrecio(subtotal)}</p>
+                `;
             });
 
-            // Crear un resumen general al inicio
             const resumenGeneral = `
-                        <p><strong>Total de productos:</strong> ${totalProductos}</p>
-                        <p><strong>Productos:</strong> ${nombres.join(", ")}</p>
-                    `;
+                <p><strong>Total de productos:</strong> ${totalProductos}</p>
+                <p><strong>Productos:</strong> ${nombres.join(", ")}</p>
+            `;
 
-            // Insertar el resumen general antes del detalle de cada producto
             resumenProductos.insertAdjacentHTML('afterbegin', resumenGeneral);
-
             document.getElementById('resumen-total').innerText = formatearPrecio(total);
             document.getElementById('popup-resumen').style.display = 'flex';
         }
 
-        // Función para cerrar el resumen del pedido
+        // Función para cerrar el modal del resumen
         function cerrarResumen() {
             document.getElementById('popup-resumen').style.display = 'none';
         }
@@ -153,7 +166,6 @@
             cerrarResumen();
         }
 
-        // Cargar el carrito cuando se cargue la página
         document.addEventListener("DOMContentLoaded", mostrarCarrito);
     </script>
 </body>

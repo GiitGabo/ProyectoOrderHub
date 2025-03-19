@@ -1,14 +1,16 @@
-﻿
-@{
-    Layout = "~/Views/Shared/_Layout.cshtml"; //Layout externo
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <link rel="stylesheet" href="~/css/InicioSesion.css" />
-<script src="https://kit.fontawesome.com/ddc6aa5d21.js" crossorigin="anonymous"></script>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
+<body style="background-color: #F2EAD0;">
+
+<div style="margin: 40px 0;"></div>
+
+<div class="login-page">
 <div class="login-container">
-    <div class="login-wrap">
+        <div class="alert alert-success" style="display: none;">
+        @* Muestra los errores de validación o mensajes de éxito *@
         @if (!ViewData.ModelState.IsValid)
         {
             <div class="alert alert-danger">
@@ -20,14 +22,15 @@
                 </ul>
             </div>
         }
-
         @if (TempData["SuccessMessage"] != null)
         {
             <div class="alert alert-success">
                 @TempData["SuccessMessage"]
             </div>
         }
+        </div>
 
+        <div class="login-wrap">
         <div class="login-html">
             <input id="tab-1" type="radio" name="tab" class="sign-in" checked>
             <label for="tab-1" class="tab">Iniciar Sesión</label>
@@ -35,12 +38,13 @@
             <label for="tab-2" class="tab">Registrarse</label>
 
             <div class="login-form">
-                <!-- Login -->
+                <!-- Formulario de Iniciar Sesión -->
                 <form method="post" asp-action="Login" asp-controller="Usuario">
-                    <div class="sign-in-htm">
+                    <div class="sign-in-htm">.
                         <div class="group">
                             <label for="user" class="label">Correo Electrónico</label>
                             <input id="user" type="text" name="email" class="input" required />
+                                <div class="error-message"></div>
                         </div>
                         <div class="group">
                             <label for="pass" class="label">Contraseña</label>
@@ -50,7 +54,6 @@
                             <input type="submit" class="button" value="Iniciar Sesión" />
                         </div>
                         <div class="group">
-                            <!-- Enlace para recuperar contraseña -->
                             <a class="recuperar-link" asp-action="Recuperar" asp-controller="Usuario">
                                 <i class="fas fa-key me-1"></i> Recuperar Contraseña
                             </a>
@@ -58,7 +61,7 @@
                     </div>
                 </form>
 
-                <!-- Registro -->
+                <!-- Formulario de Registro -->
                 <form method="post" asp-action="RegistrarCliente" asp-controller="Usuario">
                     <div class="sign-up-htm">
                         <div class="group">
@@ -75,7 +78,7 @@
                         </div>
                         <div class="group">
                             <label class="label">Contraseña</label>
-                            <input type="password" name="Contrasenia" class="input" required />
+                                <input type="password" name="Contrasenia" placeholder="Mínimo 6 caracteres" class="input" required />
                         </div>
                         <div class="group">
                             <label class="label">Confirmar Contraseña</label>
@@ -90,3 +93,7 @@
         </div>
     </div>
 </div>
+</div>
+</body>
+
+<div style="margin: 40px 0;"></div>

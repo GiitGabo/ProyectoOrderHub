@@ -6,26 +6,33 @@
 <script src="https://kit.fontawesome.com/ddc6aa5d21.js" crossorigin="anonymous"></script>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
-<div class="login-wrap">
-    @if (!ViewData.ModelState.IsValid)
-    {
-        <div class="alert alert-danger">
-            <ul>
-                @foreach (var modelError in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-                {
-                    <li>@modelError.ErrorMessage</li>
-                }
-            </ul>
-        </div>
-    }
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-success">
-            @TempData["SuccessMessage"]
-        </div>
-    }
+<body style="background-color: #F2EAD0;">
 
-<div class="login-html">
+    <div class="login-page">
+        <div class="login-container">
+            <div class="alert alert-success" style="display: none;">
+                @* Muestra los errores de validación o mensajes de éxito *@
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach (var modelError in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                            {
+                                <li>@modelError.ErrorMessage</li>
+                            }
+                        </ul>
+                    </div>
+                }
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success">
+                        @TempData["SuccessMessage"]
+                    </div>
+                }
+            </div>
+
+            <div class="login-wrap">
+                <div class="login-html">
         <h2 style="color: #2EA629; margin-bottom: 20px;">Recupera tu Contraseña</h2>
     <div class="login-form">
         <form method="post" asp-action="RestablecerConfirmar" asp-controller="Usuario">
@@ -45,3 +52,9 @@
     </div>
 </div>
 </div>
+        </div>
+
+    </div>
+</body>
+
+<div style="margin: 40px 0;"></div>

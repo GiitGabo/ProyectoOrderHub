@@ -331,7 +331,6 @@ C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHu
 C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.JarredsOrderHub.props
 C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.JarredsOrderHub.props
 C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\staticwebassets.pack.json
-C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
 C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\scopedcss\bundle\JarredsOrderHub.styles.css
 C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\scopedcss\projectbundle\JarredsOrderHub.bundle.scp.css
 C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\JarredsO.3C2AF9D7.Up2Date
@@ -1203,3 +1202,4 @@ C:\Users\HP ProBook\Downloads\JarredsOrderHub (2)\JarredsOrderHub\JarredsOrderHu
 C:\Users\HP ProBook\Downloads\JarredsOrderHub (2)\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\JarredsOrderHub.pdb
 C:\Users\HP ProBook\Downloads\JarredsOrderHub (2)\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\JarredsOrderHub.genruntimeconfig.cache
 C:\Users\HP ProBook\Downloads\JarredsOrderHub (2)\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\ref\JarredsOrderHub.dll
+C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css

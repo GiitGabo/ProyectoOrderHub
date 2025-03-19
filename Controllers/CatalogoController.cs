@@ -4,6 +4,7 @@ using JarredsOrderHub.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using JarredsOrderHub.ViewModels;
 
 namespace JarredsOrderHub.Controllers
 {
@@ -31,14 +32,27 @@ namespace JarredsOrderHub.Controllers
             return View(categorias);
         }
 
-
         public async Task<IActionResult> Menu()
         {
             var platillos = await _context.Platillos
                 .Include(p => p.Categoria)
                 .Where(p => p.Activo && p.Categoria.Activa)
                 .ToListAsync();
-            return View(platillos);
+
+            // Obtén las categorías únicas de los platillos
+            var categorias = platillos
+                .Select(p => p.Categoria)
+                .Distinct()
+                .ToList();
+
+            var viewModel = new MenuViewModel
+            {
+                Platillos = platillos,
+                Categorias = categorias
+            };
+
+            return View(viewModel);
         }
+
     }
 }

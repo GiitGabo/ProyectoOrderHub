@@ -1,97 +1,145 @@
 ﻿<link rel="stylesheet" href="~/css/Estilos.css" />
+@model IEnumerable<JarredsOrderHub.Models.Reporte>
 
+<style>
+    .btn {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        color: #fff;
+        margin-right: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-info {
+        background-color: #17a2b8;
+    }
+
+        .btn-info:hover {
+            background-color: #138496;
+        }
+
+    .btn-warning {
+        background-color: #ffc107;
+    }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+</style>
 
 <!-- Tabla de Reportes -->
-<h1>Reportes</h1>
+<h1 class="titulo-tabla">Administración de Reportes</h1>
 
-<table id="employeeTable">
+<table>
     <thead>
         <tr>
             <th>ID</th>
-            <th>Usuario del Reporte</th>
+            <th>Cliente</th>
             <th>Fecha del Reporte</th>
+            <th>Descripción</th>
             <th>Estado</th>
             <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
-        <!-- Fila 1 -->
-        <tr>
-            <td>1</td>
-            <td>Juan Perez</td>
-            <td>11/11/2024</td>
-            <td>Pendiente</td>
-            <td>
-                <button class="icon-btn delete">
-                    <i class="fas fa-trash-alt"></i>
-                </button>
-                <button class="icon-btn add-task" onclick="openReportPopup(1)">
-                    <i class="fa-solid fa-eye"></i>Ver Reporte/Problema
-                </button>
-            </td>
-        </tr>
-        <!-- Fila 2 -->
-        <tr>
-            <td>2</td>
-            <td>Luisa Miraflores</td>
-            <td>10/10/2024</td>
-            <td>Pendiente</td>
-            <td>
-                <button class="icon-btn delete">
-                    <i class="fas fa-trash-alt"></i>
-                </button>
-                <button class="icon-btn add-task" onclick="openReportPopup(2)">
-                    <i class="fa-solid fa-eye"></i> Ver Reporte/Problema
-                </button>
-            </td>
-        </tr>
+        @foreach (var reporte in Model)
+        {
+            // Solo se muestran los reportes que no están resueltos
+            if (reporte.Estado != "Resuelto")
+            {
+                <tr>
+                    <td>@reporte.Id</td>
+                    <td>@(reporte.Cliente != null ? reporte.Cliente.Nombre : "N/A")</td>
+                    <td>@reporte.FechaReporte.ToString("yyyy-MM-dd")</td>
+                    <td>
+                        @(reporte.DescripcionReporte.Length > 50
+                            ? reporte.DescripcionReporte.Substring(0, 50) + "..."
+                            : reporte.DescripcionReporte)
+                    </td>
+                    <td>@reporte.Estado</td>
+                    <td>
+                        <button class="btn btn-info" onclick="verDetalles(@reporte.Id, '@(reporte.DescripcionReporte.Replace("'", "\\'"))')">Ver Detalles</button>
+                        <button class="btn btn-warning" onclick="editarEstado(@reporte.Id, '@reporte.Estado')">Editar Estado</button>
+                    </td>
+                </tr>
+            }
+        }
     </tbody>
 </table>
 
-<!-- Popup Modal para Ver Reporte -->
-<div id="reportModal" class="modal">
+<!-- Modal para ver detalles -->
+<div id="detallesModal" class="modal" style="display:none;">
     <div class="modal-content">
-        <div class="modal-header">
-            <h2>Detalles del Reporte</h2>
-            <span class="close" id="closeReportModal">&times;</span>
-        </div>        
-        
-        <div id="reportDetails">
-            <!-- Los detalles del reporte se cargarán aquí -->
-        </div>
+        <span class="close" onclick="cerrarDetallesModal()">&times;</span>
+        <h2>Detalles del Reporte</h2>
+        <p id="detalleDescripcion"></p>
     </div>
 </div>
 
-<!-- Script JS -->
+<!-- Modal para editar estado -->
+<div id="editarEstadoModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <span class="close" onclick="cerrarEditarEstadoModal()">&times;</span>
+        <h2>Editar Estado</h2>
+        <input type="hidden" id="reporteId" />
+        <label for="nuevoEstado">Nuevo Estado:</label>
+        <select id="nuevoEstado">
+            <option value="Pendiente">Pendiente</option>
+            <option value="En Proceso">En Proceso</option>
+            <option value="Resuelto">Resuelto</option>
+        </select>
+        <button onclick="actualizarEstado()">Guardar</button>
+    </div>
+</div>
+
 <script>
-    // Obtener elementos
-    const reportModal = document.getElementById("reportModal");
-    const closeReportModal = document.getElementById("closeReportModal");
-
-    // Abrir modal
-    function openReportPopup(reportId) {
-        // Aquí puedes cargar dinámicamente los detalles del reporte según el reportId
-        document.getElementById("reportDetails").innerHTML = `Detalles del Reporte #${reportId}: Mi pedido venia con todo revuelto y una mordida`;
-        reportModal.style.display = "block";
+    // Función para ver detalles del reporte
+    function verDetalles(id, descripcion) {
+        document.getElementById("detalleDescripcion").innerText = descripcion;
+        document.getElementById("detallesModal").style.display = "block";
     }
 
-    // Cerrar modal
-    closeReportModal.onclick = function () {
-        reportModal.style.display = "none";
+    function cerrarDetallesModal() {
+        document.getElementById("detallesModal").style.display = "none";
     }
 
-    window.onclick = function (event) {
-        if (event.target == reportModal) {
-            reportModal.style.display = "none";
+    // Función para editar estado
+    function editarEstado(id, estadoActual) {
+        document.getElementById("reporteId").value = id;
+        document.getElementById("nuevoEstado").value = estadoActual;
+        document.getElementById("editarEstadoModal").style.display = "block";
+    }
+
+    function cerrarEditarEstadoModal() {
+        document.getElementById("editarEstadoModal").style.display = "none";
+    }
+
+    // Función para actualizar el estado vía AJAX
+    async function actualizarEstado() {
+        const id = document.getElementById("reporteId").value;
+        const nuevoEstado = document.getElementById("nuevoEstado").value;
+
+        try {
+            const response = await fetch('/Reporte/ActualizarEstado', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: id, nuevoEstado: nuevoEstado })
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                alert("Estado actualizado correctamente.");
+                location.reload(); // Recarga la página para reflejar los cambios
+            } else {
+                alert("Error: " + result.message);
+            }
+        } catch (error) {
+            console.error("Error actualizando estado:", error);
+            alert("Error actualizando estado.");
         }
     }
-
-    // Manejo de acciones de botones (como eliminar)
-    const deleteButtons = document.querySelectorAll(".delete");
-    deleteButtons.forEach(button => {
-        button.onclick = function () {
-            // Aquí puedes agregar la lógica para eliminar el reporte
-            alert("Reporte eliminado.");
-        };
-    });
 </script>
