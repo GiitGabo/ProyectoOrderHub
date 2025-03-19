@@ -1028,7 +1028,6 @@ C:\Users\brran\Downloads\JarredsOrderHub (2)\JarredsOrderHub\JarredsOrderHub\Jar
 C:\Users\brran\Downloads\JarredsOrderHub (2)\JarredsOrderHub\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\JarredsOrderHub.pdb
 C:\Users\brran\Downloads\JarredsOrderHub (2)\JarredsOrderHub\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\JarredsOrderHub.genruntimeconfig.cache
 C:\Users\brran\Downloads\JarredsOrderHub (2)\JarredsOrderHub\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\ref\JarredsOrderHub.dll
-C:\Users\Keilyn\Desktop\JarredsOrderHub\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\HP ProBook\Downloads\JarredsOrderHub (2)\JarredsOrderHub\JarredsOrderHub\bin\Debug\net8.0\appsettings.Development.json
 C:\Users\HP ProBook\Downloads\JarredsOrderHub (2)\JarredsOrderHub\JarredsOrderHub\bin\Debug\net8.0\appsettings.json
 C:\Users\HP ProBook\Downloads\JarredsOrderHub (2)\JarredsOrderHub\JarredsOrderHub\bin\Debug\net8.0\JarredsOrderHub.staticwebassets.runtime.json
@@ -1203,3 +1202,4 @@ C:\Users\HP ProBook\Downloads\JarredsOrderHub (2)\JarredsOrderHub\JarredsOrderHu
 C:\Users\HP ProBook\Downloads\JarredsOrderHub (2)\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\JarredsOrderHub.pdb
 C:\Users\HP ProBook\Downloads\JarredsOrderHub (2)\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\JarredsOrderHub.genruntimeconfig.cache
 C:\Users\HP ProBook\Downloads\JarredsOrderHub (2)\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\ref\JarredsOrderHub.dll
+C:\Users\Keilyn\Desktop\JarredsOrderHub\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

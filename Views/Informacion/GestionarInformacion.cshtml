@@ -1,0 +1,161 @@
+﻿@using Microsoft.AspNetCore.Mvc.ViewFeatures
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Gestionar Información";
+}
+
+<link rel="stylesheet" href="~/css/Estilos.css" />
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Gestionar Información del Footer</h2>
+
+    <form id="formFooter" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+        @Html.AntiForgeryToken()
+
+        <!-- Campo: Acerca de -->
+        <div class="mb-3">
+            <label for="footerAbout" class="form-label">Acerca de JarredsOrderHub:</label>
+            <textarea id="footerAbout" name="footerAbout" class="form-control" placeholder="Ingresa información Acerca de JarredsOrderHub" rows="6" required></textarea>
+            <div class="invalid-feedback">Este campo es obligatorio.</div>
+        </div>
+
+        <!-- Campo: Teléfono -->
+        <div class="mb-3">
+            <label for="footerTelefono" class="form-label">Teléfono:</label>
+            <input type="tel" id="footerTelefono" name="footerTelefono" class="form-control" placeholder="Ingresa el número de teléfono" required />
+            <div class="invalid-feedback">Por favor, ingresa un número de teléfono válido.</div>
+        </div>
+
+        <!-- Campo: Dirección-->
+        <div class="mb-3">
+            <label for="footerDireccion" class="form-label">Dirección:</label>
+            <input type="tel" id="footerDireccion" name="footerDireccion" class="form-control" placeholder="Ingresa la dirección" required />
+            <div class="invalid-feedback">Este campo es obligatorio.</div>
+        </div>
+
+        <!-- Campo: Correo Electrónico -->
+        <div class="mb-3">
+            <label for="footerEmail" class="form-label">Correo Electrónico:</label>
+            <input type="email" id="footerEmail" name="footerEmail" class="form-control" placeholder="Ingresa el correo electrónico" required />
+            <div class="invalid-feedback">Por favor, ingresa un correo electrónico válido.</div>
+        </div>
+
+        <!-- Campo: Preguntas Frecuentes (FAQ) -->
+        <div class="mb-3">
+            <label for="footerFAQ" class="form-label">Preguntas Frecuentes (FAQ):</label>
+            <textarea id="footerFAQ" name="footerFAQ" class="form-control" placeholder="Ingresa las preguntas frecuentes para los usuarios" rows="6" required></textarea>
+            <div class="invalid-feedback">Este campo es obligatorio.</div>
+        </div>
+
+        <!-- Campo: Términos y Condiciones (PDF) -->
+        <div class="mb-3">
+            <label for="footerTérminos" class="form-label">Términos y Condiciones (PDF):</label>
+            <input type="file" id="footerTérminos" name="footerTérminos" class="form-control" accept=".pdf" />
+            <small class="form-text text-muted">Sube un archivo PDF con los Términos y Condiciones.</small>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            <button type="button" id="previewButton" class="btn btn-secondary">Previsualizar</button>
+        </div>
+
+    </form>
+
+    <!-- Contenedor para el mensaje de alertas -->
+    <div id="alertMessage" class="alert mt-4" style="display: none;">
+        <strong id="alertTitle"></strong>
+        <p id="alertContent"></p>
+    </div>
+
+    <!-- Contenedor para la previsualización -->
+    <div id="previewContainer" class="mt-5" style="display: none;">
+        <h3>Previsualización</h3>
+        <div id="previewContent"></div>
+    </div>
+
+</div>
+
+<script>
+    // Validación del formulario
+    (function () {
+        'use strict'
+        var forms = document.querySelectorAll('.needs-validation')
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })();
+
+    // Función para mostrar alertas
+    function showAlert(message, type) {
+        const alertMessage = document.getElementById('alertMessage');
+        const alertTitle = document.getElementById('alertTitle');
+        const alertContent = document.getElementById('alertContent');
+
+        alertMessage.classList.remove('alert-success', 'alert-danger');
+        alertMessage.classList.add(type === 'success' ? 'alert-success' : 'alert-danger');
+        alertTitle.textContent = type === 'success' ? '¡Éxito!' : '¡Error!';
+        alertContent.textContent = message;
+        alertMessage.style.display = 'block';
+    }
+
+    // Manejo del submit con AJAX para guardar datos
+    document.getElementById('formFooter').addEventListener('submit', function (event) {
+        event.preventDefault();  // Previene el envío tradicional del formulario
+
+        // Obtener los datos del formulario
+        const formData = new FormData(this);
+
+        // Enviar los datos al servidor usando fetch
+        fetch('@Url.Action("GuardarInformacionFooter", "Informacion")', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showAlert("Información del footer actualizada correctamente.", 'success');
+            } else {
+                showAlert("Hubo un error al actualizar la información del footer. Inténtalo de nuevo.", 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert("Error de conexión. Por favor, inténtalo más tarde.", 'error');
+        });
+    });
+
+    // Manejo del botón de previsualización
+    document.getElementById('previewButton').addEventListener('click', function (event) {
+        event.preventDefault();
+
+        // Obtener los datos del formulario
+        const formData = new FormData(document.getElementById('formFooter'));
+
+        // Realizar la previsualización de los datos
+        const previewContent = `
+            <h4>Acerca de:</h4>
+            <p>${formData.get('footerAbout')}</p>
+            <h4>Teléfono:</h4>
+            <p>${formData.get('footerTelefono')}</p>
+            <h4>Correo Electrónico:</h4>
+            <p>${formData.get('footerEmail')}</p>
+            <h4>Preguntas Frecuentes:</h4>
+            <p>${formData.get('footerFAQ')}</p>
+            <h4>Términos y Condiciones:</h4>
+            <p>${formData.get('footerTérminos') ? 'Archivo cargado (PDF)' : 'No se ha subido archivo'}</p>
+        `;
+
+        // Mostrar la previsualización
+        document.getElementById('previewContent').innerHTML = previewContent;
+        document.getElementById('previewContainer').style.display = 'block';
+    });
+</script>
