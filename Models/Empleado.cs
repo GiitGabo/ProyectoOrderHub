@@ -29,5 +29,7 @@ namespace JarredsOrderHub.Models
         public int? Salario { get; set; }
 
         public string? Contrasenia { get; set; }
+
+        public Boolean estado { get; set; }
     }
 }

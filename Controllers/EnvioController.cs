@@ -25,12 +25,6 @@ namespace JarredsOrderHub.Controllers
             return View();
         }
 
-        public ActionResult ReportarProblema()
-        {
-
-            return View();
-        }
-
         public ActionResult RetrasoEnvio()
         {
 
