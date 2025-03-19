@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JarredsOrderHub.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250226160859_MigracionAct")]
-    partial class MigracionAct
+    [Migration("20250318185627_PedidosTable")]
+    partial class PedidosTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -124,6 +124,36 @@ namespace JarredsOrderHub.Migrations
                     b.ToTable("Clientes");
                 });
 
+            modelBuilder.Entity("JarredsOrderHub.Models.DetallePedido", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Cantidad")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PedidoId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("PrecioUnitario")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ProductoId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Total")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PedidoId");
+
+                    b.ToTable("DetallePedidos");
+                });
+
             modelBuilder.Entity("JarredsOrderHub.Models.Empleado", b =>
                 {
                     b.Property<int>("IdEmpleado")
@@ -202,6 +232,40 @@ namespace JarredsOrderHub.Migrations
                             HoraFin = new TimeSpan(0, 19, 0, 0, 0),
                             HoraInicio = new TimeSpan(0, 10, 0, 0, 0)
                         });
+                });
+
+            modelBuilder.Entity("JarredsOrderHub.Models.Pedido", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Comentarios")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EstadoPedido")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("FechaPedido")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("MetodoPago")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Total")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Pedidos");
                 });
 
             modelBuilder.Entity("JarredsOrderHub.Models.Platillo", b =>
@@ -329,6 +393,17 @@ namespace JarredsOrderHub.Migrations
                     b.ToTable("Tareas");
                 });
 
+            modelBuilder.Entity("JarredsOrderHub.Models.DetallePedido", b =>
+                {
+                    b.HasOne("JarredsOrderHub.Models.Pedido", "Pedido")
+                        .WithMany("Detalles")
+                        .HasForeignKey("PedidoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pedido");
+                });
+
             modelBuilder.Entity("JarredsOrderHub.Models.Empleado", b =>
                 {
                     b.HasOne("JarredsOrderHub.Models.Horario", "Horario")
@@ -366,6 +441,11 @@ namespace JarredsOrderHub.Migrations
             modelBuilder.Entity("JarredsOrderHub.Models.Categoria", b =>
                 {
                     b.Navigation("Platillos");
+                });
+
+            modelBuilder.Entity("JarredsOrderHub.Models.Pedido", b =>
+                {
+                    b.Navigation("Detalles");
                 });
 #pragma warning restore 612, 618
         }

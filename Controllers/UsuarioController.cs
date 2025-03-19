@@ -1,17 +1,8 @@
-﻿
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Web;
-using JarredsOrderHub.DbaseContext;
+﻿using JarredsOrderHub.Controllers.Service;
 using JarredsOrderHub.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
-using System.Security.Cryptography;
-using JarredsOrderHub.Controllers.Service;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace JarredsOrderHub.Controllers
@@ -74,7 +65,7 @@ namespace JarredsOrderHub.Controllers
         }
 
 
-    [HttpPost]
+        [HttpPost]
         public async Task<IActionResult> Login(string email, string contrasena)
         {
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(contrasena))
@@ -92,6 +83,7 @@ namespace JarredsOrderHub.Controllers
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, cliente.Nombre),
+                    new Claim(ClaimTypes.NameIdentifier, cliente.IdCliente.ToString()),
                     new Claim("UserType", "Cliente")
                 };
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -110,7 +102,7 @@ namespace JarredsOrderHub.Controllers
             if (empleado != null)
             {
 
-               var claims = new List<Claim>
+                var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, empleado.Nombre),
                     new Claim("UserType", "Empleado")

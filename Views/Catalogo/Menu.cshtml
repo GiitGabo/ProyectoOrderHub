@@ -16,7 +16,7 @@
                     <p><strong>Disponible:</strong> @(platillo.Activo ? "Si" : "No Disponible")</p>
                 </div>
                 <button class="add-to-cart-btn"
-                        onclick="agregarAlCarrito('@platillo.IdPlatillo', '@platillo.Nombre', @platillo.Precio, '@platillo.Imagen')">
+                        onclick="agregarAlCarrito('@platillo.IdPlatillo', '@platillo.Nombre', '@platillo.Imagen', @platillo.Precio)">
                     <i class="fas fa-cart-plus"></i> Añadir al Carrito
                 </button>
             </div>
@@ -24,7 +24,9 @@
     </div>
 
     <script>
-        function agregarAlCarrito(id, nombre, precio, imagen) {
+        function agregarAlCarrito(id, nombre, imagen, precio) {
+            console.log("Datos recibidos:", { id, nombre, precio, imagen });
+            console.error("imagen:", imagen);
             // Convertir el precio a número
             precio = parseFloat(precio);
 

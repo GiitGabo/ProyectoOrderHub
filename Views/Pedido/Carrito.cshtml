@@ -137,10 +137,62 @@
             document.getElementById('popup-resumen').style.display = 'none';
         }
 
-        function pagarConEfectivo() {
-            alert("Pedido realizado con éxito. Puedes pagar en efectivo.");
-            cerrarResumen();
+        const usuarioId = @ViewBag.UsuarioId;
+
+        async function pagarConEfectivo() {
+            let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            let comentarios = document.getElementById('comentarios').value;
+            let total = carrito.reduce((sum, producto) => sum + (producto.cantidad * producto.precio), 0);
+
+            if (carrito.length === 0) {
+                alert("El carrito está vacío.");
+                return;
+            }
+
+            let pedido = {
+                Id: 0,
+                UsuarioId: usuarioId,
+                FechaPedido: new Date().toISOString().slice(0, 19),
+                EstadoPedido: "Pendiente",
+                MetodoPago: "Efectivo",
+                Total: total,
+                Comentarios: comentarios,
+                Detalles: carrito.map(producto => ({
+                    Id: 0,
+                    PedidoId: 0,
+                    ProductoId: parseInt(producto.id),
+                    Cantidad: producto.cantidad,
+                    PrecioUnitario: producto.precio,
+                    Total: producto.cantidad * producto.precio,
+                }))
+            };
+
+            try {
+                let response = await fetch("/api/PedidosService/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(pedido)
+                });
+
+                const responseBody = await response.text();
+
+                if (!response.ok) {
+                    throw new Error(`Error al realizar el pedido. Respuesta del servidor: ${responseBody}`);
+                }
+
+                alert("Pedido realizado con éxito. Puedes pagar en efectivo.");
+                localStorage.removeItem("carrito");
+                mostrarCarrito();
+                cerrarResumen();
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Hubo un problema al realizar el pedido.");
+            }
         }
+
+
 
         function pagarConTarjeta() {
             const datosTarjeta = prompt("Introduce los datos de tu tarjeta:");

@@ -33,7 +33,6 @@ builder.Services.AddScoped<CatalogoService>();
 builder.Services.AddScoped<AuditService>();
 builder.Services.AddScoped<EmailService>();
 
-
 //Agregar sesiones 
 builder.Services.AddSession(options =>
 {
@@ -62,7 +61,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseSession();  // Sesiones habilitadas
-app.UseAuthentication();  
+app.UseAuthentication();
 app.UseAuthorization();
 
 // Configurar rutas

@@ -1,62 +1,64 @@
-﻿
-<link rel="stylesheet" href="~/css/ListadoPedidos.css" />
-
+﻿<link rel="stylesheet" href="~/css/ListadoPedidos.css" />
 
 <h1>Listado de Pedidos</h1>
 
 <!-- Contenedor de Cards -->
 <div class="container">
-    <!-- Ejemplo de un Pedido -->
-    <div class="card">
-        <h3>Pedido #001</h3>
-        <p><i class="fas fa-utensils"></i> <span class="bold-text">Plato:</span> Pasta Alfredo</p>
-        <p><i class="fas fa-sort-numeric-up-alt"></i> <span class="bold-text">Cantidad:</span> 2</p>
-        <p><i class="fas fa-list"></i> <span class="bold-text">Ingredientes:</span> Pasta, Queso, Crema, Pollo</p>
-        <p><i class="fas fa-comment"></i> <span class="bold-text">Comentarios:</span> Sin cebolla, por favor.</p>
+    @foreach (var pedido in Model)
+    {
+        <div class="card">
+            <h3>Pedido @pedido.Id</h3>
+            @foreach (var detalle in pedido.Detalles)
+            {
+                <p><i class="fas fa-utensils"></i> <span class="bold-text">Plato:</span> @detalle.Platillo.Nombre</p>
+                <p><i class="fas fa-sort-numeric-up-alt"></i> <span class="bold-text">Cantidad:</span> @detalle.Cantidad</p>
+            }
 
-        <!-- Dropdown para cambiar estado -->
-        <label for="estado-1"><span class="bold-text">Estado:</span></label>
-        <select id="estado-1" class="status-dropdown">
-            <option value="pendiente">Pendiente</option>
-            <option value="preparando">Preparando</option>
-            <option value="en_camino">En Camino</option>
-            <option value="entregado">Entregado</option>
-        </select>
+            <p><i class="fas fa-comment"></i> <span class="bold-text">Comentarios:</span> @pedido.Comentarios</p>
+            <label for="estado-@pedido.Id"><span class="bold-text">Estado:</span></label>
+            <select id="estado-@pedido.Id" class="status-dropdown">
+                <option value="pendiente" selected="@(pedido.EstadoPedido == "pendiente" ? "selected" : null)">Pendiente</option>
+                <option value="preparando" selected="@(pedido.EstadoPedido == "preparando" ? "selected" : null)">Preparando</option>
+                <option value="en_camino" selected="@(pedido.EstadoPedido == "en_camino" ? "selected" : null)">En Camino</option>
+                <option value="entregado" selected="@(pedido.EstadoPedido == "entregado" ? "selected" : null)">Entregado</option>
+            </select>
 
-        <!-- Botón de guardar -->
-        <button class="save-button" onclick="guardarEstado('001')">Guardar Estado</button>
-    </div>
-
-    <!-- Más Cards de Pedidos -->
-    <div class="card">
-        <h3>Pedido #002</h3>
-        <p><i class="fas fa-utensils"></i> <span class="bold-text">Plato:</span> Pizza Margarita</p>
-        <p><i class="fas fa-sort-numeric-up-alt"></i> <span class="bold-text">Cantidad:</span> 1</p>
-        <p><i class="fas fa-list"></i> <span class="bold-text">Ingredientes:</span> Queso, Tomate, Albahaca</p>
-        <p><i class="fas fa-comment"></i> <span class="bold-text">Comentarios:</span> Agregar extra queso.</p>
-
-        <!-- Dropdown para cambiar estado -->
-        <label for="estado-2"><span class="bold-text">Estado:</span></label>
-        <select id="estado-2" class="status-dropdown">
-            <option value="pendiente">Pendiente</option>
-            <option value="preparando">Preparando</option>
-            <option value="en_camino">En Camino</option>
-            <option value="entregado">Entregado</option>
-        </select>
-
-        <!-- Botón de guardar -->
-        <button class="save-button" onclick="guardarEstado('002')">Guardar Estado</button>
-    </div>
+            <!-- Solo pasamos el Id del pedido -->
+            <button class="save-button" onclick="guardarEstado(@pedido.Id)">Guardar Estado</button>
+        </div>
+    }
 </div>
 
 <!-- Script JS -->
 <script>
     // Función para guardar el estado del pedido
     function guardarEstado(pedidoId) {
+        console.log("pedidoId: ", pedidoId);
+
+        // Obtienes el dropdown del estado del pedido
         const dropdown = document.getElementById(`estado-${pedidoId}`);
         const nuevoEstado = dropdown.value;
 
-        // Simulación de guardado (podrías enviar este valor a una base de datos aquí)
-        alert(`El estado del Pedido #${pedidoId} ha sido actualizado a: ${nuevoEstado}`);
+        // Ahora enviamos el objeto pedido completo al backend usando fetch
+        fetch(`/api/PedidosService/actualizarEstado/${pedidoId}/${nuevoEstado}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: null
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json(); // Solo analizamos como JSON si la respuesta es correcta
+                }
+                throw new Error('Error en la actualización');
+            })
+            .then(data => {
+                alert(`El estado del Pedido #${pedidoId} ha sido actualizado a: ${nuevoEstado}`);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Hubo un error al actualizar el estado.');
+            });
     }
 </script>

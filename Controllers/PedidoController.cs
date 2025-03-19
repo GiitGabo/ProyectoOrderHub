@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace JarredsOrderHub.Controllers
 {
@@ -10,10 +7,11 @@ namespace JarredsOrderHub.Controllers
     {
         public ActionResult Carrito()
         {
+            var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            ViewBag.UsuarioId = usuarioId;
+
             return View();
         }
-
-
-
     }
 }

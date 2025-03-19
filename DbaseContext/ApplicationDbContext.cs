@@ -20,6 +20,8 @@ namespace JarredsOrderHub.DbaseContext
         public DbSet<RecuperacionContrasenia> RecuperacionesContrasenias { get; set; }
         public DbSet<Horario> Horarios { get; set; }
         public DbSet<Tareas> Tareas { get; set; }
+        public DbSet<DetallePedido> DetallePedidos { get; set; }
+        public DbSet<Pedidos> Pedidos { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -46,6 +48,12 @@ namespace JarredsOrderHub.DbaseContext
             .HasOne(t => t.Empleado)
             .WithMany()
             .HasForeignKey(t => t.IdEmpleado)
+            .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<DetallePedido>()
+            .HasOne(dp => dp.Pedido)
+            .WithMany(p => p.Detalles)
+            .HasForeignKey(dp => dp.PedidoId)
             .OnDelete(DeleteBehavior.Cascade);
         }
     }

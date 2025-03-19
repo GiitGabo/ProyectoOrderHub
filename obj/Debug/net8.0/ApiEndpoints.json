@@ -218,6 +218,203 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "JarredsOrderHub.Controllers.Service.DetallePedidoService",
+    "Method": "GetDetallesPedidos",
+    "RelativePath": "api/DetallePedidoService",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[JarredsOrderHub.Models.DetallePedido, JarredsOrderHub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "JarredsOrderHub.Controllers.Service.DetallePedidoService",
+    "Method": "CreateDetallePedido",
+    "RelativePath": "api/DetallePedidoService",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "detallePedido",
+        "Type": "System.Collections.Generic.List\u00601[[JarredsOrderHub.Models.DetallePedido, JarredsOrderHub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "JarredsOrderHub.Models.DetallePedido",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "JarredsOrderHub.Controllers.Service.DetallePedidoService",
+    "Method": "DeleteDetallePedido",
+    "RelativePath": "api/DetallePedidoService/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JarredsOrderHub.Controllers.Service.DetallePedidoService",
+    "Method": "GetDetallesByPedido",
+    "RelativePath": "api/DetallePedidoService/detallePedido/{pedidoId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pedidoId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[JarredsOrderHub.Models.DetallePedido, JarredsOrderHub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "JarredsOrderHub.Controllers.Service.PedidosService",
+    "Method": "GetPedidos",
+    "RelativePath": "api/PedidosService",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[JarredsOrderHub.Models.Pedidos, JarredsOrderHub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "JarredsOrderHub.Controllers.Service.PedidosService",
+    "Method": "CreatePedido",
+    "RelativePath": "api/PedidosService",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pedido",
+        "Type": "JarredsOrderHub.Models.Pedidos",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "JarredsOrderHub.Models.Pedidos",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "JarredsOrderHub.Controllers.Service.PedidosService",
+    "Method": "GetPedido",
+    "RelativePath": "api/PedidosService/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "JarredsOrderHub.Models.Pedidos",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "JarredsOrderHub.Controllers.Service.PedidosService",
+    "Method": "DeletePedido",
+    "RelativePath": "api/PedidosService/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JarredsOrderHub.Controllers.Service.PedidosService",
+    "Method": "UpdatePedido",
+    "RelativePath": "api/PedidosService/actualizarEstado/{id}/{nuevoEstado}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "nuevoEstado",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "JarredsOrderHub.Controllers.Service.RolService",
     "Method": "ObtenerTodos",
     "RelativePath": "api/RolService",
