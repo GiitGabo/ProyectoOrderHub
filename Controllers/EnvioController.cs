@@ -1,6 +1,10 @@
 ﻿using JarredsOrderHub.DbaseContext;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
 
 namespace JarredsOrderHub.Controllers
 {
@@ -42,7 +46,6 @@ namespace JarredsOrderHub.Controllers
             return View();
         }
 
-
         public async Task<ActionResult> ListadoPedidos()
         {
             var pedidos = await _context.Pedidos
@@ -50,7 +53,6 @@ namespace JarredsOrderHub.Controllers
                                 .ThenInclude(d => d.Platillo)
                                 .ToListAsync();
             return View(pedidos);
-        }
 
         public ActionResult VisualizarRetroalimentaciones()
         {

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿@model List<Tareas>
 @{
     ViewData["Title"] = "Administración de Tareas";
@@ -19,6 +20,11 @@
         </ul>
     </div>
 }
+=======
+﻿<link rel="stylesheet" href="~/css/Estilos.css" />
+<h1>Tareas</h1>
+
+>>>>>>> b443d5bcbbc351568de9d98909daa9b1ca643d12
 
 <table id="taskTable">
     <thead>
@@ -28,10 +34,15 @@
             <th>Descripción</th>
             <th>Empleado Asignado</th>
             <th>Fecha de Entrega</th>
+<<<<<<< HEAD
+=======
+            <th>Estado</th>
+>>>>>>> b443d5bcbbc351568de9d98909daa9b1ca643d12
             <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
+<<<<<<< HEAD
         @foreach (var tarea in Model)
         {
             <tr>
@@ -90,11 +101,61 @@
             <label for="dueDate">Fecha de Entrega:</label>
             <input type="date" id="dueDate" name="FechaEntrega">
 
+=======
+        <tr>
+            <td>1</td>
+            <td>Realizar Cambios del Menu</td>
+            <td>Realice cambios en los precios del menu y verifique</td>
+            <td>Juan Perez</td>
+            <td>11/11/24</td>
+            <td>Pendiente</td>
+            <td>
+                <button class="icon-btn edit">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="icon-btn delete">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- Botón Añadir Tarea -->
+<button class="btn-add-task" onclick="openTaskPopup(2)">
+    <i class="fas fa-plus"></i> Añadir Tarea
+</button>
+
+<!-- Popup Modal para Añadir Tarea -->
+<div id="taskModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeTaskModal">&times;</span>
+        <h2>Añadir Tarea</h2>
+        <form id="taskForm">
+            <!-- Nombre de la Tarea -->
+            <label for="taskName">Nombre de la Tarea:</label>
+            <input type="text" id="taskName" placeholder="Ej: Preparar informe" required>
+
+            <!-- Descripción de la Tarea -->
+            <label for="taskDescription">Descripción:</label>
+            <textarea id="taskDescription" placeholder="Descripción de la tarea" rows="3" required></textarea>
+
+            <!-- Empleado Asignado -->
+            <label for="assignedEmployee">Empleado Asignado:</label>
+            <input type="text" id="assignedEmployee" placeholder="Nombre del empleado" required>
+
+            <!-- Fecha de Entrega -->
+            <label for="dueDate">Fecha de Entrega:</label>
+            <input type="date" id="dueDate" required>
+
+            <!-- Botón de Guardar -->
+>>>>>>> b443d5bcbbc351568de9d98909daa9b1ca643d12
             <button type="submit">Guardar</button>
         </form>
     </div>
 </div>
 
+<<<<<<< HEAD
 <script>
     function openAddTaskPopup() {
         // Reiniciar el formulario por completo
@@ -140,3 +201,78 @@
     });
 
 </script>
+=======
+<!-- Mensaje de Confirmación -->
+<div id="confirmationMessage" style="display:none; padding: 10px; background-color: #28a745; color: white; margin-top: 10px;">
+    Tarea Añadida Correctamente
+</div>
+</main>
+
+
+<!-- Popup para añadir tarea -->
+<div class="overlay" id="overlay"></div>
+<div class="popup" id="taskPopup">
+    <h3>Añadir Tarea</h3>
+
+    <!-- Campo para el nombre de la tarea -->
+    <label for="taskName">Nombre de la tarea:</label>
+    <input type="text" id="taskName" placeholder="Escribe el nombre de la tarea" required>
+
+    <!-- Campo para la descripción de la tarea -->
+    <label for="taskDescription">Descripción:</label>
+    <textarea id="taskDescription" placeholder="Escribe una breve descripción de la tarea" required></textarea>
+
+    <!-- Campo para la fecha de entrega -->
+    <label for="taskDueDate">Fecha de Entrega:</label>
+    <input type="date" id="taskDueDate" required>
+
+    <!-- Campo para el estado de la tarea -->
+    <label for="taskStatus">Estado:</label>
+    <select id="taskStatus" required>
+        <option value="Pendiente">Pendiente</option>
+        <option value="En Progreso">En Progreso</option>
+        <option value="Completado">Completado</option>
+    </select>
+
+    <!-- Botones -->
+    <button onclick="addTask()">Guardar Tarea</button>
+    <button onclick="closeTaskPopup()">Cerrar</button>
+</div>
+
+<script>
+    let currentEmployeeId = null;
+
+    // Función para abrir el popup de añadir tarea
+    function openTaskPopup(employeeId) {
+        currentEmployeeId = employeeId;
+        document.getElementById('overlay').style.display = 'block';
+        document.getElementById('taskPopup').style.display = 'block';
+    }
+
+    // Función para cerrar el popup
+    function closeTaskPopup() {
+        document.getElementById('overlay').style.display = 'none';
+        document.getElementById('taskPopup').style.display = 'none';
+        document.getElementById('taskName').value = '';
+        document.getElementById('taskDescription').value = '';
+        document.getElementById('taskDueDate').value = '';
+        document.getElementById('taskStatus').value = 'Pendiente';
+    }
+
+    // Función para añadir la tarea
+    function addTask() {
+        const taskName = document.getElementById('taskName').value;
+        const taskDescription = document.getElementById('taskDescription').value;
+        const taskDueDate = document.getElementById('taskDueDate').value;
+        const taskStatus = document.getElementById('taskStatus').value;
+
+        // Validar que todos los campos estén completos
+        if (taskName && taskDescription && taskDueDate) {
+            alert(`Tarea añadida para el empleado ID ${currentEmployeeId}:\nNombre: ${taskName}\nDescripción: ${taskDescription}\nFecha de Entrega: ${taskDueDate}\nEstado: ${taskStatus}`);
+            closeTaskPopup();
+        } else {
+            alert("Por favor, ingresa todos los datos necesarios.");
+        }
+    }
+</script>
+>>>>>>> b443d5bcbbc351568de9d98909daa9b1ca643d12

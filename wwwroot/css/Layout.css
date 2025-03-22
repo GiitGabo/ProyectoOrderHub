@@ -97,6 +97,7 @@ body {
         .footer a:hover {
             color: #F2A413; /* Cambio a naranja al pasar el mouse */
         }
+<<<<<<< HEAD
 
 
 /*Modales*/
@@ -188,3 +189,5 @@ body {
         transform: translateY(0);
     }
 }
+=======
+>>>>>>> b443d5bcbbc351568de9d98909daa9b1ca643d12

@@ -100,21 +100,36 @@ h2 {
 }
 
 /* Estilos para los modales */
+<<<<<<< HEAD
 /*.modal {
     display: none;*/ /* Los modales están ocultos por defecto */
     /*position: fixed;
+=======
+.modal {
+    display: none; /* Los modales están ocultos por defecto */
+    position: fixed;
+>>>>>>> b443d5bcbbc351568de9d98909daa9b1ca643d12
     z-index: 1;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     overflow: auto;
+<<<<<<< HEAD
     background-color: rgba(0, 0, 0, 0.4);*/ /* Fondo oscuro semitransparente */
 /*}
 
 .modal-content {
     background-color: #FFFFFF;*/ /* Fondo blanco para los modales */
     /*margin: 15% auto;
+=======
+    background-color: rgba(0, 0, 0, 0.4); /* Fondo oscuro semitransparente */
+}
+
+.modal-content {
+    background-color: #FFFFFF; /* Fondo blanco para los modales */
+    margin: 15% auto;
+>>>>>>> b443d5bcbbc351568de9d98909daa9b1ca643d12
     padding: 20px;
     border: 1px solid #888;
     width: 80%;
@@ -123,8 +138,13 @@ h2 {
 }
 
 .close {
+<<<<<<< HEAD
     color: #D91E1E;*/ /* Color rojo para el ícono de cierre */
     /*font-size: 30px;
+=======
+    color: #D91E1E; /* Color rojo para el ícono de cierre */
+    font-size: 30px;
+>>>>>>> b443d5bcbbc351568de9d98909daa9b1ca643d12
     font-weight: bold;
     position: absolute;
     top: 10px;
@@ -133,6 +153,7 @@ h2 {
 }
 
 .close:hover, .close:focus {
+<<<<<<< HEAD
     color: #F2A413;*/ /* Color naranja al pasar el ratón por encima */
 /*}*/
 
@@ -143,6 +164,18 @@ h2 {
 
 /* Estilos para las tablas dentro de los modales */
 /*.modal-content h2 {
+=======
+    color: #F2A413; /* Color naranja al pasar el ratón por encima */
+}
+
+/* Estilos para el texto de los botones dentro de los modales */
+button {
+    font-size: 16px;
+}
+
+/* Estilos para las tablas dentro de los modales */
+.modal-content h2 {
+>>>>>>> b443d5bcbbc351568de9d98909daa9b1ca643d12
     font-weight: bold;
     color: #2EA629;
 }
@@ -151,9 +184,18 @@ h2 {
     font-size: 14px;
     color: #262626;
 }
+<<<<<<< HEAD
 z*/
 /* Estilo al pasar el ratón sobre las filas de la tabla */
 /*.tabla-pagos tr:hover {
     background-color: #F2A413;*/ /* Fondo naranja al pasar el ratón sobre una fila */
     /*color: white;
 }*/
+=======
+z
+/* Estilo al pasar el ratón sobre las filas de la tabla */
+.tabla-pagos tr:hover {
+    background-color: #F2A413; /* Fondo naranja al pasar el ratón sobre una fila */
+    color: white;
+}
+>>>>>>> b443d5bcbbc351568de9d98909daa9b1ca643d12

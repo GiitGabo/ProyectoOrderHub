@@ -1,3 +1,36 @@
+<<<<<<< HEAD
+=======
+C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\JarredsOrderHub.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\JarredsOrderHub.AssemblyInfoInputs.cache
+C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\JarredsOrderHub.AssemblyInfo.cs
+C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\JarredsOrderHub.csproj.CoreCompileInputs.cache
+C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\JarredsOrderHub.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\JarredsOrderHub.RazorAssemblyInfo.cache
+C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\JarredsOrderHub.RazorAssemblyInfo.cs
+C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\bin\Debug\net8.0\appsettings.Development.json
+C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\bin\Debug\net8.0\appsettings.json
+C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\bin\Debug\net8.0\JarredsOrderHub.staticwebassets.runtime.json
+C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\bin\Debug\net8.0\JarredsOrderHub.exe
+C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\bin\Debug\net8.0\JarredsOrderHub.deps.json
+C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\bin\Debug\net8.0\JarredsOrderHub.runtimeconfig.json
+C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\bin\Debug\net8.0\JarredsOrderHub.dll
+C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\bin\Debug\net8.0\JarredsOrderHub.pdb
+C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\staticwebassets.build.json
+C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\staticwebassets.development.json
+C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\staticwebassets\msbuild.JarredsOrderHub.Microsoft.AspNetCore.StaticWebAssets.props
+C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\staticwebassets\msbuild.build.JarredsOrderHub.props
+C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.JarredsOrderHub.props
+C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.JarredsOrderHub.props
+C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\staticwebassets.pack.json
+C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\scopedcss\bundle\JarredsOrderHub.styles.css
+C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\scopedcss\projectbundle\JarredsOrderHub.bundle.scp.css
+C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\JarredsOrderHub.dll
+C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\refint\JarredsOrderHub.dll
+C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\JarredsOrderHub.pdb
+C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\JarredsOrderHub.genruntimeconfig.cache
+C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\ref\JarredsOrderHub.dll
+>>>>>>> b443d5bcbbc351568de9d98909daa9b1ca643d12
 C:\Users\HP ProBook\Downloads\ProyectoOrderHub-main\ProyectoOrderHub-main\bin\Debug\net8.0\appsettings.Development.json
 C:\Users\HP ProBook\Downloads\ProyectoOrderHub-main\ProyectoOrderHub-main\bin\Debug\net8.0\appsettings.json
 C:\Users\HP ProBook\Downloads\ProyectoOrderHub-main\ProyectoOrderHub-main\bin\Debug\net8.0\JarredsOrderHub.staticwebassets.runtime.json
@@ -151,7 +184,10 @@ C:\Users\HP ProBook\Downloads\ProyectoOrderHub-main\ProyectoOrderHub-main\obj\De
 C:\Users\HP ProBook\Downloads\ProyectoOrderHub-main\ProyectoOrderHub-main\obj\Debug\net8.0\JarredsOrderHub.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\HP ProBook\Downloads\ProyectoOrderHub-main\ProyectoOrderHub-main\obj\Debug\net8.0\JarredsOrderHub.RazorAssemblyInfo.cache
 C:\Users\HP ProBook\Downloads\ProyectoOrderHub-main\ProyectoOrderHub-main\obj\Debug\net8.0\JarredsOrderHub.RazorAssemblyInfo.cs
+<<<<<<< HEAD
 C:\Users\HP ProBook\Downloads\ProyectoOrderHub-main\ProyectoOrderHub-main\obj\Debug\net8.0\JarredsOrderHub.sourcelink.json
+=======
+>>>>>>> b443d5bcbbc351568de9d98909daa9b1ca643d12
 C:\Users\HP ProBook\Downloads\ProyectoOrderHub-main\ProyectoOrderHub-main\obj\Debug\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
 C:\Users\HP ProBook\Downloads\ProyectoOrderHub-main\ProyectoOrderHub-main\obj\Debug\net8.0\scopedcss\bundle\JarredsOrderHub.styles.css
 C:\Users\HP ProBook\Downloads\ProyectoOrderHub-main\ProyectoOrderHub-main\obj\Debug\net8.0\scopedcss\projectbundle\JarredsOrderHub.bundle.scp.css
@@ -171,6 +207,7 @@ C:\Users\HP ProBook\Downloads\ProyectoOrderHub-main\ProyectoOrderHub-main\obj\De
 C:\Users\HP ProBook\Downloads\ProyectoOrderHub-main\ProyectoOrderHub-main\obj\Debug\net8.0\JarredsOrderHub.genruntimeconfig.cache
 C:\Users\HP ProBook\Downloads\ProyectoOrderHub-main\ProyectoOrderHub-main\obj\Debug\net8.0\ref\JarredsOrderHub.dll
 C:\Users\HP ProBook\Downloads\ProyectoOrderHub-main\ProyectoOrderHub-main\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+<<<<<<< HEAD
 C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\bin\Debug\net8.0\appsettings.Development.json
 C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\bin\Debug\net8.0\appsettings.json
 C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\bin\Debug\net8.0\JarredsOrderHub.staticwebassets.runtime.json
@@ -1029,3 +1066,5 @@ F:\JarredsOrderHub (3)\JarredsOrderHub\JarredsOrderHub\JarredsOrderHub\obj\Debug
 F:\JarredsOrderHub (3)\JarredsOrderHub\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\JarredsOrderHub.pdb
 F:\JarredsOrderHub (3)\JarredsOrderHub\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\JarredsOrderHub.genruntimeconfig.cache
 F:\JarredsOrderHub (3)\JarredsOrderHub\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\ref\JarredsOrderHub.dll
+=======
+>>>>>>> b443d5bcbbc351568de9d98909daa9b1ca643d12

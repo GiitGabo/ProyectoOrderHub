@@ -1,5 +1,6 @@
 [
   {
+<<<<<<< HEAD
     "ContainingType": "JarredsOrderHub.Controllers.Service.CatalogoService",
     "Method": "ObtenerTodasCategorias",
     "RelativePath": "api/CatalogoService/categorias",
@@ -415,6 +416,8 @@
     "ReturnTypes": []
   },
   {
+=======
+>>>>>>> b443d5bcbbc351568de9d98909daa9b1ca643d12
     "ContainingType": "JarredsOrderHub.Controllers.Service.RolService",
     "Method": "ObtenerTodos",
     "RelativePath": "api/RolService",

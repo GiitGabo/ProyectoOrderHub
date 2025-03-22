@@ -5,11 +5,16 @@ namespace JarredsOrderHub.DbaseContext
 {
     public class ApplicationDbContext : DbContext
     {
+<<<<<<< HEAD
+=======
+        public DbSet<Rol> Roles { get; set; }
+>>>>>>> b443d5bcbbc351568de9d98909daa9b1ca643d12
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
+<<<<<<< HEAD
 
         public DbSet<Rol> Roles { get; set; }
         public DbSet<Empleado> Empleados { get; set; }
@@ -56,5 +61,7 @@ namespace JarredsOrderHub.DbaseContext
             .HasForeignKey(dp => dp.PedidoId)
             .OnDelete(DeleteBehavior.Cascade);
         }
+=======
+>>>>>>> b443d5bcbbc351568de9d98909daa9b1ca643d12
     }
 }

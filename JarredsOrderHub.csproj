@@ -8,12 +8,17 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.1" />
+<<<<<<< HEAD
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.2">
+=======
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.1">
+>>>>>>> b443d5bcbbc351568de9d98909daa9b1ca643d12
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
 
+<<<<<<< HEAD
   <ItemGroup>
     <Content Update="Views\Catalogo\AdministrarPlatos.cshtml">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
@@ -33,4 +38,6 @@
     </Content>
   </ItemGroup>
 
+=======
+>>>>>>> b443d5bcbbc351568de9d98909daa9b1ca643d12
 </Project>

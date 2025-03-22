@@ -24,7 +24,6 @@ namespace JarredsOrderHub.Controllers
             return View();
         }
 
-
         [HttpPost]
         public async Task<IActionResult> RegistrarCliente(Cliente cliente)
         {

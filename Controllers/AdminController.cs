@@ -21,6 +21,7 @@ namespace JarredsOrderHub.Controllers
             _context = context;
             _auditService = auditService;
         }
+
         public ActionResult AdministrarUsuarios()
         {
             return View();
@@ -298,7 +299,6 @@ namespace JarredsOrderHub.Controllers
 
             return RedirectToAction("AdministrarTareas");
         }
-
 
         public async Task<IActionResult> AdministrarRoles()
         {
