@@ -18,7 +18,6 @@
         </tr>
     </thead>
     <tbody>
-<<<<<<< HEAD
         @foreach (var empleado in Model)
         {
             <tr id="employee-@empleado.IdEmpleado">
@@ -39,50 +38,6 @@
                 </td>
             </tr>
         }
-=======
-        <!-- Fila 1 -->
-        <tr>
-            <td>1</td>
-            <td>Juan</td>
-            <td>Perez</td>
-            <td>juan.perez@example.com</td>
-            <td>Administrador</td>
-            <td>8:00 AM - 5:00 PM</td>
-            <td>$1,200</td>
-            <td>
-                <button class="icon-btn edit">
-                    <i class="fas fa-edit"></i>
-                </button>
-                <button class="icon-btn delete">
-                    <i class="fas fa-trash-alt"></i>
-                </button>
-                <button class="icon-btn add-task" onclick="openTaskPopup(1)">
-                    <i class="fas fa-plus"></i> Añadir Tarea
-                </button>
-            </td>
-        </tr>
-        <!-- Fila 2 -->
-        <tr>
-            <td>2</td>
-            <td>María</td>
-            <td>Gómez</td>
-            <td>maria.gomez@example.com</td>
-            <td>Cocinera</td>
-            <td>9:00 AM - 6:00 PM</td>
-            <td>$900</td>
-            <td>
-                <button class="icon-btn edit">
-                    <i class="fas fa-edit"></i>
-                </button>
-                <button class="icon-btn delete">
-                    <i class="fas fa-trash-alt"></i>
-                </button>
-                <button class="icon-btn add-task" onclick="openTaskPopup(2)">
-                    <i class="fas fa-plus"></i> Añadir Tarea
-                </button>
-            </td>
-        </tr>
->>>>>>> b443d5bcbbc351568de9d98909daa9b1ca643d12
     </tbody>
 </table>
 
@@ -186,7 +141,6 @@
             <input type="email" id="email" required>
             <label for="rol">Rol:</label>
             <select id="rol" required>
-<<<<<<< HEAD
                 @foreach (var rol in ViewBag.Roles)
                 {
                     <option value="@rol.Id">@rol.Nombre</option>
@@ -202,16 +156,6 @@
                     </option>
                 }
             </select>
-
-
-=======
-                <option value="Administrador">Administrador</option>
-                <option value="Cocinero">Cocinero</option>
-                <option value="Gerente">Gerente</option>
-            </select>
-            <label for="horario">Horario:</label>
-            <input type="text" id="horario" placeholder="Ej: 8:00 AM - 5:00 PM" required>
->>>>>>> b443d5bcbbc351568de9d98909daa9b1ca643d12
             <label for="salario">Salario:</label>
             <input type="number" id="salario" min="0" required>
             <button type="submit">Guardar</button>
@@ -219,25 +163,6 @@
     </div>
 </div>
 
-<<<<<<< HEAD
-<script>
-    let isEditMode = false;
-
-    document.getElementById("addEmployeeBtn").addEventListener("click", function () {
-        document.getElementById("employeeForm").reset();
-        document.getElementById("modalTitle").textContent = "Añadir Empleado";
-        document.getElementById("employeeModal").style.display = "block";
-    });
-
-    document.getElementById("closeModal").addEventListener("click", function () {
-        cerrarModal();
-    });
-
-    document.getElementById("employeeForm").addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        const idEmpleado = document.getElementById("idEmpleado").value;
-=======
 <!-- Script JS -->
 <script>
     // Obtener elementos
@@ -267,7 +192,6 @@
         e.preventDefault();
 
         // Obtener valores del formulario
->>>>>>> b443d5bcbbc351568de9d98909daa9b1ca643d12
         const nombre = document.getElementById("nombre").value;
         const apellido = document.getElementById("apellido").value;
         const email = document.getElementById("email").value;
@@ -275,7 +199,6 @@
         const horario = document.getElementById("horario").value;
         const salario = document.getElementById("salario").value;
 
-<<<<<<< HEAD
         let url = "/Admin/AgregarEmpleado";
         let method = "POST";
         let body = JSON.stringify({ nombre, apellido, email, IdRol: rol, IdHorario: horario, Salario: salario });
@@ -353,31 +276,4 @@
         document.getElementById("employeeForm").reset();
         isEditMode = false;
     }
-
-=======
-        // Agregar una nueva fila
-        const table = document.querySelector("#employeeTable tbody");
-        const newRow = `
-                <tr>
-                    <td>Nuevo</td>
-                    <td>${nombre}</td>
-                    <td>${apellido}</td>
-                    <td>${email}</td>
-                    <td>${rol}</td>
-                    <td>${horario}</td>
-                    <td>$${salario}</td>
-                    <td>
-                        <button class="icon-btn edit"><i class="fas fa-edit"></i></button>
-                        <button class="icon-btn delete"><i class="fas fa-trash-alt"></i></button>
-                        <button class="icon-btn add-task"><i class="fas fa-plus-circle"></i></button>
-                    </td>
-                </tr>
-            `;
-        table.insertAdjacentHTML('beforeend', newRow);
-
-        // Cerrar el modal
-        modal.style.display = "none";
-        employeeForm.reset();
-    }
->>>>>>> b443d5bcbbc351568de9d98909daa9b1ca643d12
 </script>
