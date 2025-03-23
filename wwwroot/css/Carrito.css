@@ -1,0 +1,566 @@
+﻿body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #F2EAD0; /* Color de fondo principal */
+    color: #262626; /* Color de texto principal */
+}
+
+/* --- Contenedor principal --- */
+.perfil-container {
+    background-color: #fff; /* Fondo blanco */
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    max-width: 600px; /* Ancho máximo del contenedor */
+    margin: 40px auto; /* Centrado */
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+    .perfil-container h2 {
+        font-size: 28px;
+        font-weight: 700; /* Roboto Bold */
+        color: #262626; /* Color de título principal */
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+/* Tipografía */
+.titulo-primario {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    color: #262626;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.titulo-secundario {
+    font-weight: 500;
+    color: #262626;
+}
+
+/* --- Contenedor Principal --- */
+.carrito-container {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+    .carrito-container h2 {
+        font-size: 28px;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 20px;
+        color: #2EA629;
+    }
+
+* --- Producto --- */
+.producto {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+}
+
+.info-producto {
+    display: flex;
+    align-items: center;
+}
+
+.imagen-producto {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border: 1px solid #ddd;
+}
+
+.detalles-producto h3 {
+    margin: 0 0 5px;
+    font-weight: 500;
+    color: #333;
+}
+
+.precio-unitario {
+    color: #2EA629;
+    font-weight: 700;
+}
+
+.cantidad {
+    display: flex;
+    align-items: center;
+}
+
+.btn-cantidad {
+    border-radius: 4px;
+}
+
+    .btn-cantidad:hover {
+        background-color: #D91E1E;
+    }
+
+.precio-total span {
+    font-weight: 700;
+    color: #2EA629;
+}
+
+.btn-eliminar {
+    background-color: #D91E1E;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    .btn-eliminar:hover {
+        background-color: #262626;
+    }
+
+/* --- Botón de Pagar --- */
+.pagar {
+    text-align: center;
+    margin-top: 30px;
+}
+
+/* Ajusta la tarjeta del producto para mayor separación y sombra suave */
+.producto.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Espaciado para el contenido de la tarjeta */
+.card-body {
+    padding: 0.5rem 1rem;
+}
+
+/* Opcional: transiciones en los botones para mayor feedback */
+.btn-cantidad,
+.btn-eliminar {
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+    .btn-cantidad:hover,
+    .btn-eliminar:hover {
+        transform: scale(1.05);
+    }
+
+.btn-pagar {
+    background-color: #2EA629;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    .btn-pagar:hover {
+        background-color: #238C20;
+    }
+
+/* --- Popup --- */
+.popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popup-contenido {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 25px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+}
+
+.popup h3 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #2EA629;
+}
+
+.popup textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    resize: none;
+}
+
+.metodo-pago {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+}
+
+.btn-pago {
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    flex: 1;
+    margin: 0 5px;
+}
+
+    .btn-pago:hover {
+        background-color: #45a049;
+    }
+
+.btn-cerrar {
+    background-color: #f44336;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+    .btn-cerrar:hover {
+        background-color: #e53935;
+    }
+
+/* --- Código de Descuento --- */
+.descuento {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.btn-descuento {
+    background-color: #2EA629;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    .btn-descuento:hover {
+        background-color: #262626;
+    }
+
+/* --- Estilos Generales del Popup --- */
+.popup {
+    display: none; /* Inicialmente oculto */
+    position: fixed;
+    bottom: 0; /* Coloca el popup en la parte inferior */
+    left: 50%;
+    transform: translateX(-50%); /* Centra el popup horizontalmente */
+    background-color: rgba(0, 0, 0, 0.4); /* Fondo translúcido */
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    animation: abrirPopup 0.5s ease-out; /* Animación para abrir el popup */
+}
+
+@keyframes abrirPopup {
+    from {
+        transform: translateX(-50%) translateY(100%); /* Comienza desde abajo */
+    }
+
+    to {
+        transform: translateX(-50%) translateY(0); /* Termina en su posición final */
+    }
+}
+
+/* --- Estilos Generales del Popup --- */
+.popup {
+    display: none; /* Inicialmente oculto */
+    position: fixed;
+    bottom: 0; /* Coloca el popup en la parte inferior */
+    left: 50%;
+    transform: translateX(-50%); /* Centra el popup horizontalmente */
+    background-color: rgba(0, 0, 0, 0.4); /* Fondo translúcido */
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    animation: abrirPopup 0.5s ease-out; /* Animación para abrir el popup */
+}
+
+/* Animación de entrada del popup */
+@keyframes abrirPopup {
+    from {
+        transform: translateX(-50%) translateY(100%); /* Comienza desde abajo */
+    }
+
+    to {
+        transform: translateX(-50%) translateY(0); /* Termina en su posición final */
+    }
+}
+
+/* --- Contenido del Popup --- */
+.popup-contenido {
+    background-color: #fff;
+    padding: 25px 30px;
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    width: 80%;
+    max-width: 450px;
+    margin: 20px auto; /* Centra el popup en la pantalla */
+    font-family: 'Roboto', sans-serif;
+    text-align: center;
+    overflow: hidden; /* Evita que el contenido desborde */
+}
+
+/* Título del popup */
+.popup h3 {
+    font-size: 1.6em;
+    margin-bottom: 15px;
+    color: #333;
+    font-weight: 600;
+}
+
+/* Párrafos dentro del popup */
+.popup p {
+    font-size: 1.1em;
+    margin-bottom: 15px;
+    color: #555;
+    line-height: 1.5;
+}
+
+/* Estilos para el área de texto */
+.popup textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 12px 0;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+    resize: none;
+    box-sizing: border-box;
+}
+
+/* --- Botones de Selección de Pago --- */
+.metodo-pago {
+    display: flex;
+    justify-content: space-between;
+    margin: 25px 0;
+    gap: 10px;
+}
+
+.btn-pago {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 1.1em;
+    cursor: pointer;
+    width: 45%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background-color 0.3s ease;
+}
+
+    .btn-pago:hover {
+        background-color: #45a049;
+    }
+
+/* Botón de cierre del popup */
+.btn-cerrar {
+    background-color: #f44336;
+    color: white;
+    font-size: 1.2em;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 25px;
+    transition: background-color 0.3s ease;
+}
+
+    .btn-cerrar:hover {
+        background-color: #e53935;
+    }
+
+/* --- Estilos para el Código de Descuento --- */
+/* --- Estilos para el Código de Descuento --- */
+.descuento {
+    text-align: center;
+    margin-top: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Espacio entre el campo de entrada y el botón */
+}
+
+    /* Campo de entrada del código de descuento */
+    .descuento input {
+        padding: 10px;
+        font-size: 1em;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 200px;
+        box-sizing: border-box;
+        transition: border-color 0.3s ease;
+    }
+
+        /* Cambio de color en el campo de descuento al enfocarse */
+        .descuento input:focus {
+            border-color: #F2A413; /* Color de enfoque */
+            outline: none;
+        }
+
+/* Botón de aplicar descuento */
+.btn-aplicar-descuento {
+    background-color: #F2A413; /* Amarillo de acento */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: auto;
+    font-weight: 600;
+}
+
+    /* Hover sobre el botón de aplicar descuento */
+    .btn-aplicar-descuento:hover {
+        background-color: #D91E1E; /* Rojo oscuro */
+    }
+
+/* Botón de cancelar descuento */
+.btn-cancelar-descuento {
+    background-color: #262626; /* Color oscuro */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-weight: 600;
+    width: auto;
+}
+
+    /* Hover sobre el botón de cancelar descuento */
+    .btn-cancelar-descuento:hover {
+        background-color: #4CAF50; /* Verde claro */
+    }
+
+
+
+/*Modales*/
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #ffffff, #f3f3f3);
+    padding: 20px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-header {
+    margin: -20px;
+    margin-bottom: 20px;
+    background: #2EA629;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+}
+
+    .modal-header h2 {
+        margin: 0;
+        font-size: 22px;
+        color: white !important;
+    }
+
+    .modal-header span.close {
+        font-size: 24px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+        color: white;
+    }
+
+        .modal-header span.close:hover {
+            color: red;
+            transform: scale(1.2);
+        }
+
+    .modal-header p {
+        font-size: 16px;
+        color: #666;
+        margin: 20px 0;
+    }
+
+    .modal-header button {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+        .modal-header button:hover {
+            background: linear-gradient(135deg, #0056b3, #003b80);
+            transform: scale(1.05);
+        }
+
+/* Animación de entrada */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

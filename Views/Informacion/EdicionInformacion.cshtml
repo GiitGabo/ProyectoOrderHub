@@ -1,0 +1,60 @@
+﻿<link rel="stylesheet" href="~/css/InformacionE.css" />
+
+<center>
+    <h2>Gestionar Información del Footer</h2>
+    <form id="formFooter" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="footerAbout">Acerca De:</label>
+            <textarea id="footerAbout" name="footerAbout" placeholder="Ingresa información Acerca de JarredsOrderHub" rows="6"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="footerTelefono">Teléfono:</label>
+            <input type="tel" id="footerTelefono" name="footerTelefono" placeholder="Ingresa el número de teléfono" />
+        </div>
+        <div class="form-group">
+            <label for="footerEmail">Correo Electrónico:</label>
+            <input type="email" id="footerEmail" name="footerEmail" placeholder="Ingresa el correo electrónico" />
+        </div>
+        <div class="form-group">
+            <label for="footerRedes">Redes Sociales:</label>
+            <input type="text" id="footerRedes" name="footerRedes" placeholder="Ingresa enlaces de redes sociales" />
+        </div>
+        <div class="form-group">
+            <label for="footerCopyright">Texto de Copyright:</label>
+            <input type="text" id="footerCopyright" name="footerCopyright" placeholder="Ingresa el texto de copyright" />
+        </div>
+
+        <!-- Apartado FAQ -->
+        <div class="form-group">
+            <label for="footerFAQ">Preguntas Frecuentes (FAQ):</label>
+            <textarea id="footerFAQ" name="footerFAQ" placeholder="Ingresa las preguntas frecuentes para los usuarios" rows="6"></textarea>
+        </div>
+
+        <!-- Apartado de Términos y Condiciones (subir PDF) -->
+        <div class="form-group">
+            <label for="footerTérminos">Términos y Condiciones (PDF):</label>
+            <input type="file" id="footerTérminos" name="footerTérminos" accept=".pdf" />
+            <small>Sube un archivo PDF con los Términos y Condiciones.</small>
+        </div>
+
+        <button type="submit" class="btn">Guardar Cambios</button>
+    </form>
+</center>
+
+
+
+
+<script>
+    document.getElementById('formFooter').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        // Obtener los valores de los campos
+        const about = document.getElementById('footerAbout').value;
+
+        // Aquí la lógica para enviar los datos al servidor (AJAX, Fetch API, etc.)
+
+
+        // Puedes agregar una notificación de éxito
+        alert("Información del footer actualizada correctamente.");
+    });
+</script>

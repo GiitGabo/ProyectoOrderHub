@@ -1,0 +1,66 @@
+﻿<link rel="stylesheet" href="~/css/ListadoPedidos.css" />
+
+<h1>Listado de Pedidos</h1>
+
+<!-- Contenedor de Cards -->
+<div class="container">
+    @foreach (var pedido in Model)
+
+    {
+        <div class="card">
+            <h3>Pedido @pedido.Id</h3>
+            @foreach (var detalle in pedido.Detalles)
+
+            {
+                <p><i class="fas fa-utensils"></i> <span class="bold-text">Plato:</span> @detalle.Platillo.Nombre</p>
+                <p><i class="fas fa-sort-numeric-up-alt"></i> <span class="bold-text">Cantidad:</span> @detalle.Cantidad</p>
+            }
+
+            <p><i class="fas fa-comment"></i> <span class="bold-text">Comentarios:</span> @pedido.Comentarios</p>
+            <label for="estado-@pedido.Id"><span class="bold-text">Estado:</span></label>
+            <select id="estado-@pedido.Id" class="status-dropdown">
+                <option value="pendiente" selected="@(pedido.EstadoPedido == "pendiente" ? "selected" : null)">Pendiente</option>
+                <option value="preparando" selected="@(pedido.EstadoPedido == "preparando" ? "selected" : null)">Preparando</option>
+                <option value="en_camino" selected="@(pedido.EstadoPedido == "en_camino" ? "selected" : null)">En Camino</option>
+                <option value="entregado" selected="@(pedido.EstadoPedido == "entregado" ? "selected" : null)">Entregado</option>
+            </select>
+
+            <!-- Solo pasamos el Id del pedido -->
+            <button class="save-button" onclick="guardarEstado(@pedido.Id)">Guardar Estado</button>
+        </div>
+    }
+</div>
+
+<!-- Script JS -->
+<script>
+    // Función para guardar el estado del pedido
+    function guardarEstado(pedidoId) {
+        console.log("pedidoId: ", pedidoId);
+
+        // Obtienes el dropdown del estado del pedido
+        const dropdown = document.getElementById(`estado-${pedidoId}`);
+        const nuevoEstado = dropdown.value;
+
+        // Ahora enviamos el objeto pedido completo al backend usando fetch
+        fetch(`/api/PedidosService/actualizarEstado/${pedidoId}/${nuevoEstado}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: null
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json(); // Solo analizamos como JSON si la respuesta es correcta
+                }
+                throw new Error('Error en la actualización');
+            })
+            .then(data => {
+                alert(`El estado del Pedido #${pedidoId} ha sido actualizado a: ${nuevoEstado}`);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Hubo un error al actualizar el estado.');
+            });
+    }
+</script>

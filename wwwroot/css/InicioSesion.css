@@ -1,0 +1,364 @@
+﻿
+/* Establece márgenes y color de texto predeterminado */
+body {
+    font-family: 'Roboto', sans-serif; /* Fuente principal de la página */
+    margin: 0; /* Elimina los márgenes exteriores */
+    padding: 0; /* Elimina el relleno interno */
+    background-color: #F2EAD0 !important; /* Color de fondo principal en tono beige */
+    color: #262626; /* Color de texto principal en tono oscuro */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.main-content {
+    flex: 1;
+}
+
+/* Nuevo contenedor dividido para logo y formulario */
+.split-container {
+    display: flex;
+    width: 100%;
+    min-height: 85vh;
+    margin: 0 auto;
+}
+
+/* Sección del logo a la izquierda */
+.logo-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.logo-wrap {
+    text-align: center;
+    max-width: 400px;
+}
+
+.site-logo {
+    max-width: 200px;
+    margin-bottom: 20px;
+}
+
+
+/* Contenedor principal para el login */
+.login-container {
+    margin-top: 10px; /* Ajusta este valor según el alto del header para centrar verticalmente */
+    min-height: 600px; /* Asegura una altura mínima */
+    position: relative;
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* --- Contenedor principal de perfil --- */
+.perfil-container {
+    background-color: #F2EAD0; /* Fondo blanco para destacar sobre el fondo beige */
+    border-radius: 10px; /* Bordes redondeados para un diseño más amigable */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil para dar efecto de elevación */
+    max-width: 600px; /* Ancho máximo del contenedor para mantener un diseño compacto */
+    margin: 40px auto; /* Centrado horizontal */
+    padding: 30px; /* Espaciado interno para evitar que el contenido quede pegado a los bordes */
+    box-sizing: border-box; /* Asegura que el padding no afecte el tamaño total */
+}
+
+    /* Estilos para el título principal dentro del contenedor de perfil */
+    .perfil-container h2 {
+        font-size: 28px; /* Tamaño de fuente grande para destacar el título */
+        font-weight: 700; /* Negrita para mayor énfasis */
+        color: #262626; /* Color de texto oscuro */
+        text-align: center; /* Centra el texto */
+        margin-bottom: 20px; /* Espaciado inferior para separación visual */
+    }
+
+/* Estilos para títulos primarios */
+.titulo-primario {
+    font-family: 'Roboto', sans-serif; /* Fuente principal */
+    font-weight: 700; /* Negrita */
+    color: #262626; /* Color oscuro */
+    text-align: center; /* Centra el texto */
+    margin-bottom: 20px; /* Espaciado inferior */
+}
+
+/* Estilos para títulos secundarios */
+.titulo-secundario {
+    font-weight: 500; /* Menos grueso que el primario pero aún destacado */
+    color: #262626; /* Color oscuro */
+}
+
+/* Aplica el modelo de caja a todos los elementos */
+*, :after, :before {
+    box-sizing: border-box; /* Hace que el padding y border no alteren el tamaño del elemento */
+}
+
+/* Limpia flotados para elementos con la clase clearfix */
+.clearfix:after, .clearfix:before {
+    content: ''; /* Añade un pseudo-elemento vacío */
+    display: table; /* Permite la expansión del contenedor */
+}
+
+.clearfix:after {
+    clear: both; /* Asegura que no haya elementos flotantes después */
+    display: block; /* Mantiene el flujo de bloque */
+}
+
+/* Estilo para enlaces */
+a {
+    color: #2EA629; /* Verde para los enlaces */
+    text-decoration: none; /* Elimina el subrayado predeterminado */
+}
+
+/* Contenedor principal del formulario de inicio de sesión */
+.login-wrap {
+    width: 100%; /* Ocupa todo el ancho disponible */
+    max-width: 525px; /* Limita el ancho máximo para evitar que se vea muy grande en pantallas grandes */
+    min-height: 670px; /* Asegura una altura mínima */
+    position: relative; /* Define la posición relativa para elementos internos */
+    background: url('https://animalgourmet.com/wp-content/uploads/2024/07/pollo-caribeno-cremoso-1.jpg') no-repeat center; /* Imagen de fondo centrada */
+    background-size: cover; /* Ajusta la imagen para que cubra todo el contenedor */
+    box-shadow: 0 12px 15px 0 rgba(0,0,0,.24), 0 17px 50px 0 rgba(0,0,0,.19); /* Sombra para efecto de elevación */
+    border-radius: 10px; /* Bordes redondeados */
+}
+
+/* Estilo para los títulos dentro de la sección de login */
+.login-html h2 {
+    color: #2EA629; /* Verde característico del diseño */
+    margin-bottom: 20px; /* Espaciado inferior */
+}
+
+
+/* Enlace de recuperación de contraseña */
+.recuperar-link {
+    display: block; /* Hace que el enlace ocupe toda la línea */
+    text-align: center; /* Centra el texto */
+    margin-top: 10px; /* Espaciado superior */
+    color: #F2A413; /* Naranja para diferenciarlo de otros enlaces */
+    font-size: 14px; /* Tamaño de fuente moderado */
+    font-weight: 500; /* Negrita media */
+}
+
+    /* Agrega subrayado cuando el usuario pasa el mouse */
+    .recuperar-link:hover {
+        text-decoration: underline;
+    }
+
+
+/* Estilos para la estructura interna del formulario de inicio de sesión */
+.login-html {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    padding: 90px 70px 50px 70px;
+    background: rgba(0, 0, 0, 0.9); /* Fondo negro con opacidad del 90% */
+    ; /* Fondo más claro con opacidad */
+    font-family: 'Roboto', sans-serif;
+    border-radius: 10px; /* Bordes redondeados */
+}
+
+    /* Estilo para las pestañas de inicio de sesión y registro */
+    .login-html .sign-in-htm,
+    .login-html .sign-up-htm {
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        position: absolute;
+        transform: rotateY(180deg); /* Rotación para la animación */
+        backface-visibility: hidden;
+        transition: all .4s linear; /* Transición suave */
+    }
+
+    /* Oculta las pestañas de inicio de sesión y registro inicialmente */
+    .login-html .sign-in,
+    .login-html .sign-up,
+    .login-form .group .check {
+        display: none;
+    }
+
+    /* Estilo para las pestañas activas */
+    .login-html .tab,
+    .login-form .group .label,
+    .login-form .group .button {
+        text-transform: uppercase; /* Poner en mayúsculas */
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .login-html .tab {
+        font-size: 22px;
+        margin-right: 15px;
+        padding-bottom: 5px;
+        margin: 0 15px 10px 0;
+        display: inline-block;
+        border-bottom: 2px solid transparent;
+        color: #2EA629; /* Verde para las pestañas */
+    }
+
+    /* Efecto para la pestaña activa */
+    .login-html .sign-in:checked + .tab,
+    .login-html .sign-up:checked + .tab {
+        color: #fff;
+        border-color: #2EA629; /* Verde para la pestaña activa */
+    }
+
+/* Estilo general para el formulario de inicio de sesión */
+.login-form {
+    min-height: 345px;
+    position: relative;
+    perspective: 1000px;
+    transform-style: preserve-3d;
+}
+
+    /* Estilo para cada grupo dentro del formulario (etiquetas, inputs y botones) */
+    .login-form .group {
+        margin-bottom: 15px;
+    }
+
+        .login-form .group .label,
+        .login-form .group .input,
+        .login-form .group .button {
+            width: 100%;
+            color: #262626; /* Gris oscuro para el texto dentro de los inputs */
+            display: block;
+        }
+
+        /* Estilo para los inputs y botones dentro del formulario */
+        .login-form .group .input,
+        .login-form .group .button {
+            border: none;
+            padding: 15px 20px;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.8); /* Fondo blanco semi-transparente */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+        }
+
+        /* Estilo para el campo de contraseña */
+        .login-form .group input[data-type="password"] {
+            text-security: circle;
+            -webkit-text-security: circle;
+        }
+
+        /* Estilo para las etiquetas del formulario */
+        .login-form .group .label {
+            color: #F2EAD0; /* Beige claro para las etiquetas */
+            font-size: 12px;
+        }
+
+        /* Estilo para el botón de acción */
+        .login-form .group .button {
+            background: #F2A413; /* Naranja para el botón */
+            color: white; /* Color blanco para el texto */
+            cursor: pointer;
+            transition: background 0.3s ease-in-out; /* Transición suave al pasar el ratón */
+        }
+
+            /* Cambio de color al pasar el ratón sobre el botón */
+            .login-form .group .button:hover {
+                background: #D88F11; /* Naranja más oscuro */
+            }
+
+        /* Estilo para los iconos de la casilla de verificación */
+        .login-form .group label .icon {
+            width: 15px;
+            height: 15px;
+            border-radius: 2px;
+            position: relative;
+            display: inline-block;
+            background: rgba(255,255,255,.1);
+        }
+
+            /* Estilos para las transiciones del icono cuando se marca la casilla */
+            .login-form .group label .icon:before,
+            .login-form .group label .icon:after {
+                content: '';
+                width: 10px;
+                height: 2px;
+                background: #fff;
+                position: absolute;
+                transition: all .2s ease-in-out 0s;
+            }
+
+            .login-form .group label .icon:before {
+                left: 3px;
+                width: 5px;
+                bottom: 6px;
+                transform: scale(0) rotate(0);
+            }
+
+            .login-form .group label .icon:after {
+                top: 6px;
+                right: 0;
+                transform: scale(0) rotate(0);
+            }
+
+        /* Cambios en los iconos cuando se marca la casilla */
+        .login-form .group .check:checked + label {
+            color: #fff;
+        }
+
+            .login-form .group .check:checked + label .icon {
+                background: #F2A413; /* Naranja cuando está activo */
+            }
+
+                .login-form .group .check:checked + label .icon:before {
+                    transform: scale(1) rotate(45deg);
+                }
+
+                .login-form .group .check:checked + label .icon:after {
+                    transform: scale(1) rotate(-45deg);
+                }
+
+/* Estilos para la rotación de las pestañas al cambiar entre inicio de sesión y registro */
+.login-html .sign-in:checked + .tab + .sign-up + .tab + .login-form .sign-in-htm {
+    transform: rotate(0);
+}
+
+.login-html .sign-up:checked + .tab + .login-form .sign-up-htm {
+    transform: rotate(0);
+}
+
+/* Línea divisoria dentro del formulario */
+.hr {
+    height: 2px; /* Grosor de la línea */
+    margin: 60px 0 50px 0; /* Espaciado superior e inferior */
+    background: rgba(255,255,255,.2); /* Color blanco con opacidad */
+}
+
+/* Estilos para los enlaces en el pie de página */
+.foot-lnk {
+    text-align: center; /* Centra el texto */
+    font-family: 'Roboto', sans-serif; /* Usa la misma fuente del diseño */
+}
+
+    /* Estilos específicos para los enlaces dentro del pie de página */
+    .foot-lnk a {
+        color: #F2A413; /* Naranja característico del diseño */
+        font-style: italic; /* Estilo en cursiva para diferenciarse */
+    }
+
+    /* añadidos */
+.alert {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1050;
+    animation: slideIn 0.3s ease-out;
+}
+
+.login-html .tab.active {
+    border-bottom: 3px solid #2EA629;
+    font-weight: 700;
+}
+
+.input-error {
+    border: 2px solid #D91E1E !important;
+    background: rgba(217, 30, 30, 0.1) !important;
+}
+
+.error-message {
+    color: #D91E1E;
+    font-size: 0.875rem;
+}

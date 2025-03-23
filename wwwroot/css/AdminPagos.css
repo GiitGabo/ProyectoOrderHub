@@ -1,0 +1,159 @@
+﻿/* Estilos generales */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #F2EAD0; /* Color de fondo principal */
+    color: #262626; /* Color de texto principal */
+}
+
+/* --- Contenedor principal --- */
+.perfil-container {
+    background-color: #fff; /* Fondo blanco */
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    max-width: 600px; /* Ancho máximo del contenedor */
+    margin: 40px auto; /* Centrado */
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+    .perfil-container h2 {
+        font-size: 28px;
+        font-weight: 700; /* Roboto Bold */
+        color: #262626; /* Color de título principal */
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+/* Tipografía */
+.titulo-primario {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    color: #262626;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.titulo-secundario {
+    font-weight: 500;
+    color: #262626;
+}
+
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+    header h1 {
+        font-size: 2.5em;
+        font-weight: 700; /* Roboto Bold */
+        color: #2EA629; /* Verde */
+    }
+
+    header p {
+        font-size: 1.1em;
+        color: #262626;
+        font-weight: 400; /* Roboto Regular */
+    }
+
+h2 {
+    color: #2EA629; /* Color verde para los títulos */
+}
+
+/* Estilos para la tabla */
+.tabla-pagos {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.tabla-pagos th, .tabla-pagos td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.tabla-pagos th {
+    background-color: #2EA629; /* Fondo verde para los encabezados */
+    color: white;
+    font-weight: bold;
+}
+
+    .tabla-pagos td {
+        background-color: #e3e3e3; /* Fondo suave para las celdas */
+    }
+
+.tabla-pagos button {
+    padding: 8px 16px;
+    background-color: #F2A413; /* Color naranja para los botones */
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.tabla-pagos button:hover {
+    background-color: #D91E1E; /* Color rojo cuando el botón se pasa por encima */
+}
+
+/* Estilos para los modales */
+/*.modal {
+    display: none;*/ /* Los modales están ocultos por defecto */
+    /*position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);*/ /* Fondo oscuro semitransparente */
+/*}
+
+.modal-content {
+    background-color: #FFFFFF;*/ /* Fondo blanco para los modales */
+    /*margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 8px;
+}
+
+.close {
+    color: #D91E1E;*/ /* Color rojo para el ícono de cierre */
+    /*font-size: 30px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.close:hover, .close:focus {
+    color: #F2A413;*/ /* Color naranja al pasar el ratón por encima */
+/*}*/
+
+/* Estilos para el texto de los botones dentro de los modales */
+/*button {
+    font-size: 16px;
+}*/
+
+/* Estilos para las tablas dentro de los modales */
+/*.modal-content h2 {
+    font-weight: bold;
+    color: #2EA629;
+}
+
+#detallesPedido, #reenviarMensaje {
+    font-size: 14px;
+    color: #262626;
+}
+z*/
+/* Estilo al pasar el ratón sobre las filas de la tabla */
+/*.tabla-pagos tr:hover {
+    background-color: #F2A413;*/ /* Fondo naranja al pasar el ratón sobre una fila */
+    /*color: white;
+}*/

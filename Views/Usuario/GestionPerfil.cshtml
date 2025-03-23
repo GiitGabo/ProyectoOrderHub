@@ -1,0 +1,69 @@
+﻿<link rel="stylesheet" href="~/css/EstilosPerfil.css" />
+
+    <div class="perfil-container">
+        <h2 class="titulo-primario">Gestionar mi perfil</h2>
+
+        <form id="perfil-form">
+            <!-- Nombre -->
+            <div class="campo">
+                <label for="nombre" class="titulo-secundario">Nombre:</label>
+                <input type="text" id="nombre" name="Nombre" value="Juan" disabled />
+                <button type="button" class="btn-editar" onclick="editarCampo('nombre')">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </button>
+            </div>
+
+            <!-- Apellido -->
+            <div class="campo">
+                <label for="apellido" class="titulo-secundario">Apellido:</label>
+                <input type="text" id="apellido" name="Apellido" value="Pérez" disabled />
+                <button type="button" class="btn-editar" onclick="editarCampo('apellido')">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </button>
+            </div>
+
+            <!-- Correo Electrónico -->
+            <div class="campo">
+                <label for="correoElectronico" class="titulo-secundario">Correo Electrónico:</label>
+                <input type="email" id="correoElectronico" name="CorreoElectronico" value="juan.perez@email.com" disabled />
+                <button type="button" class="btn-editar" onclick="editarCampo('correoElectronico')">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </button>
+            </div>
+
+            <!-- Contraseña -->
+            <div class="campo">
+                <label for="contrasena" class="titulo-secundario">Contraseña:</label>
+                <input type="password" id="contrasena" name="Contrasena" placeholder="Nueva Contraseña" disabled />
+                <button type="button" class="btn-editar" onclick="editarCampo('contrasena')">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </button>
+            </div>
+
+            <!-- Botón Guardar -->
+            <button type="submit" class="btn-guardar">
+                <i class="fa-solid fa-save"></i> Guardar Cambios
+            </button>
+        </form>
+        <br>
+        <!-- Historial de Pedidos -->
+        <div class="historial-pedidos">
+            <a href="#" class="btn-historial">
+                <i class="fa-solid fa-clock-rotate-left"></i> Ver Historial de Pedidos Pagados
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Función para habilitar los campos
+        function editarCampo(campo) {
+            document.getElementById(campo).disabled = false;
+            document.getElementById(campo).focus();
+        }
+
+        // Simulación de guardado
+        document.getElementById('perfil-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            alert("Los cambios han sido guardados.");
+        });
+    </script>

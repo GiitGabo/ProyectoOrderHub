@@ -1,0 +1,142 @@
+﻿@model List<Tareas>
+@{
+    ViewData["Title"] = "Administración de Tareas";
+}
+
+<link rel="stylesheet" href="~/css/Estilos.css" />
+
+<h1 class="titulo-tabla">Tareas</h1>
+
+@if (ViewData.ModelState.Any(x => x.Value.Errors.Count > 0))
+
+{
+    <div class="alert alert-danger">
+        <ul>
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <li>@error.ErrorMessage</li>
+            }
+        </ul>
+    </div>
+}
+
+<table id="taskTable">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Empleado Asignado</th>
+            <th>Fecha de Entrega</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var tarea in Model)
+        {
+            <tr>
+                <td>@tarea.IdTarea</td>
+                <td>@tarea.NombreTarea</td>
+                <td>@tarea.Descripcion</td>
+                <td>@(tarea.Empleado != null ? tarea.Empleado.Nombre + " " + tarea.Empleado.Apellido : "No asignado")</td>
+                <td>@(tarea.FechaEntrega.HasValue ? tarea.FechaEntrega.Value.ToString("dd/MM/yyyy") : "Sin fecha")</td>
+                <td>
+                    <button class="icon-btn edit" onclick="openEditPopup(@tarea.IdTarea, '@tarea.NombreTarea', '@tarea.Descripcion', @(tarea.IdEmpleado.HasValue ? tarea.IdEmpleado.Value.ToString() : "''"), '@(tarea.FechaEntrega?.ToString("yyyy-MM-dd"))')">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <form asp-action="EliminarTarea" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@tarea.IdTarea" />
+                        <button class="icon-btn delete" type="submit">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Botón para Añadir Nueva Tarea -->
+<button class="btn-add-task" onclick="openAddTaskPopup()">
+    <i class="fas fa-plus"></i> Añadir Tarea
+</button>
+
+<!-- Popup Modal para Agregar/Editar Tarea -->
+<div id="taskModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">Añadir Tarea</h2>
+            <span class="close" id="closeTaskModal">&times;</span>
+        </div>
+        
+        <form id="taskForm" method="post" asp-controller="Admin" asp-action="AgregarTarea">
+            <input type="hidden" id="taskId" name="IdTarea">
+
+            <label for="taskName">Nombre de la Tarea:</label>
+            <input type="text" id="taskName" name="NombreTarea" required>
+
+            <label for="taskDescription">Descripción:</label>
+            <textarea id="taskDescription" name="Descripcion" required></textarea>
+
+            <label for="assignedEmployee">Empleado Asignado:</label>
+            <select id="assignedEmployee" name="IdEmpleado">
+                <option value="">-- Seleccionar Empleado --</option>
+                @foreach (var empleado in ViewBag.Empleados)
+                {
+                    <option value="@empleado.IdEmpleado">@empleado.Nombre @empleado.Apellido</option>
+                }
+            </select>
+
+            <label for="dueDate">Fecha de Entrega:</label>
+            <input type="date" id="dueDate" name="FechaEntrega">
+
+            <button type="submit">Guardar</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openAddTaskPopup() {
+        // Reiniciar el formulario por completo
+        document.getElementById('taskForm').reset();
+
+        document.getElementById('modalTitle').innerText = "Añadir Tarea";
+        document.getElementById('taskForm').setAttribute("action", "/Admin/AgregarTarea");
+        document.getElementById('taskId').value = "";
+        document.getElementById('taskName').value = "";
+        document.getElementById('taskDescription').value = "";
+        document.getElementById('assignedEmployee').value = "";
+        document.getElementById('dueDate').value = "";
+        document.getElementById('taskModal').style.display = "block";
+
+        console.log("Formulario listo para añadir tarea");
+    }
+
+    function openEditPopup(id, name, description, employeeId, dueDate) {
+        document.getElementById('modalTitle').innerText = "Editar Tarea";
+        document.getElementById('taskForm').setAttribute("action", "/Admin/EditarTarea");
+        document.getElementById('taskId').value = id;
+        document.getElementById('taskName').value = name;
+        document.getElementById('taskDescription').value = description;
+        document.getElementById('assignedEmployee').value = employeeId || "";
+        document.getElementById('dueDate').value = dueDate || "";
+        document.getElementById('taskModal').style.display = "block";
+
+        console.log("Editando tarea ID: " + id);
+    }
+
+    document.getElementById("closeTaskModal").onclick = function () {
+        document.getElementById("taskModal").style.display = "none";
+    };
+
+    // Verificar que los datos del formulario se envían correctamente
+    document.getElementById('taskForm').addEventListener('submit', function (e) {
+        if (!this.checkValidity()) {
+            e.preventDefault();
+            alert('Por favor, complete todos los campos obligatorios.');
+            return;
+        }
+        console.log('Enviando formulario correctamente...');
+    });
+
+</script>

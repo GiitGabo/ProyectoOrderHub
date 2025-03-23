@@ -1,0 +1,934 @@
+﻿/* Variables de diseño */
+:root {
+    --verde: #2EA629;
+    --beige: #F2EAD0;
+    --naranja: #F2A413;
+    --rojo: #D91E1E;
+    --oscuro: #262626;
+    --radio: 16px;
+    --sombra: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #fff !important;
+    color: var(--oscuro);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.btn-hero {
+    display: inline-flex;
+    align-items: center;
+    background-color: #262626;
+    color: #fff;
+    padding: 1.2rem 3rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(207,167,107,0.3);
+    border: 2px solid #f2a413;
+}
+
+    .btn-hero:hover {
+        background-color: #f2a413;
+    }
+/* --- Contenedor principal --- */
+.perfil-container {
+    background-color: #fff; /* Fondo blanco */
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    max-width: 600px; /* Ancho máximo del contenedor */
+    margin: 40px auto; /* Centrado */
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+    .perfil-container h2 {
+        font-size: 28px;
+        font-weight: 700; /* Roboto Bold */
+        color: #262626; /* Color de título principal */
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+/* Título de la tabla */
+.titulo-tabla {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    color: #262626;
+    text-align: center;
+    margin: 20px auto;
+}
+
+
+/* Tipografía */
+.titulo-primario {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    color: #262626;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.titulo-secundario {
+    font-weight: 500;
+    color: #262626;
+}
+
+
+
+h1 {
+    text-align: center;
+    font-weight: 700;
+    color: var(--oscuro);
+    margin: 2rem 0;
+}
+
+.login-container {
+    max-width: 400px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-family: "Roboto", sans-serif;
+        color: #262626;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-family: "Roboto", sans-serif;
+    }
+
+/* Estilo mejorado para los botones */
+button.btn-login, .register-btn {
+    background-color: #2EA629; /* Color verde para los botones */
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    font-family: 'Roboto Medium', Arial, sans-serif;
+    cursor: pointer;
+    display: block;
+    margin: 20px auto;
+    border-radius: 5px;
+    width: 100%;
+    transition: background-color 0.3s ease; /* Efecto suave al pasar el ratón */
+}
+
+    button.btn-login:hover, .register-btn:hover {
+        background-color: #238C20; /* Color más oscuro para hover */
+    }
+
+/* Estilos adicionales */
+.register-btn {
+    background-color: #F2A413; /* Color naranja para el botón de registro */
+    width: auto;
+    margin-top: 10px; /* Espacio para separar los botones */
+    text-align: center;
+}
+
+    .register-btn:hover {
+        background-color: #D91E1E; /* Cambiar color al pasar el ratón */
+    }
+
+.form-actions {
+    margin-top: 20px;
+}
+
+
+table {
+    width: 80%;
+    border-collapse: collapse;
+    background-color: #ffff;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 20px auto;
+}
+
+th,
+td {
+    padding: 13px;
+    text-align: left;
+    background-color: #ffff;
+}
+
+th {
+    background-color: #F2A413;
+    color: #fff;
+    font-family: "Roboto Medium", sans-serif;
+}
+
+tr:hover {
+    color: #4a4a4a;
+    cursor: pointer;
+}
+
+/* Botones de acción */
+.icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    transition: transform 0.3s ease;
+    margin-right: 5px;
+}
+
+    .icon-btn:hover {
+        transform: scale(1.1);
+    }
+
+
+    .icon-btn.edit i {
+        color: #262626;
+    }
+
+    .icon-btn.delete i {
+        color: #D91E1E;
+    }
+
+    .icon-btn.add-task i {
+        color: #F2A413;
+    }
+
+button.add-employee {
+    background-color: #F2A413;
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    font-family: 'Roboto Medium', Arial, sans-serif;
+    cursor: pointer;
+    display: block;
+    margin: 20px auto;
+    border-radius: 15px;
+}
+
+    button.add-employee:hover {
+        background-color: #2EA629;
+    }
+
+button.btn-add-role {
+    background-color: #F2A413;
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    font-family: 'Roboto Medium', Arial, sans-serif;
+    cursor: pointer;
+    display: block;
+    margin: 20px auto;
+    border-radius: 5px;
+}
+
+    button.btn-add-role:hover {
+        background-color: #D91E1E;
+    }
+
+button.btn-add-task {
+    background-color: #F2A413;
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    font-family: 'Roboto Medium', Arial, sans-serif;
+    cursor: pointer;
+    display: block;
+    margin: 20px auto;
+    border-radius: 5px;
+}
+
+button.btn-add-task:hover {
+    background-color: #D91E1E;
+}
+
+button.add-plate {
+    background-color: #F2A413;
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    font-family: 'Roboto Medium', Arial, sans-serif;
+    cursor: pointer;
+    display: block;
+    margin: 20px auto;
+    border-radius: 5px;
+}
+
+    button.add-plate:hover {
+        background-color: #D91E1E;
+    }
+
+button.add-category {
+    background-color: #F2A413;
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    font-family: 'Roboto Medium', Arial, sans-serif;
+    cursor: pointer;
+    display: block;
+    margin: 20px auto;
+    border-radius: 5px;
+}
+
+    button.add-category:hover {
+        background-color: #D91E1E;
+    }
+/* Popup */
+/* Fondo oscuro de overlay */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 999;
+}
+
+/* Popup centrado */
+.popup {
+    background-color: #FFF;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    margin: 0 auto;
+    position: fixed; /* Importante: posicionar de forma fija */
+    top: 50%; /* Centrado vertical */
+    left: 50%; /* Centrado horizontal */
+    transform: translate(-50%, -50%); /* Ajuste exacto para centrar */
+    display: none; /* Inicialmente oculto */
+    z-index: 1000; /* Asegura que esté por encima del fondo */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+    /* Estilos del contenido */
+    .popup h3 {
+        font-family: 'Roboto', sans-serif;
+        font-size: 22px;
+        color: #262626;
+        margin-bottom: 15px;
+    }
+
+    .popup label {
+        display: block;
+        margin: 10px 0 5px;
+        font-family: 'Roboto', sans-serif;
+        color: #262626;
+    }
+
+    .popup input, .popup select, .popup textarea {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    /* Botones */
+    .popup button {
+        background-color: #2EA629;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-family: 'Roboto', sans-serif;
+        margin-right: 10px;
+    }
+
+        .popup button:hover {
+            background-color: #238C20;
+        }
+
+
+
+/* Modal Popup General */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+    .modal-content h2 {
+        font-family: 'Roboto Medium', Arial, sans-serif;
+        color: #262626;
+        text-align: center;
+    }
+
+    .modal-content label {
+        display: block;
+        margin: 10px 0 5px;
+        font-family: 'Roboto Regular', Arial, sans-serif;
+    }
+
+    .modal-content input, .modal-content select, .modal-content textarea {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .modal-content button {
+        background-color: #2EA629;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        cursor: pointer;
+        font-family: 'Roboto Medium', Arial, sans-serif;
+        display: block;
+        margin: 10px auto;
+        border-radius: 5px;
+    }
+
+        .modal-content button:hover {
+            background-color: #262626;
+        }
+
+.close {
+    color: #262626;
+    float: right;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+    .close:hover {
+        color: #D91E1E;
+    }
+
+/* Precio y disponibilidad */
+.precio-disponible {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+}
+
+.precio {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--verde);
+    background: rgba(46, 166, 41, 0.1);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+}
+
+.disponible {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--verde);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+    .disponible::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        background: currentColor;
+        border-radius: 50%;
+    }
+
+.no-disponible {
+    color: var(--rojo);
+}
+
+
+
+
+/* Estilos generales del formulario */
+#reportForm {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column; /* Alineación vertical de los elementos */
+    justify-content: flex-start; /* Alinea los elementos desde arriba */
+}
+
+
+    #reportForm label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+
+    #reportForm input[type="date"],
+    #reportForm textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+
+    #reportForm textarea {
+        resize: vertical;
+    }
+
+    /* Para el botón de Enviar Reporte */
+    #reportForm button {
+        align-self: flex-end; /* Alinea el botón a la derecha del formulario */
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 5px;
+        margin-top: 20px; /* Espacio encima del botón */
+    }
+
+
+        #reportForm button:hover {
+            background-color: #45a049;
+        }
+
+/* Estilos del Modal de Confirmación */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+    padding-top: 60px;
+    text-align: center;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
+.modal h2 {
+    color: #4CAF50;
+    font-size: 22px;
+}
+
+.modal p {
+    font-size: 16px;
+    color: #333;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+
+.search-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#searchInput {
+    width: 50%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+/* Sección de filtros (categorías) */
+.food_section .filters_menu {
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    list-style-type: none;
+    margin: 45px 0 20px;
+}
+
+    .food_section .filters_menu li {
+        padding: 7px 25px;
+        cursor: pointer;
+        border-radius: 25px;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 500;
+        color: var(--oscuro);
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+        .food_section .filters_menu li.active,
+        .food_section .filters_menu li:hover {
+            background-color: #222831;
+            color: #ffffff;
+        }
+
+/* ========================
+       Sección Hero
+    ======================== */
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    color: #fff;
+    padding: 1rem;
+}
+
+    .hero-content img {
+        max-width: 150px;
+        margin-bottom: 1rem;
+    }
+
+    .hero-content h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .hero-content p {
+        font-size: 1.25rem;
+        margin-bottom: 1.5rem;
+    }
+
+.btn-hero {
+    display: inline-block;
+    background-color: var(--naranja);
+    color: #fff;
+    padding: 1rem 2rem;
+    border: 2px solid var(--naranja);
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+    .btn-hero:hover {
+        background-color: var(--oscuro);
+        border-color: var(--oscuro);
+    }
+
+/* ========================
+       Sección Acerca de / Nuestra Historia
+    ======================== */
+.about-section {
+    padding: 3rem 1rem;
+    background-color: #fff;
+}
+
+.about-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.about-image img {
+    width: 100%;
+    max-width: 400px;
+    border-radius: var(--radio);
+    box-shadow: var(--sombra);
+}
+
+.about-text {
+    flex: 1;
+    min-width: 300px;
+    text-align: left;
+}
+
+    .about-text h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--oscuro);
+        margin-bottom: 1rem;
+    }
+
+    .about-text p {
+        font-size: 1.1rem;
+    }
+
+/* ========================
+       Sección de Información Relevante (Cuadros)
+    ======================== */
+.info-section {
+    padding: 2rem 1rem;
+    background-color: #fff;
+}
+
+.info-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 2rem;
+    text-align: center;
+}
+
+.info-item {
+    flex: 1;
+    min-width: 250px;
+    background-color: var(--beige);
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: var(--sombra);
+}
+
+    .info-item i {
+        font-size: 2rem;
+        color: var(--verde);
+        margin-bottom: 0.5rem;
+    }
+
+    .info-item h3 {
+        color: var(--oscuro);
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .info-item p {
+        font-size: 1rem;
+        color: var(--oscuro);
+    }
+
+/* ========================
+       Sección Testimonios
+    ======================== */
+.testimonials-section {
+    padding: 3rem 1rem;
+    background-color: var(--beige);
+}
+
+.testimonials-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    text-align: center;
+}
+
+.testimonial-card {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: var(--sombra);
+}
+
+    .testimonial-card p {
+        font-size: 1rem;
+        color: #555;
+        margin: 0;
+        line-height: 1.6;
+    }
+
+        .testimonial-card p:last-child {
+            font-weight: 700;
+            color: var(--oscuro);
+            margin-top: 1rem;
+        }
+
+/* Sección de Categorías en la parte superior */
+.menu-header {
+    background-color: var(--naranja);
+    padding: 1rem 0;
+}
+
+.categories {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.category {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+    .category:hover {
+        color: var(--oscuro);
+    }
+
+/* Contenedor del menú */
+.menu-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto 2rem;
+    padding: 0 1rem;
+}
+
+/* Tarjeta de cada platillo */
+.menu-card {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid var(--beige);
+    border-radius: var(--radio);
+    overflow: hidden;
+    box-shadow: var(--sombra);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .menu-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+    }
+
+/* Imagen del platillo */
+.menu-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.menu-card:hover .menu-image {
+    transform: scale(1.05);
+}
+
+/* Contenedor de información */
+.menu-info {
+    padding: 1rem;
+    text-align: left;
+    flex: 1;
+}
+
+    .menu-info h3 {
+        font-size: 1.25rem;
+        margin: 0 0 0.5rem;
+        color: var(--oscuro);
+        font-weight: 700;
+    }
+
+    .menu-info p {
+        font-size: 0.95rem;
+        margin: 0.5rem 0;
+        color: #555;
+        line-height: 1.4;
+    }
+
+/* Pie de tarjeta: precio a la izquierda y botón circular a la derecha */
+.menu-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid #eee;
+}
+
+
+.menu-price p {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--verde);
+    font-weight: 700;
+}
+
+/* Botón circular de añadir al carrito */
+.add-to-cart-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--naranja);
+    color: #fff;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+}
+
+    .add-to-cart-btn:hover {
+        background: var(--oscuro);
+    }
+
+ 
+/* Responsive: en pantallas pequeñas, 1 columna */
+@media (max-width: 600px) {
+    .menu-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ========================
+       Footer
+    ======================== */
+footer {
+    background-color: var(--oscuro);
+    color: #fff;
+    padding: 2rem 1rem;
+    text-align: center;
+}
+
+    footer a {
+        color: var(--naranja);
+        text-decoration: none;
+    }

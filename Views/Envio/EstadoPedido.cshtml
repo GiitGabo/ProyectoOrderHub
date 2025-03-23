@@ -1,0 +1,116 @@
+﻿
+<link rel="stylesheet" href="~/css/Pedidos.css" />
+<link rel="stylesheet" href="~/css/Calificar.css" />
+
+<h1>Estado del Pedido</h1>
+
+<!-- Contenedor Principal -->
+<div class="container">
+
+    <!-- Mapa de Seguimiento con Google Maps Embed -->
+    <div class="map-container">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d982.498799237249!2d-84.0752851732372!3d9.934356916771877!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses-419!2scr!4v1733957520858!5m2!1ses-419!2scr"
+                allowfullscreen>
+        </iframe>
+    </div>
+
+    <!-- Detalles del Pedido -->
+    <div class="order-details">
+        <h3>Detalles del Pedido</h3>
+        <p><i class="fas fa-utensils"></i> <span class="bold-text">Plato:</span> Pasta Alfredo</p>
+        <p><i class="fas fa-list"></i> <span class="bold-text">Ingredientes:</span> Pasta, Queso, Crema, Pollo</p>
+        <p><i class="fas fa-sort-numeric-up-alt"></i> <span class="bold-text">Cantidad:</span> 2</p>
+        <p><i class="fas fa-dollar-sign"></i> <span class="bold-text">Precio Total:</span> $20.00</p>
+        <p><i class="fas fa-credit-card"></i> <span class="bold-text">Método de Pago:</span> PayPal</p>
+    </div>
+
+    <!-- Tiempo Aproximado -->
+    <div class="delivery-time">
+        <p>Tiempo Estimado de Entrega: <span id="time-left">25 Minutos</span></p>
+    </div>
+</div>
+
+
+<!-- Modal para Calificación -->
+<div id="ratingModal" class="modal active">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="secondary-title">Califica tu Pedido</h2>
+            <span class="close" id="closeRatingModal">&times;</span>
+        </div>
+        
+        
+        <p>Por favor califica tu experiencia con el pedido entregado.</p>
+
+        <!-- Sección de estrellas -->
+        <div class="stars" id="ratingStars">
+            <i class="fa-regular fa-star" data-star="1"></i>
+            <i class="fa-regular fa-star" data-star="2"></i>
+            <i class="fa-regular fa-star" data-star="3"></i>
+            <i class="fa-regular fa-star" data-star="4"></i>
+            <i class="fa-regular fa-star" data-star="5"></i>
+        </div>
+
+        <!-- Área de comentarios -->
+        <textarea id="ratingComment" rows="4" placeholder="Deja un comentario sobre tu pedido..." required></textarea>
+
+        <!-- Botón de envío -->
+        <button id="submitRating" class="btn-submit">Enviar Calificación</button>
+    </div>
+</div>
+
+<!-- Script JS -->
+<script>
+    // Modal y elementos
+    const ratingModal = document.getElementById("ratingModal");
+    const closeRatingModal = document.getElementById("closeRatingModal");
+    const stars = document.querySelectorAll("#ratingStars i");
+    const commentBox = document.getElementById("ratingComment");
+    const submitButton = document.getElementById("submitRating");
+
+    let currentRating = 0;
+
+    // Función para manejar las estrellas
+    stars.forEach(star => {
+        star.addEventListener("mouseover", function () {
+            const starValue = this.getAttribute("data-star");
+            highlightStars(starValue);
+        });
+
+        star.addEventListener("click", function () {
+            currentRating = this.getAttribute("data-star");
+            console.log("Calificación seleccionada:", currentRating);
+        });
+    });
+
+    // Función para resaltar las estrellas
+    function highlightStars(count) {
+        stars.forEach((star, index) => {
+            star.classList.toggle("fa-solid", index < count);
+            star.classList.toggle("fa-regular", index >= count);
+        });
+    }
+
+    // Cerrar modal
+    closeRatingModal.onclick = () => {
+        ratingModal.style.display = "none";
+    };
+
+    // Enviar calificación
+    submitButton.onclick = () => {
+        const comment = commentBox.value;
+        if (currentRating > 0 && comment.trim() !== "") {
+            alert(`Gracias por tu calificación de ${currentRating} estrellas.\nComentario: ${comment}`);
+            // Aquí enviar los datos al servidor si es necesario
+            ratingModal.style.display = "none";
+        } else {
+            alert("Por favor selecciona una calificación y escribe un comentario.");
+        }
+    };
+
+    // Cerrar modal al hacer clic fuera
+    window.onclick = function (event) {
+        if (event.target == ratingModal) {
+            ratingModal.style.display = "none";
+        }
+    };</script>

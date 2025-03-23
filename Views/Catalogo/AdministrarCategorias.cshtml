@@ -1,0 +1,226 @@
+﻿<link rel="stylesheet" href="~/css/Estilos.css" />
+@model List<JarredsOrderHub.Models.Categoria>
+
+@{
+    ViewData["Title"] = "Administrar Categorías";
+}
+
+<h1 class="titulo-tabla">Categorías</h1>
+
+<!-- Tabla de Categorías -->
+<table id="categoryTable">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var categoria in Model)
+        {
+            <tr id="categoria-@categoria.IdCategoria">
+                <td>@categoria.IdCategoria</td>
+                <td>@categoria.Nombre</td>
+                <td>@categoria.Descripcion</td>
+                <td>@(categoria.Activa ? "Activa" : "Inactiva")</td>
+                <td>
+                    <button class="icon-btn edit" onclick="editarCategoria(@categoria.IdCategoria)">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="icon-btn delete" onclick="eliminarCategoria(@categoria.IdCategoria)">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Botón Añadir Categoría -->
+<button id="addCategoryBtn" class="add-category">
+    Añadir Categoría
+</button>
+
+<!-- Popup Modal para Añadir/Editar Categoría -->
+<div id="categoryModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="title-modal">Añadir Categoría</h2>
+            <span class="close" id="closeCategoryModal">&times;</span>
+        </div>
+
+        <form id="categoryForm">
+            <!-- Nombre de la Categoría -->
+            <label for="categoriaNombre">Nombre de la Categoría:</label>
+            <input type="text" id="categoriaNombre" placeholder="Ej: Tecnología" required>
+
+            <!-- Descripción de la Categoría -->
+            <label for="categoriaDescripcion">Descripción:</label>
+            <textarea id="categoriaDescripcion" placeholder="Breve descripción de la categoría" rows="3"></textarea>
+
+            <!-- Estado de la Categoría -->
+            <fieldset>
+                <legend>Estado</legend>
+                <label>
+                    <input type="radio" id="estadoActivo" name="estado" value="true" checked>
+                    Activa
+                </label>
+                <label>
+                    <input type="radio" id="estadoInactivo" name="estado" value="false">
+                    Inactiva
+                </label>
+            </fieldset>
+
+            <!-- Botón de Guardar -->
+            <button type="submit">Guardar</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const categoryModal = document.getElementById("categoryModal");
+    const addCategoryBtn = document.getElementById("addCategoryBtn"); // Botón para abrir modal
+    const closeCategoryModal = document.getElementById("closeCategoryModal");
+    const categoryForm = document.getElementById("categoryForm");
+    let categoriaEditandoId = null;
+
+    addCategoryBtn.onclick = function () {
+        categoriaEditandoId = null;
+
+        document.getElementById("categoriaNombre").value = '';
+        document.getElementById("categoriaDescripcion").value = '';
+        document.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
+
+        document.querySelector("#categoryForm button[type='submit']").textContent = "Guardar";
+        document.getElementById("title-modal").textContent = "Añadir Categoría";
+
+        categoryModal.style.display = "block";
+    }
+
+    // Cerrar modal
+    closeCategoryModal.onclick = function () {
+        categoryModal.style.display = "none";
+    }
+
+    window.onclick = function (event) {
+        if (event.target == categoryModal) {
+            categoryModal.style.display = "none";
+        }
+    }
+
+    categoryForm.onsubmit = function (e) {
+        e.preventDefault();
+
+        const categoriaData = {
+            nombre: document.getElementById("categoriaNombre").value,
+            descripcion: document.getElementById("categoriaDescripcion").value,
+            activa: document.querySelector('input[name="estado"]:checked').value === 'true',
+            platillos: [] // Añadir array vacío de platillos
+        };
+
+        if (categoriaEditandoId) {
+            categoriaData.idCategoria = categoriaEditandoId; // Añadir ID si es edición
+        }
+
+        const url = categoriaEditandoId ?
+            `/api/CatalogoService/categorias/${categoriaEditandoId}` :
+            '/api/CatalogoService/categorias';
+
+        fetch(url, {
+            method: categoriaEditandoId ? 'PUT' : 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(categoriaData)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => Promise.reject(err));
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Categoría procesada: ", data);
+
+                // Verificar que los datos necesarios existen
+                if (!data.idCategoria || !data.nombre) {
+                    throw new Error('Respuesta incompleta del servidor');
+                }
+
+                const rowHtml = `
+                <tr id="categoria-${data.idCategoria}">
+                    <td>${data.idCategoria}</td>
+                    <td>${data.nombre}</td>
+                    <td>${data.descripcion || ''}</td>
+                    <td>${data.activa ? "Activa" : "Inactiva"}</td>
+                    <td>
+                        <button class="icon-btn edit" onclick="editarCategoria(${data.idCategoria})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="icon-btn delete" onclick="eliminarCategoria(${data.idCategoria})">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+
+                if (categoriaEditandoId) {
+                    document.getElementById(`categoria-${categoriaEditandoId}`).outerHTML = rowHtml;
+                } else {
+                    document.querySelector("table tbody").insertAdjacentHTML('beforeend', rowHtml);
+                }
+
+                categoryModal.style.display = "none";
+                categoryForm.reset();
+                categoriaEditandoId = null;
+
+                // Mostrar mensaje de éxito
+                alert(categoriaEditandoId ? 'Categoría actualizada con éxito' : 'Categoría creada con éxito');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al procesar la categoría: ' + (error.message || 'Error desconocido'));
+            });
+    };
+
+    function editarCategoria(categoriaId) {
+        categoriaEditandoId = categoriaId;
+
+        fetch(`/api/CatalogoService/categorias/${categoriaId}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("categoriaNombre").value = data.nombre;
+                document.getElementById("categoriaDescripcion").value = data.descripcion;
+
+                document.querySelector(`#estado${data.activa ? 'Activo' : 'Inactivo'}`).checked = true;
+
+                document.getElementById("title-modal").textContent = "Editar Categoría";
+                document.querySelector("#categoryForm button[type='submit']").textContent = "Actualizar";
+
+                categoryModal.style.display = "block";
+            })
+            .catch(error => console.error('Error al obtener la categoría:', error));
+    }
+
+    function eliminarCategoria(categoriaId) {
+        if (!confirm('¿Está seguro de que desea eliminar esta categoría?')) {
+            return;
+        }
+
+        fetch(`/api/CatalogoService/categorias/${categoriaId}`, {
+            method: 'DELETE'
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => Promise.reject(err));
+                }
+                document.getElementById(`categoria-${categoriaId}`).remove();
+                alert('Categoría eliminada con éxito');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al eliminar la categoría: ' + (error.message || 'Error desconocido'));
+            });
+    }
+</script>

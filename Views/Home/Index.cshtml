@@ -1,0 +1,276 @@
+﻿<link rel="stylesheet" href="~/css/Estilos.css" />
+@model JarredsOrderHub.ViewModels.MenuViewModel
+<style>
+    /* Animaciones y efectos hover */
+    .hero-section:hover .btn-hero i {
+        transform: translateX(5px);
+    }
+
+    body {
+        font-family: 'Roboto', sans-serif;
+    }
+
+    h1, h2, h3 {
+        font-family: 'Roboto', sans-serif;
+        font-weight: 700;
+    }
+
+    .value-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+    }
+
+    .menu-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+    }
+
+    .menu-item:hover img {
+        transform: scale(1.05);
+    }
+
+    .filter-btn:hover {
+        background: #f2a413 !important;
+        color: #fff !important;
+    }
+
+    .filter-btn.active {
+        background: #f2a413 !important;
+        color: #fff !important;
+    }
+
+    @@keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+        }
+
+        40% {
+            transform: translateY(-20px);
+        }
+
+        60% {
+            transform: translateY(-10px);
+        }
+    }
+</style>
+
+<body>
+    <!-- Sección Hero mejorada -->
+    <header class="hero-section" style="background: linear-gradient(45deg, rgba(242,234,208,0.8), rgba(232,220,207,0.8)), url('~/lib/images/hero-bg.jpg'); height: 90vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+        <div class="hero-content" style="position: relative; text-align: center; color: #2D3436; padding: 2rem; max-width: 1200px; margin: 0 auto;">
+            <img src="~/LogoSinBG.png" alt="Logo" style="max-width: 200px; margin-bottom: 2rem; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));">
+            <h1 style="font-size: 4rem; font-weight: 800; margin-bottom: 1.5rem; text-shadow: 0 4px 6px rgba(0,0,0,0.2); font-family: 'Roboto', sans-serif;">Jarred's Order Hub</h1>
+            <!-- Tagline con fuente impactante -->
+            <p style="font-size: 1.5rem; margin-bottom: 2.5rem; max-width: 600px; margin-left: auto; margin-right: auto; line-height: 1.6; font-family: 'Lobster', cursive;">
+                Sabores caribeños que conquistan tu paladar
+            </p>
+            <a href="#menu" class="btn-hero">
+                <span>Explorar Menú</span>
+                <i class="fas fa-chevron-right" style="margin-left: 10px; transition: transform 0.3s ease;"></i>
+            </a>
+        </div>
+        <div class="hero-scroll-indicator" style="position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); animation: bounce 2s infinite;">
+            <i class="fas fa-angle-down" style="font-size: 2rem; color: #2D3436;"></i>
+        </div>
+    </header>
+
+    <!-- Sección Acerca de - Diseño moderno -->
+    <section class="about-section" style="padding: 6rem 1rem; background: #fff">
+        <div class="container" style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;">
+            <div class="about-image" style="position: relative;">
+                <img src="~/lib/images/nuestra-historia.jpeg" alt="Nuestra Historia" style="width: 100%; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);">
+                <div class="decorative-element" style="position: absolute; bottom: -30px; right: -30px; width: 120px; height: 120px; background: #f2a413; border-radius: 50%; opacity: 0.1;"></div>
+            </div>
+            <div class="about-text">
+                <h2 style="font-size: 2.75rem; font-weight: 700; color: #2D3436; margin-bottom: 1.5rem; line-height: 1.2; position: relative; padding-left: 20px; font-family: 'Roboto', sans-serif;">
+                    <span style="position: absolute; left: 0; top: 0; width: 4px; height: 100%; background: #f2a413;"></span>
+                    Historia Culinaria Caribeña
+                </h2>
+                <p style="font-size: 1.1rem; color: #555; line-height: 1.8; margin-bottom: 2rem;">
+                    En Jarred's Order Hub, fusionamos tradición e innovación para crear experiencias gastronómicas únicas. Cada plato es una cuidadosa combinación de ingredientes locales frescos y técnicas contemporáneas, manteniendo siempre la esencia auténtica de la cocina caribeña.
+                </p>
+                <div class="signature" style="display: flex; align-items: center; gap: 1rem;">
+                    <div class="signature-image" style="width: 60px; height: 60px; border-radius: 50%; overflow: hidden;">
+                        <img src="https://okdiario.com/img/2019/10/13/costa-rica.jpg" alt="Chef" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div>
+                        <p style="font-weight: 600; color: #2D3436; margin: 0;">Landon Patterson</p>
+                        <p style="color: #777; margin: 0; font-size: 0.9rem;">Cocinero y Dueño de JarredsCaribbeanTaste</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Sobre Nosotros - Pilares de Calidad -->
+    <section class="value-section" style="padding: 6rem 1rem; background: linear-gradient(45deg, #262626, #1F1F1F);">
+        <div class="container" style="max-width: 1200px; margin: 0 auto;">
+            <h2 style="text-align: center; color: #fff; font-size: 2.5rem; margin-bottom: 4rem; font-family: 'Roboto', sans-serif;">Sobre Nosotros</h2>
+            <div class="grid-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                <!-- Tarjeta 1: Calidad Excepcional -->
+                <div class="value-card" style="background: rgba(255,255,255,0.05); padding: 2.5rem; border-radius: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); transition: transform 0.3s ease;">
+                    <div class="card-icon" style="width: 70px; height: 70px; background: #f2a413; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                        <!-- Icono de calidad (por ejemplo, estrella) -->
+                        <i class="fas fa-star" style="font-size: 2rem; color: #fff;"></i>
+                    </div>
+                    <h3 style="color: #fff; font-size: 1.5rem; margin-bottom: 1rem;">Calidad Excepcional</h3>
+                    <p style="color: rgba(255,255,255,0.8); line-height: 1.6;">Contamos con pocos platos, pero cada uno es de calidad superior.</p>
+                </div>
+
+                <!-- Tarjeta 2: Sazón Caribeño -->
+                <div class="value-card" style="background: rgba(255,255,255,0.05); padding: 2.5rem; border-radius: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); transition: transform 0.3s ease;">
+                    <div class="card-icon" style="width: 70px; height: 70px; background: #f2a413; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                        <!-- Icono de sazón (por ejemplo, pimiento picante) -->
+                        <i class="fas fa-pepper-hot" style="font-size: 2rem; color: #fff;"></i>
+                    </div>
+                    <h3 style="color: #fff; font-size: 1.5rem; margin-bottom: 1rem;">Sazón Caribeño</h3>
+                    <p style="color: rgba(255,255,255,0.8); line-height: 1.6;">Disfruta de una sazón deliciosa, auténticamente caribeña.</p>
+                </div>
+
+                <!-- Tarjeta 3: Entregas Programadas -->
+                <div class="value-card" style="background: rgba(255,255,255,0.05); padding: 2.5rem; border-radius: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); transition: transform 0.3s ease;">
+                    <div class="card-icon" style="width: 70px; height: 70px; background: #f2a413; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                        <!-- Icono de entregas (por ejemplo, camión) -->
+                        <i class="fa-solid fa-motorcycle" style="font-size: 2rem; color: #fff;"></i>
+                    </div>
+                    <h3 style="color: #fff; font-size: 1.5rem; margin-bottom: 1rem;">Entregas Programadas</h3>
+                    <p style="color: rgba(255,255,255,0.8); line-height: 1.6;">Realiza tus pedidos en nuestra web y recíbelos dos veces al mes en las fechas indicadas.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Menú - Diseño premium -->
+    <section id="menu" class="menu-section" style="padding: 6rem 1rem; background: #fff">
+        <div class="container" style="max-width: 1400px; margin: 0 auto;">
+            <div style="text-align: center; margin-bottom: 1rem;">
+                <h2 style="font-size: 3rem; font-weight: 700; color: #2D3436; margin-bottom: 1rem; font-family: 'Roboto', sans-serif;">
+                    Nuestro Menú
+                </h2>
+            </div>
+
+            <!-- Filtros dinámicos -->
+            <div class="food_section">
+                <ul class="filters_menu" style="list-style: none; display: flex; justify-content: center; gap: 1rem; padding: 0;">
+                    <li class="active" data-filter="*">Todos</li>
+                    @foreach (var cat in Model.Categorias)
+                    {
+                        // Creamos una clase CSS amigable (minúsculas y guiones en lugar de espacios)
+                        var cssClass = cat.Nombre.ToLower().Replace(" ", "-");
+                        <li data-filter=".@cssClass">@cat.Nombre</li>
+                    }
+                </ul>
+            </div>
+
+            <!-- Grid de platillos -->
+            <div class="menu-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0.5rem; padding: 0 1rem; justify-items: center;">
+                @foreach (var platillo in Model.Platillos)
+                {
+                    var catClass = platillo.Categoria.Nombre.ToLower().Replace(" ", "-");
+                    <div class="menu-item @catClass" style="background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.08); transition: transform 0.3s ease, box-shadow 0.3s ease; display: flex; flex-direction: column; max-width: 300px; width: 100%;">
+                        <div class="image-container" style="height: 250px; overflow: hidden; position: relative;">
+                            <img src="@platillo.Imagen" alt="@platillo.Nombre" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;">
+                            <div class="overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 100%);"></div>
+                            <span class="category-tag" style="position: absolute; top: 20px; right: 20px; background: #f2a413; color: #fff; padding: 0.5rem 1rem; border-radius: 30px; font-size: 0.9rem;">
+                                @platillo.Categoria.Nombre
+                            </span>
+                        </div>
+                        <div class="content" style="padding: 1.5rem; flex: 1; display: flex; flex-direction: column;">
+                            <h3 style="font-size: 1.5rem; color: #2D3436; margin-bottom: 0.5rem; font-weight: 600;">@platillo.Nombre</h3>
+                            <p style="color: #777; line-height: 1.6; margin-bottom: 1.5rem; min-height: 80px;">@platillo.Descripcion</p>
+                            <div class="card-footer" style="margin-top: auto; display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 1.25rem; color: #f2a413; font-weight: 700;">
+                                    @platillo.Precio.ToString("C", new System.Globalization.CultureInfo("es-CR"))
+                                </span>
+                                <button onclick="agregarAlCarrito('@platillo.IdPlatillo', '@platillo.Nombre', @platillo.Precio, '@platillo.Imagen')"
+                                        style="background: #f2a413; color: #fff; border: none; padding: 0.8rem 1.5rem; border-radius: 30px; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 0.5rem;">
+                                    <i class="fas fa-cart-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Testimonios - Voces de Nuestros Clientes -->
+    <div class="testimonials" style="padding: 6rem 1rem; background: linear-gradient(to right, #3a3a3a, #262626);">
+        <div class="container" style="max-width: 1200px; margin: 0 auto;">
+            <div style="text-align: center; margin-bottom: 4rem;">
+                <h2 style="font-size: 2.5rem; color: #fff; margin-bottom: 1rem; font-family: 'Roboto', sans-serif;">Voces de Nuestros Clientes</h2>
+                <p style="color: rgba(255,255,255,0.8); max-width: 600px; margin: 0 auto;">Descubre lo que dicen quienes ya han probado nuestra experiencia culinaria</p>
+            </div>
+
+            <div class="testimonials-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                <!-- Testimonio 1 -->
+                <div class="testimonial-card" style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);">
+                    <div class="quote-icon" style="color: #f2a413; font-size: 2.5rem; margin-bottom: 1rem;">“</div>
+                    <p style="color: rgba(255,255,255,0.9); line-height: 1.6; margin-bottom: 1.5rem;">La combinación perfecta entre tradición e innovación. Cada plato es una experiencia única.</p>
+                    <div class="author" style="display: flex; align-items: center; gap: 1rem;">
+                        <div>
+                            <p style="color: #fff; margin: 0; font-weight: 600;">María Gómez</p>
+                            <p style="color: rgba(255,255,255,0.7); margin: 0; font-size: 0.9rem;">Cliente</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonio 2 -->
+                <div class="testimonial-card" style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);">
+                    <div class="quote-icon" style="color: #f2a413; font-size: 2.5rem; margin-bottom: 1rem;">“</div>
+                    <p style="color: rgba(255,255,255,0.9); line-height: 1.6; margin-bottom: 1.5rem;">Increíble calidad y servicio. El rice and beans es simplemente el mejor que he probado.</p>
+                    <div class="author" style="display: flex; align-items: center; gap: 1rem;">
+                        <div>
+                            <p style="color: #fff; margin: 0; font-weight: 600;">Carlos Mora</p>
+                            <p style="color: rgba(255,255,255,0.7); margin: 0; font-size: 0.9rem;">Cliente</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+    <script>
+        function agregarAlCarrito(id, nombre, precio, imagen) {
+            // Convertir el precio a número
+            precio = parseFloat(precio);
+
+            // Obtener el carrito actual del LocalStorage (o un array vacío si no existe)
+            let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+
+            // Buscar si el producto ya está en el carrito
+            let productoExistente = carrito.find(p => p.id === id);
+            if (productoExistente) {
+                productoExistente.cantidad += 1;
+            } else {
+                carrito.push({
+                    id: id,
+                    nombre: nombre,
+                    precio: precio,
+                    imagen: imagen,
+                    cantidad: 1
+                });
+            }
+            localStorage.setItem('carrito', JSON.stringify(carrito));
+            alert(nombre + " se ha añadido al carrito.");
+        }
+</script>
+
+    <script>
+
+        // Interactividad para filtros
+        document.querySelectorAll('.filter-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+
+                const filter = this.dataset.filter;
+                document.querySelectorAll('.menu-item').forEach(item => {
+                    item.style.display = (filter === '*' || item.classList.contains(filter)) ? 'block' : 'none';
+                });
+            });
+        });
+    </script>
+

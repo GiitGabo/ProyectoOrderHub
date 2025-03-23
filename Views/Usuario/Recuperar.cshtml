@@ -1,0 +1,60 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml"; 
+}
+
+<link rel="stylesheet" href="~/css/InicioSesion.css" />
+<script src="https://kit.fontawesome.com/ddc6aa5d21.js" crossorigin="anonymous"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+<body style="background-color: #F2EAD0;">
+
+    <div class="login-page">
+        <div class="login-container">
+            <div class="alert alert-success" style="display: none;">
+                @* Muestra los errores de validación o mensajes de éxito *@
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach (var modelError in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                            {
+                                <li>@modelError.ErrorMessage</li>
+                            }
+                        </ul>
+                    </div>
+                }
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success">
+                        @TempData["SuccessMessage"]
+                    </div>
+                }
+            </div>
+
+            <div class="login-wrap">
+                <div class="login-html">
+        <h2 style="color: #2EA629; margin-bottom: 20px;">Recupera tu Contraseña</h2>
+    <div class="login-form">
+        <form method="post" asp-action="RestablecerConfirmar" asp-controller="Usuario">
+            <div class="group">
+                <label for="user" class="label">Correo Electrónico</label>
+                <input id="user" type="text" name="email" class="input" required>
+            </div>
+            <br />
+            <div class="group">
+                <input type="submit" class="button" value="Enviar al Correo">
+            </div>
+            <div class="hr"></div>
+            <div class="foot-lnk">
+                    <a style="color: #2EA629;"  asp-action="AccionesUsuario">Volver a inicio de sesión</a>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+        </div>
+
+    </div>
+</body>
+
+<div style="margin: 40px 0;"></div>
