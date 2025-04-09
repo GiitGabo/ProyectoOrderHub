@@ -17,6 +17,8 @@ namespace JarredsOrderHub.Models
         [StringLength(50, MinimumLength = 2, ErrorMessage = "El apellido debe tener entre 2 y 50 caracteres")]
         public string Apellido { get; set; }
 
+        public Boolean estado { get; set; }
+
         [Required(ErrorMessage = "El email es requerido")]
         [EmailAddress(ErrorMessage = "El formato del email no es válido")]
         public string Email { get; set; }

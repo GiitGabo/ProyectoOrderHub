@@ -1,51 +1,85 @@
 /* _content/JarredsOrderHub/Views/Shared/_Layout.cshtml.rz.scp.css */
-/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
+/* ======================================================
+   Documentación: consulta https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
+   para más detalles sobre cómo configurar el bundling y minificación.
+====================================================== */
 
+h1[b-ynz8n1qymf], h2[b-ynz8n1qymf] {
+    font-family: 'Roboto', sans-serif !important;
+    font-weight: 700 !important;
+}
+
+h3[b-ynz8n1qymf], h4[b-ynz8n1qymf] {
+    font-family: 'Roboto', sans-serif !important;
+    font-weight: 500 !important;
+}
+
+p[b-ynz8n1qymf], span[b-ynz8n1qymf], a[b-ynz8n1qymf], input[b-ynz8n1qymf], button[b-ynz8n1qymf] {
+    font-family: 'Roboto', sans-serif !important;
+    font-weight: 400 !important;
+}
+
+
+/* Estilo para el enlace de la marca en la navbar */
 a.navbar-brand[b-ynz8n1qymf] {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+    white-space: normal; /* Permite que el texto se ajuste sin romper la estructura */
+    text-align: center; /* Centra el texto */
+    word-break: break-all; /* Rompe las palabras largas si es necesario */
 }
 
+/* Cambia el color de fondo del navbar en el header */
+header nav.navbar[b-ynz8n1qymf] {
+    background-color: #262626 !important; /* Fondo oscuro (#262626) forzado con !important */
+}
+
+/* Estilos generales para todos los enlaces */
 a[b-ynz8n1qymf] {
-  color: #0077cc;
+    color: #cfcfcf; /* Color azul para los enlaces */
 }
 
+/* Estilos para botones primarios */
 .btn-primary[b-ynz8n1qymf] {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+    color: #fff; /* Texto blanco */
+    background-color: #1b6ec2; /* Fondo azul (#1b6ec2) */
+    border-color: #1861ac; /* Borde azul oscuro (#1861ac) */
 }
 
+/* Estilos para enlaces activos dentro de elementos .nav-pills */
 .nav-pills .nav-link.active[b-ynz8n1qymf], .nav-pills .show > .nav-link[b-ynz8n1qymf] {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+    color: #fff; /* Texto blanco */
+    background-color: #1b6ec2; /* Fondo azul */
+    border-color: #1861ac; /* Borde azul oscuro */
 }
 
+/* Clase utilitaria para agregar borde superior */
 .border-top[b-ynz8n1qymf] {
-  border-top: 1px solid #e5e5e5;
+    border-top: 1px solid #e5e5e5; /* Borde superior gris claro */
 }
+
+/* Clase utilitaria para agregar borde inferior */
 .border-bottom[b-ynz8n1qymf] {
-  border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5; /* Borde inferior gris claro */
 }
 
+/* Clase para aplicar una sombra sutil a elementos */
 .box-shadow[b-ynz8n1qymf] {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05); /* Sombra leve */
 }
 
+/* Estilos para el botón de aceptación de políticas */
 button.accept-policy[b-ynz8n1qymf] {
-  font-size: 1rem;
-  line-height: inherit;
+    font-size: 1rem; /* Tamaño de fuente de 1rem */
+    font-family: 'Roboto', sans-serif;
+    line-height: inherit; /* Hereda el interlineado del elemento padre */
 }
 
+/* Estilos para el footer: posicionado en la parte inferior de la página */
 .footer[b-ynz8n1qymf] {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px;
+    position: absolute; /* Posición absoluta */
+    bottom: 0; /* Alineado al fondo */
+    width: 100%; /* Ocupa todo el ancho */
+    white-space: nowrap; /* Evita el salto de línea */
+    line-height: 60px; /* Altura de línea de 60px para centrar el contenido verticalmente */
 }
 /* _content/JarredsOrderHub/Views/Shared/_LayoutExterno.cshtml.rz.scp.css */
 /* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification

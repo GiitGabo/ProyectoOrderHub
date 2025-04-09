@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace JarredsOrderHub.Migrations
 {
     /// <inheritdoc />
-    public partial class Migrations : Migration
+    public partial class rec : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -55,6 +55,7 @@ namespace JarredsOrderHub.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Apellido = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    estado = table.Column<bool>(type: "bit", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Contrasenia = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
@@ -143,7 +144,8 @@ namespace JarredsOrderHub.Migrations
                     IdRol = table.Column<int>(type: "int", nullable: true),
                     IdHorario = table.Column<int>(type: "int", nullable: true),
                     Salario = table.Column<int>(type: "int", nullable: true),
-                    Contrasenia = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Contrasenia = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    estado = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {

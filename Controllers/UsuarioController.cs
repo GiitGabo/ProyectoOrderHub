@@ -102,6 +102,8 @@ namespace JarredsOrderHub.Controllers
 
                 HttpContext.Session.SetString("UserName", cliente.Nombre);
                 HttpContext.Session.SetString("UserType", "Cliente");
+                HttpContext.Session.SetInt32("ClienteId", cliente.IdCliente);
+
                 return RedirectToAction("Menu", "Catalogo");
             }
 
