@@ -17,123 +17,125 @@ build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = JarredsOrderHub
 build_property.RootNamespace = JarredsOrderHub
-build_property.ProjectDir = C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\
+build_property.ProjectDir = C:\Users\Keilyn\Desktop\JarredsOrderHub\JarredsOrderHub\JarredsOrderHub\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub
+build_property.MSBuildProjectDirectory = C:\Users\Keilyn\Desktop\JarredsOrderHub\JarredsOrderHub\JarredsOrderHub
 build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/melvi/Documents/JarredsOrderHub/PROYECTO/JarredsOrderHub/JarredsOrderHub/Views/Admin/AdministrarEmpleados.cshtml]
+[C:/Users/Keilyn/Desktop/JarredsOrderHub/JarredsOrderHub/JarredsOrderHub/Views/Admin/AdministrarEmpleados.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQWRtaW5pc3RyYXJFbXBsZWFkb3MuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/melvi/Documents/JarredsOrderHub/PROYECTO/JarredsOrderHub/JarredsOrderHub/Views/Admin/AdministrarRoles.cshtml]
+[C:/Users/Keilyn/Desktop/JarredsOrderHub/JarredsOrderHub/JarredsOrderHub/Views/Admin/AdministrarRoles.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQWRtaW5pc3RyYXJSb2xlcy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/melvi/Documents/JarredsOrderHub/PROYECTO/JarredsOrderHub/JarredsOrderHub/Views/Admin/AdministrarTareas.cshtml]
+[C:/Users/Keilyn/Desktop/JarredsOrderHub/JarredsOrderHub/JarredsOrderHub/Views/Admin/AdministrarTareas.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQWRtaW5pc3RyYXJUYXJlYXMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/melvi/Documents/JarredsOrderHub/PROYECTO/JarredsOrderHub/JarredsOrderHub/Views/Admin/AdministrarUsuarios.cshtml]
+[C:/Users/Keilyn/Desktop/JarredsOrderHub/JarredsOrderHub/JarredsOrderHub/Views/Admin/AdministrarUsuarios.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQWRtaW5pc3RyYXJVc3Vhcmlvcy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/melvi/Documents/JarredsOrderHub/PROYECTO/JarredsOrderHub/JarredsOrderHub/Views/Catalogo/AdministrarCategorias.cshtml]
+[C:/Users/Keilyn/Desktop/JarredsOrderHub/JarredsOrderHub/JarredsOrderHub/Views/Catalogo/AdministrarCategorias.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0YWxvZ29cQWRtaW5pc3RyYXJDYXRlZ29yaWFzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/melvi/Documents/JarredsOrderHub/PROYECTO/JarredsOrderHub/JarredsOrderHub/Views/Catalogo/AdministrarPlatos.cshtml]
+[C:/Users/Keilyn/Desktop/JarredsOrderHub/JarredsOrderHub/JarredsOrderHub/Views/Catalogo/AdministrarPlatos.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0YWxvZ29cQWRtaW5pc3RyYXJQbGF0b3MuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/melvi/Documents/JarredsOrderHub/PROYECTO/JarredsOrderHub/JarredsOrderHub/Views/Catalogo/Menu.cshtml]
+[C:/Users/Keilyn/Desktop/JarredsOrderHub/JarredsOrderHub/JarredsOrderHub/Views/Catalogo/Menu.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0YWxvZ29cTWVudS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/melvi/Documents/JarredsOrderHub/PROYECTO/JarredsOrderHub/JarredsOrderHub/Views/Envio/EstadoPedido.cshtml]
+[C:/Users/Keilyn/Desktop/JarredsOrderHub/JarredsOrderHub/JarredsOrderHub/Views/Envio/EstadoPedido.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW52aW9cRXN0YWRvUGVkaWRvLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/melvi/Documents/JarredsOrderHub/PROYECTO/JarredsOrderHub/JarredsOrderHub/Views/Envio/ListadoPedidos.cshtml]
+[C:/Users/Keilyn/Desktop/JarredsOrderHub/JarredsOrderHub/JarredsOrderHub/Views/Envio/ListadoPedidos.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW52aW9cTGlzdGFkb1BlZGlkb3MuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/melvi/Documents/JarredsOrderHub/PROYECTO/JarredsOrderHub/JarredsOrderHub/Views/Envio/VisualizarRetroalimentaciones.cshtml]
+[C:/Users/Keilyn/Desktop/JarredsOrderHub/JarredsOrderHub/JarredsOrderHub/Views/Envio/VisualizarRetroalimentaciones.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW52aW9cVmlzdWFsaXphclJldHJvYWxpbWVudGFjaW9uZXMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/melvi/Documents/JarredsOrderHub/PROYECTO/JarredsOrderHub/JarredsOrderHub/Views/Home/Index.cshtml]
+[C:/Users/Keilyn/Desktop/JarredsOrderHub/JarredsOrderHub/JarredsOrderHub/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/melvi/Documents/JarredsOrderHub/PROYECTO/JarredsOrderHub/JarredsOrderHub/Views/Home/Privacy.cshtml]
+[C:/Users/Keilyn/Desktop/JarredsOrderHub/JarredsOrderHub/JarredsOrderHub/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/melvi/Documents/JarredsOrderHub/PROYECTO/JarredsOrderHub/JarredsOrderHub/Views/Informacion/EdicionInformacion.cshtml]
+[C:/Users/Keilyn/Desktop/JarredsOrderHub/JarredsOrderHub/JarredsOrderHub/Views/Informacion/EdicionInformacion.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW5mb3JtYWNpb25cRWRpY2lvbkluZm9ybWFjaW9uLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/melvi/Documents/JarredsOrderHub/PROYECTO/JarredsOrderHub/JarredsOrderHub/Views/Pago/HistorialPagosPedidos.cshtml]
+[C:/Users/Keilyn/Desktop/JarredsOrderHub/JarredsOrderHub/JarredsOrderHub/Views/Pago/HistorialPagosPedidos.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFnb1xIaXN0b3JpYWxQYWdvc1BlZGlkb3MuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/melvi/Documents/JarredsOrderHub/PROYECTO/JarredsOrderHub/JarredsOrderHub/Views/Pago/HistorialPagosPedidosAdministracion.cshtml]
+[C:/Users/Keilyn/Desktop/JarredsOrderHub/JarredsOrderHub/JarredsOrderHub/Views/Pago/HistorialPagosPedidosAdministracion.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFnb1xIaXN0b3JpYWxQYWdvc1BlZGlkb3NBZG1pbmlzdHJhY2lvbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/melvi/Documents/JarredsOrderHub/PROYECTO/JarredsOrderHub/JarredsOrderHub/Views/Pedido/Carrito.cshtml]
+[C:/Users/Keilyn/Desktop/JarredsOrderHub/JarredsOrderHub/JarredsOrderHub/Views/Pedido/Carrito.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGVkaWRvXENhcnJpdG8uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/melvi/Documents/JarredsOrderHub/PROYECTO/JarredsOrderHub/JarredsOrderHub/Views/Reporte/AdministracionReportes.cshtml]
+[C:/Users/Keilyn/Desktop/JarredsOrderHub/JarredsOrderHub/JarredsOrderHub/Views/Reporte/AdministracionReportes.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVwb3J0ZVxBZG1pbmlzdHJhY2lvblJlcG9ydGVzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/melvi/Documents/JarredsOrderHub/PROYECTO/JarredsOrderHub/JarredsOrderHub/Views/Reporte/ReportarProblema.cshtml]
+[C:/Users/Keilyn/Desktop/JarredsOrderHub/JarredsOrderHub/JarredsOrderHub/Views/Reporte/ReportarProblema.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVwb3J0ZVxSZXBvcnRhclByb2JsZW1hLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/melvi/Documents/JarredsOrderHub/PROYECTO/JarredsOrderHub/JarredsOrderHub/Views/Shared/Error.cshtml]
+[C:/Users/Keilyn/Desktop/JarredsOrderHub/JarredsOrderHub/JarredsOrderHub/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/melvi/Documents/JarredsOrderHub/PROYECTO/JarredsOrderHub/JarredsOrderHub/Views/Shared/_ValidationScriptsPartial.cshtml]
+[C:/Users/Keilyn/Desktop/JarredsOrderHub/JarredsOrderHub/JarredsOrderHub/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/melvi/Documents/JarredsOrderHub/PROYECTO/JarredsOrderHub/JarredsOrderHub/Views/Usuario/AccionesUsuario.cshtml]
+[C:/Users/Keilyn/Desktop/JarredsOrderHub/JarredsOrderHub/JarredsOrderHub/Views/Usuario/AccionesUsuario.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xBY2Npb25lc1VzdWFyaW8uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/melvi/Documents/JarredsOrderHub/PROYECTO/JarredsOrderHub/JarredsOrderHub/Views/Usuario/GestionPerfil.cshtml]
+[C:/Users/Keilyn/Desktop/JarredsOrderHub/JarredsOrderHub/JarredsOrderHub/Views/Usuario/GestionPerfil.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xHZXN0aW9uUGVyZmlsLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/melvi/Documents/JarredsOrderHub/PROYECTO/JarredsOrderHub/JarredsOrderHub/Views/Usuario/Recuperar.cshtml]
+[C:/Users/Keilyn/Desktop/JarredsOrderHub/JarredsOrderHub/JarredsOrderHub/Views/Usuario/Recuperar.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xSZWN1cGVyYXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/melvi/Documents/JarredsOrderHub/PROYECTO/JarredsOrderHub/JarredsOrderHub/Views/Usuario/RestablecerContrasenia.cshtml]
+[C:/Users/Keilyn/Desktop/JarredsOrderHub/JarredsOrderHub/JarredsOrderHub/Views/Usuario/RestablecerContrasenia.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xSZXN0YWJsZWNlckNvbnRyYXNlbmlhLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/melvi/Documents/JarredsOrderHub/PROYECTO/JarredsOrderHub/JarredsOrderHub/Views/_ViewImports.cshtml]
+[C:/Users/Keilyn/Desktop/JarredsOrderHub/JarredsOrderHub/JarredsOrderHub/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/melvi/Documents/JarredsOrderHub/PROYECTO/JarredsOrderHub/JarredsOrderHub/Views/_ViewStart.cshtml]
+[C:/Users/Keilyn/Desktop/JarredsOrderHub/JarredsOrderHub/JarredsOrderHub/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/melvi/Documents/JarredsOrderHub/PROYECTO/JarredsOrderHub/JarredsOrderHub/Views/Shared/_Layout.cshtml]
+[C:/Users/Keilyn/Desktop/JarredsOrderHub/JarredsOrderHub/JarredsOrderHub/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-ynz8n1qymf
 
-[C:/Users/melvi/Documents/JarredsOrderHub/PROYECTO/JarredsOrderHub/JarredsOrderHub/Views/Shared/_LayoutExterno.cshtml]
+[C:/Users/Keilyn/Desktop/JarredsOrderHub/JarredsOrderHub/JarredsOrderHub/Views/Shared/_LayoutExterno.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXRFeHRlcm5vLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = b-8kv40oetwl

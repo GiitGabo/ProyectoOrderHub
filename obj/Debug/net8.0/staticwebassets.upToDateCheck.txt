@@ -4,13 +4,15 @@ wwwroot\css\Calificar.css
 wwwroot\css\Carrito.css
 wwwroot\css\Estilos.css
 wwwroot\css\EstilosPerfil.css
+wwwroot\css\font-awesome.min.css
 wwwroot\css\HistorialPagos.css
 wwwroot\css\InformacionE.css
 wwwroot\css\InicioSesion.css
-wwwroot\css\Layout.css
 wwwroot\css\ListadoPedidos.css
 wwwroot\css\Pedidos.css
+wwwroot\css\responsive.css
 wwwroot\css\site.css
+wwwroot\css\style.css
 wwwroot\favicon.ico
 wwwroot\js\site.js
 wwwroot\lib\bootstrap\dist\css\bootstrap.css
@@ -45,6 +47,11 @@ wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css
 wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css.map
 wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css
 wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\font-awesome.min.css
+wwwroot\lib\bootstrap\dist\css\responsive.css
+wwwroot\lib\bootstrap\dist\css\style.css
+wwwroot\lib\bootstrap\dist\css\style.css.map
+wwwroot\lib\bootstrap\dist\css\style.scss
 wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js
 wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js.map
 wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js
@@ -57,7 +64,10 @@ wwwroot\lib\bootstrap\dist\js\bootstrap.js
 wwwroot\lib\bootstrap\dist\js\bootstrap.js.map
 wwwroot\lib\bootstrap\dist\js\bootstrap.min.js
 wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map
+wwwroot\lib\bootstrap\dist\js\custom.js
+wwwroot\lib\bootstrap\dist\js\jquery-3.4.1.min.js
 wwwroot\lib\bootstrap\LICENSE
+wwwroot\lib\images\nuestra-historia.jpeg
 wwwroot\lib\jquery\dist\jquery.js
 wwwroot\lib\jquery\dist\jquery.min.js
 wwwroot\lib\jquery\dist\jquery.min.map
@@ -72,3 +82,4 @@ wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.min.js
 wwwroot\lib\jquery-validation-unobtrusive\LICENSE.txt
 wwwroot\LOGO JARREDS.png
 wwwroot\LOGO-JARREDS.ico
+wwwroot\LogoSinBG.png
