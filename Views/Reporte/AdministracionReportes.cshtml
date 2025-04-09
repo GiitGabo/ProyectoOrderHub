@@ -142,4 +142,21 @@
             alert("Error actualizando estado.");
         }
     }
+
+    $('#tabla').DataTable({
+        "order": [[0, "asc"]],
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+        },
+        "dom": "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+            "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+        "responsive": true,
+        "autoWidth": false,
+        "initComplete": function (settings, json) {
+            // Añadir clase personalizada a los inputs
+            $('.dataTables_filter input').addClass('search-input');
+            $('.dataTables_length select').addClass('custom-select');
+        }
+    });
 </script>

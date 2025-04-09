@@ -1,6 +1,6 @@
-﻿/* ======================================================
-   Documentación: consulta https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-   para más detalles sobre cómo configurar el bundling y minificación.
+﻿======================================================
+Documentación: consulta https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
+para más detalles sobre cómo configurar el bundling y minificación.
 ====================================================== */
 
 h1, h2 {
@@ -19,12 +19,11 @@ p, span, a, input, button {
 }
 
 
-/* Estilo para el enlace de la marca en la navbar */
-a.navbar-brand {
-    white-space: normal; /* Permite que el texto se ajuste sin romper la estructura */
-    text-align: center; /* Centra el texto */
-    word-break: break-all; /* Rompe las palabras largas si es necesario */
-}
+    /* Estilo para el enlace de la marca en la navbar */
+    a.navbar-brand {
+        white-space: normal; /* Permite que el texto se ajuste sin romper la estructura */
+        word-break: break-all; /* Rompe las palabras largas si es necesario */
+    }
 
 /* Cambia el color de fondo del navbar en el header */
 header nav.navbar {
@@ -72,6 +71,15 @@ button.accept-policy {
     line-height: inherit; /* Hereda el interlineado del elemento padre */
 }
 
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.content {
+    flex: 1;
+}
 /* Estilos para el footer: posicionado en la parte inferior de la página */
 .footer {
     position: absolute; /* Posición absoluta */
@@ -79,4 +87,5 @@ button.accept-policy {
     width: 100%; /* Ocupa todo el ancho */
     white-space: nowrap; /* Evita el salto de línea */
     line-height: 60px; /* Altura de línea de 60px para centrar el contenido verticalmente */
+    padding: 20px;
 }

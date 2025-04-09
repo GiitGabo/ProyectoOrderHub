@@ -1,0 +1,60 @@
+﻿/* Estilos personalizados para DataTables */
+.dataTables_wrapper {
+    font-family: 'Roboto', sans-serif;
+    margin: 20px 0;
+}
+
+.dataTables_filter {
+    margin-bottom: 15px;
+}
+
+    .dataTables_filter label {
+        font-size: 15px;
+        color: #444;
+    }
+
+    .dataTables_filter input {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 8px 12px;
+        margin-left: 10px;
+        transition: all 0.3s;
+    }
+
+        .dataTables_filter input:focus {
+            outline: none;
+            border-color: #262626;
+            box-shadow: 0 0 0 2px rgba(38, 38, 38, 0.1);
+        }
+
+.dataTables_length label {
+    font-size: 14px;
+    color: #666;
+}
+
+.dataTables_paginate .paginate_button {
+    padding: 6px 12px;
+    margin: 0 3px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    color: #262626;
+    transition: all 0.2s;
+}
+
+    .dataTables_paginate .paginate_button:hover {
+        background: #262626;
+        color: white !important;
+        border-color: #262626;
+    }
+
+    .dataTables_paginate .paginate_button.current {
+        background: #262626;
+        color: white !important;
+        border-color: #262626;
+    }
+
+.dataTables_info {
+    font-size: 14px;
+    color: #666;
+    padding-top: 12px !important;
+}

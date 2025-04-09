@@ -4733,24 +4733,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Keilyn\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\melvi\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Keilyn\\Desktop\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub.csproj",
+      "projectUniqueName": "C:\\Users\\melvi\\Documents\\JarredsOrderHub\\PROYECTO\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub.csproj",
       "projectName": "JarredsOrderHub",
-      "projectPath": "C:\\Users\\Keilyn\\Desktop\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub.csproj",
-      "packagesPath": "C:\\Users\\Keilyn\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Keilyn\\Desktop\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub\\obj\\",
+      "projectPath": "C:\\Users\\melvi\\Documents\\JarredsOrderHub\\PROYECTO\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub.csproj",
+      "packagesPath": "C:\\Users\\melvi\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\melvi\\Documents\\JarredsOrderHub\\PROYECTO\\JarredsOrderHub\\JarredsOrderHub\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\Keilyn\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Users\\melvi\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -4758,6 +4753,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -4775,8 +4771,7 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      },
-      "SdkAnalysisLevel": "9.0.200"
+      }
     },
     "frameworks": {
       "net8.0": {
@@ -4812,7 +4807,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

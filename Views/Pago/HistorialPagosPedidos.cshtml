@@ -1,45 +1,63 @@
-﻿<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+﻿@model IEnumerable<JarredsOrderHub.Models.Pedidos>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Historial de Pagos";
+}
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="~/css/HistorialPagos.css" />
 
 <div class="container">
     <header>
-        <h1>Historial de Pagos</h1>
+        <h1 class="titulo-tabla">Historial de Pagos</h1>
         <p>Consulta tus pagos realizados y accede a los detalles de tus pedidos.</p>
     </header>
 
-    <!-- Sección de pagos -->
-    <div class="pagos-container">
-        <div class="pago-card">
-            <div class="pago-info">
-                <h2>Pedido #123</h2>
-                <p><strong>Fecha de Pedido:</strong> 2024-12-10</p>
-                <p><strong>Total:</strong> $150.00</p>
-                <p><strong>Pago:</strong> $150.00</p>
-                <p><strong>Método de Pago:</strong> Tarjeta de Crédito</p>
-                <p><strong>Estado:</strong> Pagado</p>
-            </div>
-            <div class="pago-actions">
-                <button onclick="verDetalles(123)"><i class="fas fa-eye"></i> Ver Detalles</button>
-                <button onclick="reenviarFactura(123)"><i class="fas fa-envelope"></i> Reenviar Factura</button>
-            </div>
+    <!-- Verifica si el modelo está vacío -->
+    @if (!Model.Any())
+    {
+        <div class="no-pedidos">
+            <p>No hay pedidos que mostrar.</p>
         </div>
-
-        <div class="pago-card">
-            <div class="pago-info">
-                <h2>Pedido #124</h2>
-                <p><strong>Fecha de Pedido:</strong> 2024-12-05</p>
-                <p><strong>Total:</strong> $200.00</p>
-                <p><strong>Pago:</strong> $200.00</p>
-                <p><strong>Método de Pago:</strong> PayPal</p>
-                <p><strong>Estado:</strong> Pagado</p>
-            </div>
-            <div class="pago-actions">
-                <button onclick="verDetalles(124)"><i class="fas fa-eye"></i> Ver Detalles</button>
-                <button onclick="reenviarFactura(124)"><i class="fas fa-envelope"></i> Reenviar Factura</button>
-            </div>
+    }
+    else
+    {
+        <!-- Sección de pagos -->
+        <div class="pagos-container">
+            @foreach (var pedido in Model)
+            {
+                <div class="pago-card">
+                    <div class="pago-info">
+                        <h2>Pedido #@pedido.Id</h2>
+                        <p><strong>Fecha de Pedido:</strong> @pedido.FechaPedido.ToString("yyyy-MM-dd")</p>
+                        <p><strong>Total:</strong> @pedido.Total.ToString("C", new System.Globalization.CultureInfo("es-CR"))</p>
+                        @* Suponiendo que el "Pago" coincide con el total del pedido *@
+                        <p><strong>Pago:</strong> @pedido.Total.ToString("C", new System.Globalization.CultureInfo("es-CR"))</p>
+                        <p><strong>Método de Pago:</strong> @pedido.MetodoPago</p>
+                        <p><strong>Estado:</strong> @pedido.EstadoPedido</p>
+                        <p>
+                            <strong>Usuario:</strong>
+                            @if (pedido.Cliente != null)
+                            {
+                                <text>@($"{pedido.Cliente.Nombre} {pedido.Cliente.Apellido}")</text>
+                            }
+                            else
+                            {
+                                <span>Sin información</span>
+                            }
+                        </p>
+                    </div>
+                    <div class="pago-actions">
+                        <button onclick="verDetalles(@pedido.Id)">
+                            <i class="fas fa-eye"></i> Ver Detalles
+                        </button>
+                        <button onclick="reenviarFactura(@pedido.Id)">
+                            <i class="fas fa-envelope"></i> Reenviar Factura
+                        </button>
+                    </div>
+                </div>
+            }
         </div>
-    </div>
-
+    }
 </div>
 
 <!-- Modal de Detalles del Pedido -->
@@ -49,7 +67,6 @@
             <h2 id="modalTitle">Detalles del Pedido</h2>
             <span class="close" onclick="cerrarModal()">&times;</span>
         </div>
-        
         <p id="detallesPedido"></p>
     </div>
 </div>
@@ -64,51 +81,60 @@
     </div>
 </div>
 
-<script>
-    // Función para ver detalles del pedido
-    function verDetalles(pedidoId) {
-        // Simular la carga de los detalles del pedido
-        let detalles = `Detalles del pedido #${pedidoId}:
-                    - Producto A x 2
-                    - Producto B x 1
-                    - Total: $150.00`;
+@section scripts {
+    <script>
+        // Función para ver detalles del pedido
+        function verDetalles(pedidoId) {
+            // Realiza la llamada AJAX a la acción ObtenerDetallesPedido
+            fetch('/Pago/ObtenerDetallesPedido?id=' + pedidoId)
+                .then(response => {
+                    if (!response.ok) throw new Error("Error al obtener los detalles");
+                    return response.json();
+                })
+                .then(data => {
+                    let detalles = `Detalles del pedido #${pedidoId}:\n`;
+                    data.forEach(detalle => {
+                        detalles += `- ${detalle.nombrePlatillo} x ${detalle.cantidad} = ${formatCurrency(detalle.total)}\n`;
+                    });
+                    document.getElementById("detallesPedido").innerText = detalles;
+                    document.getElementById("modalDetalles").style.display = "block";
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert("No se pudieron cargar los detalles del pedido.");
+                });
+        }
 
-        // Mostrar el contenido en el modal
-        document.getElementById("detallesPedido").innerText = detalles;
+        // Función para reenviar factura (simulación)
+        function reenviarFactura(pedidoId) {
+            let mensaje = `¿Deseas reenviar la factura del pedido #${pedidoId}?`;
+            document.getElementById("reenviarMensaje").innerText = mensaje;
+            document.getElementById("modalReenviarFactura").style.display = "block";
+        }
 
-        // Mostrar el modal
-        document.getElementById("modalDetalles").style.display = "block";
-    }
-
-    // Función para reenviar la factura
-    function reenviarFactura(pedidoId) {
-        // Simular la acción de reenviar factura
-        let mensaje = `¿Deseas reenviar la factura del pedido #${pedidoId}?`;
-
-        // Mostrar el mensaje en el modal
-        document.getElementById("reenviarMensaje").innerText = mensaje;
-
-        // Mostrar el modal
-        document.getElementById("modalReenviarFactura").style.display = "block";
-    }
-
-    // Función para confirmar el envío de la factura
-    function reenviarFacturaConfirmado() {
-        alert("Factura reenviada exitosamente!");
-        cerrarModal();
-    }
-
-    // Función para cerrar el modal
-    function cerrarModal() {
-        document.getElementById("modalDetalles").style.display = "none";
-        document.getElementById("modalReenviarFactura").style.display = "none";
-    }
-
-    // Cerrar el modal si se hace clic fuera de él
-    window.onclick = function (event) {
-        if (event.target == document.getElementById("modalDetalles") || event.target == document.getElementById("modalReenviarFactura")) {
+        function reenviarFacturaConfirmado() {
+            alert("Factura reenviada exitosamente!");
             cerrarModal();
         }
-    }
 
-</script>
+        // Función para cerrar el modal
+        function cerrarModal() {
+            document.getElementById("modalDetalles").style.display = "none";
+            document.getElementById("modalReenviarFactura").style.display = "none";
+        }
+
+        // Función para formatear moneda
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('es-CR', { style: 'currency', currency: 'CRC' }).format(value);
+        }
+
+        // Cerrar el modal si se hace clic fuera de él
+        window.onclick = function (event) {
+            const modalDetalles = document.getElementById("modalDetalles");
+            const modalFactura = document.getElementById("modalReenviarFactura");
+            if (event.target == modalDetalles || event.target == modalFactura) {
+                cerrarModal();
+            }
+        }
+    </script>
+}

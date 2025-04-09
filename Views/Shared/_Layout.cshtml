@@ -3,13 +3,18 @@
     var userType = Context.Session.GetString("UserType");
 }
 
+
 <!DOCTYPE html>
 <html>
 <head>
     <script src="https://kit.fontawesome.com/ddc6aa5d21.js" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="~/css/Layout.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="/css/dataTable.css" />
+    <link rel="stylesheet" href="/css/Layout.css" />
+
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,11 +25,10 @@
     <title>JarredsOrderHub - @(userType)</title>
 
 </head>
-
-
-    <!--Header -->
+<body>
+<!--Header -->
 <header>
-        <nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background-color: #262626 !important;">
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background-color: #262626 !important;">
         <div class="container">
             <!-- Logo -->
             <a class="navbar-brand" href="@Url.Action("Index","Home")">
@@ -41,38 +45,39 @@
                 <ul class="navbar-nav ms-auto">
                     @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
-                     @if (userType == "Empleado") {
-                    
-                        <!-- Admin -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-user-cog me-1"></i>Admin
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="adminDropdown">
-                                <li><a class="dropdown-item" href="@Url.Action("AdministrarEmpleados","Admin")">Empleados</a></li>
-                                <li><a class="dropdown-item" href="@Url.Action("AdministrarRoles","Admin")">Roles</a></li>
-                                <li><a class="dropdown-item" href="@Url.Action("AdministrarTareas","Admin")">Tareas</a></li>
-                                <li><a class="dropdown-item" href="@Url.Action("AdministrarUsuarios","Admin")">Usuarios</a></li>
-                                        <li><a class="dropdown-item" href="@Url.Action("ListadoPedidos","Envio")">Listado de Pedidos</a></li>
-                                <li><a class="dropdown-item" href="@Url.Action("HistorialPagosPedidosAdministracion","Pago")">Historial de Pagos Administracion</a></li>
-                                <li><a class="dropdown-item" href="@Url.Action("VisualizarRetroalimentaciones","Envio")">Ver Retroalimentacion</a></li>
-                                        <li><a class="dropdown-item" href="@Url.Action("AdministracionReportes","Reporte")"> Reportes </a></li>
-                                <li><a class="dropdown-item" href="@Url.Action("EdicionInformacion","Informacion")">Apartados Informativos</a></li>
-                            </ul>
-                        </li>
+                        @if (userType == "Empleado")
+                        {
 
-                    <!-- Catálogo -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="catalogoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-boxes me-1"></i> Catálogo
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="catalogoDropdown">
-                                <li><a class="dropdown-item" href="@Url.Action("AdministrarCategorias","Catalogo")">Administrar Categorias</a></li>
-                                <li><a class="dropdown-item" href="@Url.Action("AdministrarPlatos","Catalogo")">Administrar Platos</a></li>
-                        </ul>
-                    </li>
-                    }}
-                   
+                            <!-- Admin -->
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user-cog me-1"></i>Admin
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                                    <li><a class="dropdown-item" href="@Url.Action("AdministrarEmpleados","Admin")">Empleados</a></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("AdministrarRoles","Admin")">Roles</a></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("AdministrarTareas","Admin")">Tareas</a></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("AdministrarUsuarios","Admin")">Usuarios</a></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("ListadoPedidos","Envio")">Listado de Pedidos</a></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("HistorialPagosPedidosAdministracion","Pago")">Historial de Pagos Administracion</a></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("VisualizarRetroalimentaciones","Envio")">Ver Retroalimentacion</a></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("AdministracionReportes","Reporte")"> Reportes </a></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("GestionarInformacion","Informacion")">Apartados Informativos</a>
+                                </ul>
+                            </li>
+
+                            <!-- Catálogo -->
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="catalogoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-boxes me-1"></i> Catálogo
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="catalogoDropdown">
+                                    <li><a class="dropdown-item" href="@Url.Action("AdministrarCategorias","Catalogo")">Administrar Categorias</a></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("AdministrarPlatos","Catalogo")">Administrar Platos</a></li>
+                                </ul>
+                            </li>
+                        }}
+
                     @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
                         <!-- Pedidos -->
@@ -129,55 +134,80 @@
     </nav>
 </header>
 
-    <div>
-        @RenderBody()
+
+    <div class="wrapper">
+        <!-- Contenido principal -->
+        <div class="content">
+            @RenderBody()
+        </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-light py-5 " style="background-color: #262626 !important;">
-        <div class="container">
-            <div class="row">
-                <!-- ACERCA -->
-                <div class="col-md-4 mb-4">
-                    <h5 class="fw-bold">Acerca de Nosotros</h5>
-                    <p>Explora una amplia variedad de productos y servicios seleccionados especialmente para ti.</p>
-                </div>
-                <!-- FAQ -->
-                <div class="col-md-4 mb-4">
-                    <h5 class="fw-bold">Preguntas Frecuentes</h5>
-                    <ul class="list-unstyled">
-                        <li>¿Cada cuánto se realizan entregas?</li>
-                        <li class="text-muted">Dos veces al mes.</li>
-                    </ul>
-                </div>
-                <!-- CONTACTO -->
-                <div class="col-md-4 mb-4 text-center">
-                    <h5 class="fw-bold">Contacto</h5>
-                    <a href="#" class="text-light me-3"><i class="fab fa-facebook fa-2x"></i></a>
-                    <a href="#" class="text-light me-3"><i class="fab fa-twitter fa-2x"></i></a>
-                    <a href="#" class="text-light"><i class="fab fa-instagram fa-2x"></i></a>
-                    <br>
-                    <br>
-                    <a href="#" class="text-light">jarredsOrderHub@gmail.com</a>
-                </div>
-            </div>
+
+<!-- Footer -->
+<footer class="bg-dark text-light py-5 " style="background-color: #262626 !important;">
+    <div class="container">
+        <div class="row">
+            <!-- ACERCA -->
             <div class="col-md-4 mb-4">
-                <!-- TERMINOS Y CONDICIONES -->
-                <h5 class="fw-bold">Terminos y Condiciones</h5>
+                <h5 class="fw-bold">Acerca de Nosotros</h5>
+                <p>Explora una amplia variedad de productos y servicios seleccionados especialmente para ti.</p>
+            </div>
+            <!-- FAQ -->
+            <div class="col-md-4 mb-4">
+                <h5 class="fw-bold">Preguntas Frecuentes</h5>
+                <ul class="list-unstyled">
+                    <li>¿Cada cuánto se realizan entregas?</li>
+                    <li class="text-muted">Dos veces al mes.</li>
                 </ul>
             </div>
-            <hr class="border-secondary">
-            <div class="text-center">
-                <p class="text-center">&copy; @DateTime.Now.Year Jarred's Order Hub. Todos los derechos reservados.</p>
+            <!-- CONTACTO -->
+            <div class="col-md-4 mb-4 text-center">
+                <h5 class="fw-bold">Contacto</h5>
+                <a href="#" class="text-light me-3"><i class="fab fa-facebook fa-2x"></i></a>
+                <a href="#" class="text-light me-3"><i class="fab fa-twitter fa-2x"></i></a>
+                <a href="#" class="text-light"><i class="fab fa-instagram fa-2x"></i></a>
+                <br>
+                <br>
+                <a href="#" class="text-light">jarredsOrderHub@gmail.com</a>
             </div>
         </div>
-    </footer>
+        <div class="col-md-4 mb-4">
+            <!-- TERMINOS Y CONDICIONES -->
+            <h5 class="fw-bold">Terminos y Condiciones</h5>
+            </ul>
+        </div>
+        <hr class="border-secondary">
+        <div class="text-center">
+            <p class="text-center">&copy; @DateTime.Now.Year Jarred's Order Hub. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</footer>
+
+<script type="text/javascript">
+    (function (d, t) {
+        var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
+        v.onload = function () {
+            window.voiceflow.chat.load({
+                verify: { projectID: '67f5a28dfbee7bfc90657b03' },
+                url: 'https://general-runtime.voiceflow.com',
+                versionID: 'production',
+                voice: {
+                    url: "https://runtime-api.voiceflow.com"
+                }
+            });
+        }
+        v.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
+    })(document, 'script');
+</script>
+
+</body>
+
+<script src="/_framework/aspnetcore-browser-refresh.js"></script>
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
 
 
-    <!-- Bootstrap JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-
-    @RenderSection("scripts", required: false)
+@RenderSection("scripts", required: false)
 
 </html>
