@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using JarredsOrderHub.Models;
+﻿using JarredsOrderHub.Models;
 
 namespace JarredsOrderHub.ViewModels
 {

@@ -124,6 +124,87 @@ namespace JarredsOrderHub.Migrations
                     b.ToTable("Clientes");
                 });
 
+            modelBuilder.Entity("JarredsOrderHub.Models.Cupon", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Codigo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Descuento")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("EsPorcentual")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("FechaExpiracion")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Cupones");
+                });
+
+            modelBuilder.Entity("JarredsOrderHub.Models.CuponCliente", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClienteId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CuponId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("FechaUso")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CuponId");
+
+                    b.ToTable("CuponClientes");
+                });
+
+            modelBuilder.Entity("JarredsOrderHub.Models.DetallePedido", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Cantidad")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PedidoId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("PrecioUnitario")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ProductoId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Total")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PedidoId");
+
+                    b.HasIndex("ProductoId");
+
+                    b.ToTable("DetallePedidos");
+                });
+
             modelBuilder.Entity("JarredsOrderHub.Models.Empleado", b =>
                 {
                     b.Property<int>("IdEmpleado")
@@ -205,6 +286,73 @@ namespace JarredsOrderHub.Migrations
                             HoraFin = new TimeSpan(0, 19, 0, 0, 0),
                             HoraInicio = new TimeSpan(0, 10, 0, 0, 0)
                         });
+                });
+
+            modelBuilder.Entity("JarredsOrderHub.Models.Pago", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("FechaPago")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Monto")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("PedidoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PedidoId");
+
+                    b.ToTable("Pagos");
+                });
+
+            modelBuilder.Entity("JarredsOrderHub.Models.Pedidos", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Comentarios")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("CuponId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EstadoPedido")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("FechaPedido")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("MetodoPago")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Total")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CuponId");
+
+                    b.ToTable("Pedidos");
                 });
 
             modelBuilder.Entity("JarredsOrderHub.Models.Platillo", b =>
@@ -332,6 +480,50 @@ namespace JarredsOrderHub.Migrations
                         });
                 });
 
+            modelBuilder.Entity("JarredsOrderHub.Models.SeccionContenido", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ArchivoPdf")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Contenido")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Direccion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PreguntasFrecuentes")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Seccion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Telefono")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SeccionesContenido");
+                });
+
             modelBuilder.Entity("JarredsOrderHub.Models.Tareas", b =>
                 {
                     b.Property<int>("IdTarea")
@@ -361,6 +553,36 @@ namespace JarredsOrderHub.Migrations
                     b.ToTable("Tareas");
                 });
 
+            modelBuilder.Entity("JarredsOrderHub.Models.CuponCliente", b =>
+                {
+                    b.HasOne("JarredsOrderHub.Models.Cupon", "Cupon")
+                        .WithMany()
+                        .HasForeignKey("CuponId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cupon");
+                });
+
+            modelBuilder.Entity("JarredsOrderHub.Models.DetallePedido", b =>
+                {
+                    b.HasOne("JarredsOrderHub.Models.Pedidos", "Pedido")
+                        .WithMany("Detalles")
+                        .HasForeignKey("PedidoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JarredsOrderHub.Models.Platillo", "Platillo")
+                        .WithMany()
+                        .HasForeignKey("ProductoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pedido");
+
+                    b.Navigation("Platillo");
+                });
+
             modelBuilder.Entity("JarredsOrderHub.Models.Empleado", b =>
                 {
                     b.HasOne("JarredsOrderHub.Models.Horario", "Horario")
@@ -374,6 +596,26 @@ namespace JarredsOrderHub.Migrations
                     b.Navigation("Horario");
 
                     b.Navigation("Rol");
+                });
+
+            modelBuilder.Entity("JarredsOrderHub.Models.Pago", b =>
+                {
+                    b.HasOne("JarredsOrderHub.Models.Pedidos", "Pedido")
+                        .WithMany()
+                        .HasForeignKey("PedidoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pedido");
+                });
+
+            modelBuilder.Entity("JarredsOrderHub.Models.Pedidos", b =>
+                {
+                    b.HasOne("JarredsOrderHub.Models.Cupon", "Cupon")
+                        .WithMany()
+                        .HasForeignKey("CuponId");
+
+                    b.Navigation("Cupon");
                 });
 
             modelBuilder.Entity("JarredsOrderHub.Models.Platillo", b =>
@@ -409,6 +651,11 @@ namespace JarredsOrderHub.Migrations
             modelBuilder.Entity("JarredsOrderHub.Models.Categoria", b =>
                 {
                     b.Navigation("Platillos");
+                });
+
+            modelBuilder.Entity("JarredsOrderHub.Models.Pedidos", b =>
+                {
+                    b.Navigation("Detalles");
                 });
 #pragma warning restore 612, 618
         }
