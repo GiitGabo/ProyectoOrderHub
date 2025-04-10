@@ -92,6 +92,7 @@ namespace JarredsOrderHub.Controllers
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, cliente.Nombre),
+                    new Claim(ClaimTypes.NameIdentifier, cliente.IdCliente.ToString()),
                     new Claim("UserType", "Cliente")
                 };
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
