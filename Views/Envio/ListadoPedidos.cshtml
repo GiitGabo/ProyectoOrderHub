@@ -1,99 +1,36 @@
-﻿@model List<JarredsOrderHub.Models.Pedidos>
-@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-<link rel="stylesheet" href="~/css/Estilos.css" />
-<link rel="stylesheet" href="~/css/ListadoPedidos.css" />
-
+﻿<link rel="stylesheet" href="~/css/ListadoPedidos.css" />
 
 <!-- Título principal -->
 <h1 class="titulo-tabla">Listado de Pedidos</h1>
 
 <!-- Contenedor de Cards -->
-<div class="container-pedido">
-@foreach (var pedido in Model)
-{
-    <div class="card">
-        <h3>Pedido @pedido.Id</h3>
-            
-        <!-- Mostrando los detalles de cada pedido -->
-        @if (pedido.Detalles != null)
-        {
+<div class="container">
+    @foreach (var pedido in Model)
+
+    {
+        <div class="card">
+            <h3>Pedido @pedido.Id</h3>
             @foreach (var detalle in pedido.Detalles)
+
             {
-                <p>
-                    <i class="fas fa-utensils"></i>
-                    <span class="bold-text">Plato:</span> @detalle.Platillo?.Nombre
-                </p>
-                <p>
-                    <i class="fas fa-sort-numeric-up-alt"></i>
-                    <span class="bold-text">Cantidad:</span> @detalle.Cantidad
-                </p>
+                <p><i class="fas fa-utensils"></i> <span class="bold-text">Plato:</span> @detalle.Platillo.Nombre</p>
+                <p><i class="fas fa-sort-numeric-up-alt"></i> <span class="bold-text">Cantidad:</span> @detalle.Cantidad</p>
             }
-        }
-        else
-        {
-            <p>No tiene detalles</p>
-        }
-            
-        <p>
-            <i class="fas fa-comment"></i>
-            <span class="bold-text">Comentarios:</span> @pedido.Comentarios
-        </p>
-            
-        <label for= "estado-@pedido.Id">
-            <span class="bold-text">Estado:</span>
-        </label>
-            
-    @{
-        var pendienteSelected = pedido.EstadoPedido.ToLower() == "pendiente" ? " selected=\"selected\"" : "";
-        var preparandoSelected = pedido.EstadoPedido.ToLower() == "preparando" ? " selected=\"selected\"" : "";
-        var enCaminoSelected = pedido.EstadoPedido.ToLower() == "en_camino" ? " selected=\"selected\"" : "";
-        var entregadoSelected = pedido.EstadoPedido.ToLower() == "entregado" ? " selected=\"selected\"" : "";
-    }
+
+            <p><i class="fas fa-comment"></i> <span class="bold-text">Comentarios:</span> @pedido.Comentarios</p>
+            <label for="estado-@pedido.Id"><span class="bold-text">Estado:</span></label>
             <select id="estado-@pedido.Id" class="status-dropdown">
-                @if (pedido.EstadoPedido.ToLower() == "pendiente")
-                {
-                    <option value="pendiente" selected>Pendiente</option>
-                }
-                else
-                {
-                    <option value="pendiente">Pendiente</option>
-                }
-
-                @if (pedido.EstadoPedido.ToLower() == "preparando")
-                {
-                    <option value="preparando" selected>Preparando</option>
-                }
-                else
-                {
-                    <option value="preparando">Preparando</option>
-                }
-
-                @if (pedido.EstadoPedido.ToLower() == "en_camino")
-                {
-                    <option value="en_camino" selected>En Camino</option>
-                }
-                else
-                {
-                    <option value="en_camino">En Camino</option>
-                }
-
-                @if (pedido.EstadoPedido.ToLower() == "entregado")
-                {
-                    <option value="entregado" selected>Entregado</option>
-                }
-                else
-                {
-                    <option value="entregado">Entregado</option>
-                }
+                <option value="pendiente" selected="@(pedido.EstadoPedido == "pendiente" ? "selected" : null)">Pendiente</option>
+                <option value="preparando" selected="@(pedido.EstadoPedido == "preparando" ? "selected" : null)">Preparando</option>
+                <option value="en_camino" selected="@(pedido.EstadoPedido == "en_camino" ? "selected" : null)">En Camino</option>
+                <option value="entregado" selected="@(pedido.EstadoPedido == "entregado" ? "selected" : null)">Entregado</option>
+                <option value="pagado" selected="@(pedido.EstadoPedido == "pagado" ? "selected" : null)">Pagado</option>
             </select>
 
-            
-        <!-- Botón para guardar el estado -->
-        <button class="save-button" onclick="guardarEstado(@pedido.Id)">Guardar Estado</button>
-    </div>
-}
+            <!-- Solo pasamos el Id del pedido -->
+            <button class="save-button" onclick="guardarEstado(@pedido.Id)">Guardar Estado</button>
+        </div>
+    }
 </div>
 
 <div style="margin: 40px 0;"></div>
@@ -101,12 +38,13 @@
 <script>
     //Función para actualizar el estado del pedido
     function guardarEstado(pedidoId) {
+        console.log("pedidoId: ", pedidoId);
 
-        // Se obtiene el dropdown del estado del pedido
+        // Obtienes el dropdown del estado del pedido
         const dropdown = document.getElementById(`estado-${pedidoId}`);
         const nuevoEstado = dropdown.value;
 
-        // Enviar la actualización al backend
+        // Ahora enviamos el objeto pedido completo al backend usando fetch
         fetch(`/api/PedidosService/actualizarEstado/${pedidoId}/${nuevoEstado}`, {
             method: 'PUT',
             headers: {
@@ -116,7 +54,7 @@
         })
             .then(response => {
                 if (response.ok) {
-                    return response.json();
+                    return response.json(); // Solo analizamos como JSON si la respuesta es correcta
                 }
                 throw new Error('Error en la actualización');
             })

@@ -1,6 +1,6 @@
-﻿
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.InteropServices;
 
 namespace JarredsOrderHub.Models
 {
@@ -33,5 +33,10 @@ namespace JarredsOrderHub.Models
         [ForeignKey("UsuarioId")]
         public virtual Cliente? Cliente { get; set; }
         public virtual List<DetallePedido>? Detalles { get; set; }
+
+        [ForeignKey("Cupon")]
+        public int? CuponId { get; set; } // Puede ser null si el pedido no tiene cupón
+        public virtual Cupon? Cupon { get; set; }
+
     }
 }

@@ -1,0 +1,7 @@
+# Archivos generados
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+*.cache
+*.generated.cs

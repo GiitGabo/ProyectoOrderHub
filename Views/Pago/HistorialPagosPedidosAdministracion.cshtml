@@ -1,119 +1,193 @@
-﻿@model IEnumerable<JarredsOrderHub.Models.Pedidos>
-@{
-    ViewBag.Title = "Historial de Pedidos";
+﻿<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="~/css/AdminPagos.css" />
+@model List<Pago>
+
+<header>
+    <h1>Historial de Pagos</h1>
+</header>
+
+<!-- Filtros -->
+<div class="filtros">
+    <label for="fechaInicio">Fecha de Inicio</label>
+    <input type="date" id="fechaInicio" onchange="aplicarFiltros()">
+
+    <label for="fechaFin">Fecha de Fin</label>
+    <input type="date" id="fechaFin" onchange="aplicarFiltros()">
+
+    <label for="metodoPago">Método de Pago</label>
+    <select id="metodoPago" onchange="aplicarFiltros()">
+        <option value="">Todos</option>
+        <option value="Efectivo">Efectivo</option>
+        <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
+        <option value="PayPal">PayPal</option>
+    </select>
+
+    <label for="estadoPago">Estado del Pago</label>
+    <select id="estadoPago" onchange="aplicarFiltros()">
+        <option value="">Todos</option>
+        <option value="Pagado">Pagado</option>
+        <option value="Pendiente">Pendiente</option>
+    </select>
+</div>
+
+@if (Model.Count == 0)
+{
+    <div class="no-pagos text-center" style="margin:30px 0px;">
+        <p>Aún no existen pagos registrados.</p>
+    </div>
 }
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="~/css/Estilos.css" />
-<body>
-    <h1 class="titulo-tabla">Historial de Pedidos</h1>
-    <table class="employeeTable">
+else
+{
+    <!-- Tabla de pagos -->
+    <table class="tabla-pagos">
         <thead>
             <tr>
                 <th>Pedido ID</th>
-                <th>Usuario</th>
-                <th>Fecha</th>
-                <th>Estado</th>
-                <th>Método de Pago</th>
+                <th>Fecha de Pedido</th>
                 <th>Total</th>
+                <th>Pago ID</th>
+                <th>Monto</th>
+                <th>Fecha de Pago</th>
+                <th>Método de Pago</th>
+                <th>Estado</th>
                 <th>Acciones</th>
             </tr>
         </thead>
-        <tbody>
-            @foreach (var pedido in Model)
+        <tbody id="tablaPagosBody">
+            @foreach (var pago in Model)
             {
-                <tr>
-                    <td>@pedido.Id</td>
+                <tr class="pago-card"
+                    data-fecha="@pago.Pedido.FechaPedido.ToString("yyyy-MM-dd")"
+                    data-metodopago="@pago.Pedido.MetodoPago">
+                    <td>@pago.PedidoId</td>
+                    <td>@pago.Pedido.FechaPedido.ToString("yyyy-MM-dd")</td>
+                    <td>@pago.Pedido.Total</td>
+                    <td>@pago.Id</td>
+                    <td>@pago.Monto</td>
+                    <td>@pago.FechaPago</td>
+                    <td>@pago.Pedido.MetodoPago</td>
+                    <td>@pago.Estado</td>
                     <td>
-                        @if (pedido.Cliente != null)
-                        {
-                            <text>@($"{pedido.Cliente.Nombre} {pedido.Cliente.Apellido}")</text>
-                        }
-                        else
-                        {
-                            <span>Sin información</span>
-                        }
-                    </td>
-                    <td>@pedido.FechaPedido.ToString("dd/MM/yyyy HH:mm")</td>
-                    <td>@pedido.EstadoPedido</td>
-                    <td>@pedido.MetodoPago</td>
-                    <td>@pedido.Total.ToString("C", new System.Globalization.CultureInfo("es-CR"))</td>
-                    <td>
-                        <a href="javascript:void(0);" onclick="mostrarDetalles(@pedido.Id)" class="btn btn-info btn-sm">
-                            Detalles
-                        </a>
+                        <button onclick="verDetalles(@pago.PedidoId)">
+                            <i class="fas fa-eye"></i> Ver Detalles
+                        </button>
+                        <button onclick="reenviarFactura(@pago.PedidoId)">
+                            <i class="fas fa-envelope"></i> Reenviar Factura
+                        </button>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
+}
 
-    <!-- Modal para mostrar detalles del pedido -->
-    <div id="detallesPedidoModal" class="modal-detallePedido">
-        <div class="modal-detallePedido-content">
-            <span class="modal-detallePedido-close" onclick="cerrarModal()">&times;</span>
-            <div class="modal-detallePedido-header">
-                <h2>Detalles del Pedido #<span id="pedidoIdModal"></span></h2>
-            </div>
-            <div class="modal-detallePedido-body">
-                <div class="card-detallePedido-info">
-                    <div id="pedidoInfoCard">
-                        <!-- Información general del pedido -->
-                    </div>
-                </div>
-                <h3 class="titulo-detallePedido-productos">Productos</h3>
-                <div id="detallesPedidoContenido" class="cards-detallePedido-container">
-                    <!-- Aquí se cargarán los detalles del pedido en formato de cards -->
-                </div>
-            </div>
+<!-- Modal de Detalles del Pedido -->
+<div id="modalDetalles" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">Detalles del Pedido</h2>
+            <span class="close" onclick="cerrarModal()">&times;</span>
         </div>
+        <p id="detallesPedido"></p>
     </div>
 
-    <script>
-        // Función para mostrar el modal con los detalles del pedido
-        function mostrarDetalles(pedidoId) {
-            var modal = document.getElementById('detallesPedidoModal');
-            document.getElementById('pedidoIdModal').textContent = pedidoId;
+<!-- Modal para reenviar factura -->
+<div id="modalReenviarFactura" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Reenviar Factura</h2>
+            <span class="close" onclick="cerrarModal()">&times;</span>
+        </div>
+        <p id="reenviarMensaje"></p>
+        <button onclick="reenviarFacturaConfirmado()">Enviar Factura</button>
+    </div>
+</div>
 
-            // Realizar la solicitud AJAX para obtener los detalles
-            fetch(`/Pago/ObtenerDetallesPedido/${pedidoId}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Error al obtener los detalles');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    var contenido = document.getElementById('detallesPedidoContenido');
-                    contenido.innerHTML = '';
+<script>
+    function aplicarFiltros() {
+        // Obtener los valores de los filtros
+        const fechaInicio = document.getElementById("fechaInicio").value;
+        const fechaFin = document.getElementById("fechaFin").value;
+        const metodoPago = document.getElementById("metodoPago").value;
+        const estadoPago = document.getElementById("estadoPago").value;
 
-                    // Total acumulado para mostrarlo en el resumen
-                    let totalPedido = 0;
+        // Obtener todas las filas de la tabla
+        const filas = document.querySelectorAll(".tabla-pagos tbody tr");
 
-                    // Crear cards para cada detalle
-                    data.forEach(detalle => {
-                        // Acumular el total
-                        totalPedido += detalle.total;
+        filas.forEach(fila => {
+            // Obtener los valores de cada fila
+            const fechaPedido = fila.querySelector("td:nth-child(2)").innerText;
+            const metodo = fila.querySelector("td:nth-child(7)").innerText;
+            const estado = fila.querySelector("td:nth-child(8)").innerText;
+            const fechaPago = fila.querySelector("td:nth-child(6)").innerText;
 
-                        // Crear card
-                        var card = document.createElement('div');
-                        card.className = 'card-detallePedido-item';
+            // Inicializar un flag para determinar si la fila debe mostrarse
+            let mostrarFila = true;
 
-                        // Contenido de la card
-                        card.innerHTML = `
-                                    <div class="card-detallePedido-header">
-                                        <h4>${detalle.nombrePlatillo}</h4>
-                                    </div>
-                                    <div class="card-detallePedido-body">
-                                        <div class="card-detallePedido-info">
-                                            <p><strong>Cantidad:</strong> ${detalle.cantidad}</p>
-                                            <p><strong>Precio:</strong> ${formatCurrency(detalle.precioUnitario)}</p>
-                                            <p class="total-detallePedido"><strong>Total:</strong> ${formatCurrency(detalle.total)}</p>
-                                        </div>
-                                    </div>
-                                `;
+            // Filtro por fecha de inicio
+            if (fechaInicio && new Date(fechaPedido) < new Date(fechaInicio)) {
+                mostrarFila = false;
+            }
 
-                        contenido.appendChild(card);
+            // Filtro por fecha de fin
+            if (fechaFin && new Date(fechaPedido) > new Date(fechaFin)) {
+                mostrarFila = false;
+            }
+
+            // Filtro por método de pago
+            if (metodoPago && metodo !== metodoPago) {
+                mostrarFila = false;
+            }
+
+            // Filtro por estado de pago
+            if (estadoPago && estado !== estadoPago) {
+                mostrarFila = false;
+            }
+
+            // Mostrar u ocultar la fila según los filtros
+            fila.style.display = mostrarFila ? "" : "none";
+        });
+    }
+
+
+    // Función para ver detalles del pedido
+    function verDetalles(pedidoId) {
+        fetch(`/api/PedidosService/Detalles/${pedidoId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("No se encontraron detalles para este pedido.");
+                }
+                return response.json();
+            })
+            .then(detalles => {
+                let contenido = `Detalles del pedido #${pedidoId}:\n`;
+
+                if (detalles.length > 0) {
+                    detalles.forEach(d => {
+                        contenido += `- ${d.platillo.nombre} x ${d.cantidad} ($${d.precioUnitario.toFixed(2)})\n`;
                     });
+
+                    const total = detalles.reduce((sum, d) => sum + d.total, 0);
+                    contenido += `Total: $${total.toFixed(2)}`;
+                } else {
+                    contenido += "No hay detalles disponibles.";
+                }
+
+                document.getElementById("detallesPedido").innerText = contenido;
+                document.getElementById("modalDetalles").style.display = "block";
+            })
+            .catch(error => {
+                document.getElementById("detallesPedido").innerText = error.message;
+                document.getElementById("modalDetalles").style.display = "block";
+            });
+    }
+
+    // Función para reenviar la factura
+    function reenviarFactura(pedidoId) {
+        let mensaje = `¿Deseas reenviar la factura del pedido #${pedidoId}?`;
+        document.getElementById("reenviarMensaje").innerText = mensaje;
+        document.getElementById("modalReenviarFactura").style.display = "block";
+    }
 
                     // Crear card informativa del pedido
                     var pedidoInfo = document.getElementById('pedidoInfoCard');
@@ -126,47 +200,15 @@
                                 </div>
                             `;
 
-                    // Mostrar el modal
-                    modal.style.display = 'block';
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error al cargar los detalles del pedido.');
-                });
-        }
+    // Función para cerrar el modal
+    function cerrarModal() {
+        document.getElementById("modalDetalles").style.display = "none";
+        document.getElementById("modalReenviarFactura").style.display = "none";
+    }
 
-        // Función para cerrar el modal
-        function cerrarModal() {
-            document.getElementById('detallesPedidoModal').style.display = 'none';
+    window.onclick = function (event) {
+        if (event.target == document.getElementById("modalDetalles") || event.target == document.getElementById("modalReenviarFactura")) {
+            cerrarModal();
         }
-
-        // Función para formatear moneda
-        function formatCurrency(value) {
-            return new Intl.NumberFormat('es-CR', { style: 'currency', currency: 'CRC' }).format(value);
-        }
-
-        // Cerrar el modal si se hace clic fuera de él
-        window.onclick = function (event) {
-            var modal = document.getElementById('detallesPedidoModal');
-            if (event.target == modal) {
-                modal.style.display = 'none';
-            }
-        }
-
-        $('#tabla').DataTable({
-            "order": [[0, "asc"]],
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
-            },
-            "dom": "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
-                "<'row'<'col-sm-12'tr>>" +
-                "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
-            "responsive": true,
-            "autoWidth": false,
-            "initComplete": function (settings, json) {
-                // Añadir clase personalizada a los inputs
-                $('.dataTables_filter input').addClass('search-input');
-                $('.dataTables_length select').addClass('custom-select');
-            }
-        });
-    </script>
+    }
+</script>
