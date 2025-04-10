@@ -587,3 +587,162 @@ button.add-category {
     border-radius: 8px;
 }
 
+/* Estilos para el modal de detalles de pedido */
+.modal-detallePedido {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-detallePedido-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 0;
+    border: 1px solid #ddd;
+    width: 90%;
+    max-width: 800px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.modal-detallePedido-header {
+    background-color: #4a89dc;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px 8px 0 0;
+    position: relative;
+}
+
+    .modal-detallePedido-header h2 {
+        margin: 0;
+        font-size: 1.4rem;
+    }
+
+.modal-detallePedido-body {
+    padding: 20px;
+}
+
+.modal-detallePedido-close {
+    color: white;
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+    .modal-detallePedido-close:hover,
+    .modal-detallePedido-close:focus {
+        color: #f1f1f1;
+        text-decoration: none;
+    }
+
+/* Estilos para las cards de detalles */
+.cards-detallePedido-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.card-detallePedido-item {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    overflow: hidden;
+    border: 1px solid #e0e0e0;
+}
+
+    .card-detallePedido-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+.card-detallePedido-header {
+    background-color: #f8f9fa;
+    padding: 12px 15px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+    .card-detallePedido-header h4 {
+        margin: 0;
+        font-size: 16px;
+        color: #333;
+    }
+
+.card-detallePedido-body {
+    padding: 15px;
+}
+
+.card-detallePedido-info p {
+    margin: 8px 0;
+    font-size: 14px;
+    color: #555;
+}
+
+.total-detallePedido {
+    font-size: 16px !important;
+    color: #333 !important;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 8px;
+    margin-top: 12px !important;
+}
+
+/* Estilos para la card de información del pedido */
+.card-detallePedido-info {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #e0e0e0;
+}
+
+.info-detallePedido-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: -5px;
+}
+
+.info-detallePedido-column {
+    flex: 1;
+    min-width: 200px;
+    padding: 5px;
+}
+
+    .info-detallePedido-column p {
+        margin: 5px 0;
+        font-size: 15px;
+        color: #444;
+    }
+
+.titulo-detallePedido-productos {
+    margin: 20px 0 10px 0;
+    color: #444;
+    font-size: 18px;
+}
+
+/* Responsive para detalles de pedido */
+@media (max-width: 768px) {
+    .cards-detallePedido-container {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+
+    .modal-detallePedido-content {
+        width: 95%;
+        margin: 10% auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .cards-detallePedido-container {
+        grid-template-columns: 1fr;
+    }
+}

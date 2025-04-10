@@ -1,21 +1,20 @@
-﻿<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="~/css/AdminPagos.css" />
-
-@model IEnumerable<JarredsOrderHub.Models.Pedido> 
-
-
-<div class="container mt-4">
-    <h2 class="mb-4">@ViewBag.Title</h2>
-
-    <table class="table table-striped">
+﻿@model IEnumerable<JarredsOrderHub.Models.Pedidos>
+@{
+    ViewBag.Title = "Historial de Pedidos";
+}
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="~/css/Estilos.css" />
+<body>
+    <h1 class="titulo-tabla">Historial de Pedidos</h1>
+    <table class="employeeTable">
         <thead>
             <tr>
                 <th>Pedido ID</th>
+                <th>Usuario</th>
                 <th>Fecha</th>
                 <th>Estado</th>
                 <th>Método de Pago</th>
                 <th>Total</th>
-                <th>Horario</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -24,14 +23,22 @@
             {
                 <tr>
                     <td>@pedido.Id</td>
+                    <td>
+                        @if (pedido.Cliente != null)
+                        {
+                            <text>@($"{pedido.Cliente.Nombre} {pedido.Cliente.Apellido}")</text>
+                        }
+                        else
+                        {
+                            <span>Sin información</span>
+                        }
+                    </td>
                     <td>@pedido.FechaPedido.ToString("dd/MM/yyyy HH:mm")</td>
                     <td>@pedido.EstadoPedido</td>
-                    <td>@(pedido.Pago != null ? pedido.Pago.MetodoPago : "N/A")</td>
-                    <td>@pedido.Total.ToString("C")</td>
-                    <td>@(pedido.Horario != null ? pedido.Horario.HoraInicio.ToString("HH:mm") : "Sin Horario")</td>
+                    <td>@pedido.MetodoPago</td>
+                    <td>@pedido.Total.ToString("C", new System.Globalization.CultureInfo("es-CR"))</td>
                     <td>
-                        <!-- Puedes agregar un enlace para ver detalles o editar el pedido -->
-                        <a href="@Url.Action("DetallesPedido", "Pago", new { id = pedido.Id })" class="btn btn-info btn-sm">
+                        <a href="javascript:void(0);" onclick="mostrarDetalles(@pedido.Id)" class="btn btn-info btn-sm">
                             Detalles
                         </a>
                     </td>
@@ -39,95 +46,127 @@
             }
         </tbody>
     </table>
-</div>
 
-
-<!-- Modal de Detalles del Pedido -->
-<div id="modalDetalles" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2 id="modalTitle">Detalles del Pedido</h2>
-            <span class="close" onclick="cerrarModal()">&times;</span>
+    <!-- Modal para mostrar detalles del pedido -->
+    <div id="detallesPedidoModal" class="modal-detallePedido">
+        <div class="modal-detallePedido-content">
+            <span class="modal-detallePedido-close" onclick="cerrarModal()">&times;</span>
+            <div class="modal-detallePedido-header">
+                <h2>Detalles del Pedido #<span id="pedidoIdModal"></span></h2>
+            </div>
+            <div class="modal-detallePedido-body">
+                <div class="card-detallePedido-info">
+                    <div id="pedidoInfoCard">
+                        <!-- Información general del pedido -->
+                    </div>
+                </div>
+                <h3 class="titulo-detallePedido-productos">Productos</h3>
+                <div id="detallesPedidoContenido" class="cards-detallePedido-container">
+                    <!-- Aquí se cargarán los detalles del pedido en formato de cards -->
+                </div>
+            </div>
         </div>
-
-        <p id="detallesPedido"></p>
     </div>
-</div>
 
-<!-- Modal para reenviar factura -->
-<div id="modalReenviarFactura" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2>Reenviar Factura</h2>
-            <span class="close" onclick="cerrarModal()">&times;</span>
-        </div>
-        
-        <p id="reenviarMensaje"></p>
-        <button onclick="reenviarFacturaConfirmado()">Enviar Factura</button>
-    </div>
-</div>
+    <script>
+        // Función para mostrar el modal con los detalles del pedido
+        function mostrarDetalles(pedidoId) {
+            var modal = document.getElementById('detallesPedidoModal');
+            document.getElementById('pedidoIdModal').textContent = pedidoId;
 
-<script>
-    // Función para ver detalles del pedido
-    function verDetalles(pedidoId) {
-        // Simular la carga de los detalles del pedido
-        let detalles = `Detalles del pedido #${pedidoId}:
-                    - Pizza Margarita
-                    - Rice and Beans
-                    Total: $12.00`;
+            // Realizar la solicitud AJAX para obtener los detalles
+            fetch(`/Pago/ObtenerDetallesPedido/${pedidoId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error al obtener los detalles');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    var contenido = document.getElementById('detallesPedidoContenido');
+                    contenido.innerHTML = '';
 
-        // Mostrar el contenido en el modal
-        document.getElementById("detallesPedido").innerText = detalles;
+                    // Total acumulado para mostrarlo en el resumen
+                    let totalPedido = 0;
 
-        // Mostrar el modal
-        document.getElementById("modalDetalles").style.display = "block";
-    }
+                    // Crear cards para cada detalle
+                    data.forEach(detalle => {
+                        // Acumular el total
+                        totalPedido += detalle.total;
 
-    // Función para reenviar la factura
-    function reenviarFactura(pedidoId) {
-        // Simular la acción de reenviar factura
-        let mensaje = `¿Deseas reenviar la factura del pedido #${pedidoId}?`;
+                        // Crear card
+                        var card = document.createElement('div');
+                        card.className = 'card-detallePedido-item';
 
-        // Mostrar el mensaje en el modal
-        document.getElementById("reenviarMensaje").innerText = mensaje;
+                        // Contenido de la card
+                        card.innerHTML = `
+                                    <div class="card-detallePedido-header">
+                                        <h4>${detalle.nombrePlatillo}</h4>
+                                    </div>
+                                    <div class="card-detallePedido-body">
+                                        <div class="card-detallePedido-info">
+                                            <p><strong>Cantidad:</strong> ${detalle.cantidad}</p>
+                                            <p><strong>Precio:</strong> ${formatCurrency(detalle.precioUnitario)}</p>
+                                            <p class="total-detallePedido"><strong>Total:</strong> ${formatCurrency(detalle.total)}</p>
+                                        </div>
+                                    </div>
+                                `;
 
-        // Mostrar el modal
-        document.getElementById("modalReenviarFactura").style.display = "block";
-    }
+                        contenido.appendChild(card);
+                    });
 
-    // Función para confirmar el envío de la factura
-    function reenviarFacturaConfirmado() {
-        alert("Factura reenviada exitosamente!");
-        cerrarModal();
-    }
+                    // Crear card informativa del pedido
+                    var pedidoInfo = document.getElementById('pedidoInfoCard');
+                    pedidoInfo.innerHTML = `
+                                <div class="info-detallePedido-row">
+                                    <div class="info-detallePedido-column">
+                                        <p><strong>Número de productos:</strong> ${data.length}</p>
+                                        <p><strong>Total del pedido:</strong> ${formatCurrency(totalPedido)}</p>
+                                    </div>
+                                </div>
+                            `;
 
-    // Función para cerrar el modal
-    function cerrarModal() {
-        document.getElementById("modalDetalles").style.display = "none";
-        document.getElementById("modalReenviarFactura").style.display = "none";
-    }
-
-    // Cerrar el modal si se hace clic fuera de él
-    window.onclick = function (event) {
-        if (event.target == document.getElementById("modalDetalles") || event.target == document.getElementById("modalReenviarFactura")) {
-            cerrarModal();
+                    // Mostrar el modal
+                    modal.style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al cargar los detalles del pedido.');
+                });
         }
-    }
 
-    $('#tabla').DataTable({
-    "order": [[0, "asc"]],
-    "language": {
-        "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
-    },
-    "dom": "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
-           "<'row'<'col-sm-12'tr>>" +
-           "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
-    "responsive": true,
-    "autoWidth": false,
-    "initComplete": function(settings, json) {
-        // Añadir clase personalizada a los inputs
-        $('.dataTables_filter input').addClass('search-input');
-        $('.dataTables_length select').addClass('custom-select');
-    }
-});
-</script>
+        // Función para cerrar el modal
+        function cerrarModal() {
+            document.getElementById('detallesPedidoModal').style.display = 'none';
+        }
+
+        // Función para formatear moneda
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('es-CR', { style: 'currency', currency: 'CRC' }).format(value);
+        }
+
+        // Cerrar el modal si se hace clic fuera de él
+        window.onclick = function (event) {
+            var modal = document.getElementById('detallesPedidoModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        $('#tabla').DataTable({
+            "order": [[0, "asc"]],
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+            },
+            "dom": "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+            "responsive": true,
+            "autoWidth": false,
+            "initComplete": function (settings, json) {
+                // Añadir clase personalizada a los inputs
+                $('.dataTables_filter input').addClass('search-input');
+                $('.dataTables_length select').addClass('custom-select');
+            }
+        });
+    </script>
