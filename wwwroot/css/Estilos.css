@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 ﻿/* Variables de diseño */
 :root {
     --verde: #2EA629;
@@ -34,6 +35,23 @@ body {
     border: 2px solid #f2a413;
 }
 
+=======
+﻿
+.btn-hero {
+    display: inline-flex;
+    align-items: center;
+    background-color: #262626;
+    color: #fff;
+    padding: 1.2rem 3rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(207,167,107,0.3);
+    border: 2px solid #f2a413;
+}
+
+>>>>>>> Stashed changes
     .btn-hero:hover {
         background-color: #f2a413;
     }
@@ -253,9 +271,9 @@ button.btn-add-task {
     border-radius: 5px;
 }
 
-button.btn-add-task:hover {
-    background-color: #D91E1E;
-}
+    button.btn-add-task:hover {
+        background-color: #D91E1E;
+    }
 
 button.add-plate {
     background-color: #F2A413;
@@ -378,7 +396,7 @@ button.add-category {
     padding: 20px;
     border-radius: 8px;
     width: 90%;
-    max-width: 500px; 
+    max-width: 500px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
@@ -910,7 +928,11 @@ button.add-category {
         background: var(--oscuro);
     }
 
+<<<<<<< Updated upstream
  
+=======
+
+>>>>>>> Stashed changes
 /* Responsive: en pantallas pequeñas, 1 columna */
 @media (max-width: 600px) {
     .menu-container {
@@ -931,4 +953,8 @@ footer {
     footer a {
         color: var(--naranja);
         text-decoration: none;
+<<<<<<< Updated upstream
     }
+=======
+    }
+>>>>>>> Stashed changes

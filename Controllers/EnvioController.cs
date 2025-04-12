@@ -1,9 +1,13 @@
+<<<<<<< Updated upstream
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using JarredsOrderHub.DbaseContext;
+=======
+using System;
 using Microsoft.AspNetCore.Mvc;
+>>>>>>> Stashed changes
+using JarredsOrderHub.DbaseContext;
 using Microsoft.EntityFrameworkCore;
 
 namespace JarredsOrderHub.Controllers
@@ -34,7 +38,6 @@ namespace JarredsOrderHub.Controllers
 
             return View();
         }
-
 
         public async Task<ActionResult> ListadoPedidos()
         {

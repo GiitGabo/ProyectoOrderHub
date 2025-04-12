@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 ﻿using System.Security.Claims;
+=======
+using System.Security.Claims;
+>>>>>>> Stashed changes
 using JarredsOrderHub.DbaseContext;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
