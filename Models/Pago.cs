@@ -11,6 +11,7 @@ namespace JarredsOrderHub.Models
         [ForeignKey("Pedidos")]
         public int PedidoId { get; set; }
 
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Monto { get; set; }
         public string Estado { get; set; } = "Pendiente"; // Pendiente, Pagado
         public DateTime? FechaPago { get; set; }

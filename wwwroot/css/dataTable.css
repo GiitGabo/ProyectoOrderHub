@@ -1,0 +1,166 @@
+﻿/* Estilos personalizados para DataTables */
+
+.contenedor-tabla {
+    width: 85%;
+    margin: 20px auto;
+}
+
+/* Contenedor principal de DataTables */
+.dataTables_wrapper {
+    font-family: 'Roboto', sans-serif;
+    margin: 20px 0;
+    width: 100%;
+}
+
+    /* Sección superior (length y búsqueda) */
+    .dataTables_wrapper .dataTables_top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding: 0 15px;
+    }
+
+    .dataTables_wrapper .dataTables_bottom {
+        display: flex;
+        justify-content: center; /* Cambiado de space-between a center */
+        align-items: center;
+        margin-top: 1rem;
+        padding: 15px;
+        position: relative; /* Para posicionar la info de registros */
+    }
+
+/* Contenedor del selector de registros */
+.dataTables_length {
+    flex: 1;
+    max-width: 200px;
+}
+
+    /* Selector de registros */
+    .dataTables_length label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        color: #444;
+    }
+
+    .dataTables_length select.custom-select {
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        padding: 6px 10px;
+        width: 80px;
+        transition: all 0.3s;
+        appearance: none;
+        background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23262626'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") no-repeat right 8px center/12px;
+    }
+
+/* Sección de búsqueda */
+.dataTables_filter {
+    flex: 1;
+    max-width: 300px;
+}
+
+    .dataTables_filter label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        color: #444;
+        width: 100%;
+    }
+
+    .dataTables_filter input.search-input {
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        padding: 8px 12px;
+        width: 100%;
+        transition: all 0.3s;
+        background-color: white;
+    }
+
+/* Sección inferior (información y paginación) */
+.dataTables_wrapper .dataTables_bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    padding: 0 15px;
+}
+
+/* Información de registros */
+.dataTables_info {
+    position: absolute;
+    left: 20px;
+    font-size: 14px;
+    color: #666;
+    white-space: nowrap;
+}
+
+/* Paginación centrada */
+.dataTables_paginate {
+    margin: 0 auto !important;
+    display: inline-block;
+}
+
+
+.paginate_button {
+    padding: 6px 12px !important;
+    border: 1px solid #ddd !important;
+    border-radius: 6px !important;
+    color: #262626 !important;
+    transition: all 0.2s !important;
+    display: inline-flex !important;
+    align-items: center;
+    margin: 0 2px !important; /* Reducir espacio entre botones */
+    text-align: center;
+    text-decoration: none;
+}
+
+    .paginate_button:hover {
+        background: #262626 !important;
+        color: white !important;
+        border-color: #262626 !important;
+        text-decoration: none;
+    }
+
+    .paginate_button.current {
+        background: #262626 !important;
+        color: white !important;
+        border-color: #262626 !important;
+        text-decoration: none;
+    }
+
+/* Iconos de ordenación */
+table.dataTable thead .sorting:after,
+table.dataTable thead .sorting_asc:after,
+table.dataTable thead .sorting_desc:after {
+    content: " ";
+    display: inline-block;
+    margin-left: 8px;
+    opacity: 0.6;
+}
+
+table.dataTable thead .sorting:after {
+    content: "⇅";
+}
+
+table.dataTable thead .sorting_asc:after {
+    content: "↑";
+}
+
+table.dataTable thead .sorting_desc:after {
+    content: "↓";
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+    filter: invert(70%) sepia(100%) saturate(1000%) hue-rotate(300deg); /* Color personalizado */
+    color: #D91E1E;
+}
+
+/* Firefox */
+input[type="search"]::-moz-search-cancel-button {
+    color: #D91E1E; /* Rojo como ejemplo */
+    width: 16px;
+    height: 16px;
+}

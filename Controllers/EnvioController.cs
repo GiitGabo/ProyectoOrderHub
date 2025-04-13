@@ -1,17 +1,8 @@
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-=======
-using System;
 using Microsoft.AspNetCore.Mvc;
->>>>>>> Stashed changes
-=======
-using System;
-using Microsoft.AspNetCore.Mvc;
->>>>>>> Stashed changes
 using JarredsOrderHub.DbaseContext;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,6 +11,11 @@ namespace JarredsOrderHub.Controllers
     public class EnvioController : Controller
     {
         private readonly ApplicationDbContext _context;
+
+        public EnvioController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
 
         public ActionResult CalificarPedido()
         {

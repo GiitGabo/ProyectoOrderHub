@@ -1,11 +1,12 @@
 ﻿@model List<Tareas>
 @{
-    ViewData["Title"] = "Administración de Tareas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <link rel="stylesheet" href="~/css/Estilos.css" />
+<link rel="stylesheet" href="~/css/dataTable.css" />
 
 <h1 class="titulo-tabla">Tareas</h1>
+
 
 @if (ViewData.ModelState.Any(x => x.Value.Errors.Count > 0))
 
@@ -19,8 +20,8 @@
         </ul>
     </div>
 }
-
-<table id="taskTable">
+<div class="contenedor-tabla">
+<table id="tabla">
     <thead>
         <tr>
             <th>Id</th>
@@ -60,6 +61,7 @@
 <button class="btn-add-task" onclick="openAddTaskPopup()">
     <i class="fas fa-plus"></i> Añadir Tarea
 </button>
+</div>
 
 <!-- Popup Modal para Agregar/Editar Tarea -->
 <div id="taskModal" class="modal">
@@ -94,6 +96,12 @@
         </form>
     </div>
 </div>
+
+<!-- Incluir jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<!-- Incluir DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
 
 <script>
     function openAddTaskPopup() {
@@ -137,6 +145,33 @@
             return;
         }
         console.log('Enviando formulario correctamente...');
+    });
+
+    $('#tabla').DataTable({
+        "order": [[0, "asc"]],
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+        },
+        "dom": "<'dataTables_wrapper'<'dataTables_top'<'dataTables_length'l><'dataTables_filter'f>>r>t<'dataTables_bottom'<'dataTables_info'i><'dataTables_paginate'p>>",
+        "responsive": true,
+        "autoWidth": false,
+        "initComplete": function (settings, json) {
+            // Añadir clase personalizada a los inputs
+            $('.dataTables_filter input').addClass('search-input');
+            $('.dataTables_length select').addClass('custom-select');
+        },
+        "columnDefs": [{
+            "orderable": true,
+            "targets": '_all'
+        }],
+        "drawCallback": function (settings) {
+            // Ajustar posición de la paginación después de dibujar
+            $('.dataTables_paginate').css({
+                'display': 'flex',
+                'justify-content': 'center',
+                'width': '100%'
+            });
+        }
     });
 
 </script>

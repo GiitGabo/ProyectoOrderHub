@@ -46,7 +46,9 @@ namespace JarredsOrderHub.DbaseContext
             );
 
             modelBuilder.Entity<Rol>().HasData(
-                new Rol { Id = 1, Nombre = "Administrador", Descripcion = "Acceso total a la pagina.", Permisos = "Administrar usuarios, Ver empleados, Ver tareas, Administrar tareas" }
+                new Rol { Id = 1, Nombre = "Administrador", Descripcion = "Acceso total a la pagina.", Permisos = "Administrar usuarios, Ver empleados, Ver tareas, Administrar tareas" },
+                new Rol { Id = 2, Nombre = "Cocinero", Descripcion = "Acceso a pedidos e historiales", Permisos = "Administrar Pedidos, Ver Tareas, Ver tareas" },
+                new Rol { Id = 3, Nombre = "Repartidor", Descripcion = "Acceso a ciertos pedidos asignados", Permisos = "Administrar usuarios, Ver tareas, Historial de Pedidos entregados" }
             );
 
             modelBuilder.Entity<Tareas>()

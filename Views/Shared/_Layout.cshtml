@@ -13,7 +13,49 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @RenderSection("styles", required: false)
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
 
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff !important;
+            color: var(--oscuro);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Contenedor principal con Flexbox */
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Ocupa el alto completo de la pantalla */
+        }
+        /* La sección de contenido se expande para ocupar el espacio disponible */
+        .content {
+            flex: 1;
+        }
+        /* Footer: estilo para mantenerlo al final */
+        footer.footer {
+            background-color: #262626 !important;
+            margin-top: auto;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+            position: absolute; /* Posición absoluta */
+            bottom: 0; /* Alineado al fondo */
+            width: 100%; /* Ocupa todo el ancho */
+            white-space: nowrap; /* Evita el salto de línea */
+            line-height: 60px; /* Altura de línea de 60px para centrar el contenido verticalmente */
+        }
+    </style>
     <!-- ICONO -->
     <link rel="icon" type="image/png" href="~/LOGO-JARREDS.ico" />
 
@@ -23,6 +65,8 @@
 
 
     <!--Header -->
+<body>
+    <div class="wrapper">
 <header>
         <nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background-color: #262626 !important;">
         <div class="container">
@@ -130,9 +174,10 @@
     </nav>
 </header>
 
-    <div>
-        @RenderBody()
-    </div>
+        <!-- Contenido principal -->
+        <div class="content">
+            @RenderBody()
+        </div>
 
     <!-- Footer -->
     <footer class="bg-dark text-light py-5 " style="background-color: #262626 !important;">
@@ -172,13 +217,31 @@
                 <p class="text-center">&copy; @DateTime.Now.Year Jarred's Order Hub. Todos los derechos reservados.</p>
             </div>
         </div>
+
+    <script type="text/javascript">
+        (function (d, t) {
+            var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
+            v.onload = function () {
+                window.voiceflow.chat.load({
+                    verify: { projectID: '67f5a28dfbee7bfc90657b03' },
+                    url: 'https://general-runtime.voiceflow.com',
+                    versionID: 'production',
+                    voice: {
+                        url: "https://runtime-api.voiceflow.com"
+                    }
+                });
+            }
+            v.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
+        })(document, 'script');
+    </script>
     </footer>
 
 
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-
+    <script src="/_framework/aspnetcore-browser-refresh.js"></script>
     @RenderSection("scripts", required: false)
 
+</body>
 </html>

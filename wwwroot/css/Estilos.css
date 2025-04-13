@@ -1,42 +1,4 @@
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-﻿/* Variables de diseño */
-:root {
-    --verde: #2EA629;
-    --beige: #F2EAD0;
-    --naranja: #F2A413;
-    --rojo: #D91E1E;
-    --oscuro: #262626;
-    --radio: 16px;
-    --sombra: 0 8px 24px rgba(0,0,0,0.15);
-}
 
-body {
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #fff !important;
-    color: var(--oscuro);
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
-.btn-hero {
-    display: inline-flex;
-    align-items: center;
-    background-color: #262626;
-    color: #fff;
-    padding: 1.2rem 3rem;
-    border-radius: 50px;
-    text-decoration: none;
-    font-weight: 700;
-    transition: all 0.3s ease;
-    box-shadow: 0 8px 20px rgba(207,167,107,0.3);
-    border: 2px solid #f2a413;
-}
-
-=======
 ﻿
 .btn-hero {
     display: inline-flex;
@@ -52,24 +14,6 @@ body {
     border: 2px solid #f2a413;
 }
 
->>>>>>> Stashed changes
-=======
-﻿
-.btn-hero {
-    display: inline-flex;
-    align-items: center;
-    background-color: #262626;
-    color: #fff;
-    padding: 1.2rem 3rem;
-    border-radius: 50px;
-    text-decoration: none;
-    font-weight: 700;
-    transition: all 0.3s ease;
-    box-shadow: 0 8px 20px rgba(207,167,107,0.3);
-    border: 2px solid #f2a413;
-}
-
->>>>>>> Stashed changes
     .btn-hero:hover {
         background-color: #f2a413;
     }
@@ -115,8 +59,6 @@ body {
     font-weight: 500;
     color: #262626;
 }
-
-
 
 h1 {
     text-align: center;
@@ -191,32 +133,30 @@ button.btn-login, .register-btn {
 
 
 table {
-    width: 80%;
+    width: 100% !important;
     border-collapse: collapse;
-    background-color: #ffff;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 20px;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
     overflow: hidden;
-    margin: 20px auto;
 }
 
-th,
-td {
-    padding: 13px;
-    text-align: left;
-    background-color: #ffff;
-}
+    table th,
+    table td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #f0f0f0;
+    }
 
-th {
-    background-color: #F2A413;
-    color: #fff;
-    font-family: "Roboto Medium", sans-serif;
-}
+    table th {
+        background-color: #f2a413;
+        font-weight: 600;
+        color: #262626;
+    }
 
-tr:hover {
-    color: #4a4a4a;
-    cursor: pointer;
-}
+    table tr:hover {
+        background-color: #f9f9f9;
+    }
 
 /* Botones de acción */
 .icon-btn {
@@ -503,8 +443,6 @@ button.add-category {
 .no-disponible {
     color: var(--rojo);
 }
-
-
 
 
 /* Estilos generales del formulario */
@@ -946,15 +884,6 @@ button.add-category {
         background: var(--oscuro);
     }
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
- 
-=======
-
->>>>>>> Stashed changes
-=======
-
->>>>>>> Stashed changes
 /* Responsive: en pantallas pequeñas, 1 columna */
 @media (max-width: 600px) {
     .menu-container {
@@ -965,7 +894,7 @@ button.add-category {
 /* ========================
        Footer
     ======================== */
-footer {
+/*footer {
     background-color: var(--oscuro);
     color: #fff;
     padding: 2rem 1rem;
@@ -975,12 +904,5 @@ footer {
     footer a {
         color: var(--naranja);
         text-decoration: none;
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
     }
-=======
-    }
->>>>>>> Stashed changes
-=======
-    }
->>>>>>> Stashed changes
+    */

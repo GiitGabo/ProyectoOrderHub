@@ -1,64 +1,73 @@
-﻿<link rel="stylesheet" href="~/css/Estilos.css" />
+﻿@model IEnumerable<JarredsOrderHub.Models.Cliente>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Administrar Usuarios";
+}
+<link rel="stylesheet" href="~/css/Estilos.css" />
+<link rel="stylesheet" href="~/css/dataTable.css" />
+
 <h1 class="titulo-tabla">Usuarios</h1>
 
 <!-- Tabla de Usuarios -->
-<table id="employeeTable">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Email</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        <!-- Fila 1 -->
-        <tr>
-            <td>1</td>
-            <td>Juan</td>
-            <td>Perez</td>
-            <td>juan.perez@example.com</td>
-            <td>
-                <button class="icon-btn delete">
-                    <i class="fas fa-trash-alt"></i>
-                </button>
-            </td>
-        </tr>
-        <!-- Fila 2 -->
-        <tr>
-            <td>2</td>
-            <td>María</td>
-            <td>Gómez</td>
-            <td>maria.gomez@example.com</td>
-            <td>
+<div class="contenedor-tabla">
+    <table id="tabla">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Email</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var usuario in Model)
+            {
+                <tr>
+                    <td>@usuario.IdCliente</td>
+                    <td>@usuario.Nombre</td>
+                    <td>@usuario.Apellido</td>
+                    <td>@usuario.Email</td>
+                    <td>
+                        <button class="icon-btn delete">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
-                <button class="icon-btn delete">
-                    <i class="fas fa-trash-alt"></i>
-                </button>
+<!-- Incluir jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<!-- Incluir DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
-            </td>
-        </tr>
-
-        <!-- Fila 1 -->
-        <tr>
-            <td>1</td>
-            <td>Juan</td>
-            <td>Perez</td>
-            <td>juan.perez@example.com</td>
-            <td>
-                <button class="icon-btn delete">
-                    <i class="fas fa-trash-alt"></i>
-                </button>
-            </td>
-        </tr>
-
-    </tbody>
-</table>
-
-
-
-
-
-
-
+<script>
+    // Inicialización de DataTables para la tabla de usuarios
+    $('#tabla').DataTable({
+        "order": [[0, "asc"]],
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+        },
+        "dom": "<'dataTables_wrapper'<'dataTables_top'<'dataTables_length'l><'dataTables_filter'f>>r>t<'dataTables_bottom'<'dataTables_info'i><'dataTables_paginate'p>>",
+        "responsive": true,
+        "autoWidth": false,
+        "initComplete": function (settings, json) {
+            $('.dataTables_filter input').addClass('search-input');
+            $('.dataTables_length select').addClass('custom-select');
+        },
+        "columnDefs": [{
+            "orderable": true,
+            "targets": '_all'
+        }],
+        "drawCallback": function (settings) {
+            $('.dataTables_paginate').css({
+                'display': 'flex',
+                'justify-content': 'center',
+                'width': '100%'
+            });
+        }
+    });
+</script>

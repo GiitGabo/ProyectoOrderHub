@@ -1,14 +1,17 @@
-﻿<link rel="stylesheet" href="@Url.Content("~/css/Estilos.css")" />
-@model List<JarredsOrderHub.Models.Platillo>
+﻿@model List<JarredsOrderHub.Models.Platillo>
 
 @{
     ViewData["Title"] = "Administrar Platos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<link rel="stylesheet" href="~/css/Estilos.css" />
+<link rel="stylesheet" href="~/css/dataTable.css" />
 
 <h1 class="titulo-tabla">Platos</h1>
 
-<!-- Tabla de Platos -->
-<table id="categoryTable">
+<!-- Tabla de Platos  / SI FALLA ALGO ES POR EL ID-->
+<div class="contenedor-tabla">
+<table id="tabla">
     <thead>
         <tr>
             <th>ID</th>
@@ -49,6 +52,7 @@
 <button id="addPlateBtn" class="add-plate">
     Añadir Plato
 </button>
+</div>
 
 <!-- Popup Modal para Añadir/Editar Plato -->
 <div id="plateModal" class="modal">
@@ -100,8 +104,11 @@
     </div>
 </div>
 
-<!-- Scripts para manejar el POPUP y AJAX -->
-<!-- Scripts para manejar el POPUP y AJAX -->
+<!-- Incluir jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<!-- Incluir DataTables JS AJAX-->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
 <script>
         const plateModal = document.getElementById("plateModal");
         const addPlateBtn = document.getElementById("addPlateBtn");
@@ -287,4 +294,31 @@
                     alert('Error al eliminar el platillo: ' + (error.message || 'Error desconocido'));
                 });
         }
+
+    $('#tabla').DataTable({
+        "order": [[0, "asc"]],
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+        },
+        "dom": "<'dataTables_wrapper'<'dataTables_top'<'dataTables_length'l><'dataTables_filter'f>>r>t<'dataTables_bottom'<'dataTables_info'i><'dataTables_paginate'p>>",
+        "responsive": true,
+        "autoWidth": false,
+        "initComplete": function (settings, json) {
+            // Añadir clase personalizada a los inputs
+            $('.dataTables_filter input').addClass('search-input');
+            $('.dataTables_length select').addClass('custom-select');
+        },
+        "columnDefs": [{
+            "orderable": true,
+            "targets": '_all'
+        }],
+        "drawCallback": function (settings) {
+            // Ajustar posición de la paginación después de dibujar
+            $('.dataTables_paginate').css({
+                'display': 'flex',
+                'justify-content': 'center',
+                'width': '100%'
+            });
+        }
+    });
 </script>

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JarredsOrderHub.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250410000407_AddTablaPagos")]
-    partial class AddTablaPagos
+    [Migration("20250413035443_Migracion")]
+    partial class Migracion
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -11,7 +11,11 @@ namespace JarredsOrderHub.Models
         [ForeignKey("Platillo")]
         public int ProductoId { get; set; }
         public int Cantidad { get; set; }
+
+        [Column(TypeName = "decimal(18,2)")]
         public decimal PrecioUnitario { get; set; }
+
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Total { get; set; }
 
         public virtual Pedidos? Pedido { get; set; }

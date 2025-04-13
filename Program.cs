@@ -33,6 +33,9 @@ builder.Services.AddScoped<CatalogoService>();
 builder.Services.AddScoped<AuditService>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<ReporteService>();
+builder.Services.AddScoped<CuponService>();
+builder.Services.AddScoped<PagosService>();
+builder.Services.AddScoped<PedidosService>();
 
 
 //Agregar sesiones 

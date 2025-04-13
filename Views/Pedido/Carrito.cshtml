@@ -2,7 +2,6 @@
 <link rel="stylesheet" href="~/css/Carrito.css" />
 
 
-<body>
     <div class="carrito-container">
         <h2>Mi Carrito</h2>
         <div id="productos-carrito">
@@ -67,25 +66,25 @@
 
             carrito.forEach((producto, index) => {
                 contenedor.innerHTML += `
-                                    <div class="producto">
-                                        <div class="info-producto">
-                                            <img src="${producto.imagen}" alt="${producto.nombre}" class="imagen-producto">
-                                            <div class="detalles-producto">
-                                                <h3>${producto.nombre}</h3>
-                                                <p>Precio Unitario: ${formatearPrecio(producto.precio)}</p>
+                                            <div class="producto">
+                                                <div class="info-producto">
+                                                    <img src="${producto.imagen}" alt="${producto.nombre}" class="imagen-producto">
+                                                    <div class="detalles-producto">
+                                                        <h3>${producto.nombre}</h3>
+                                                        <p>Precio Unitario: ${formatearPrecio(producto.precio)}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="cantidad">
+                                                    <button class="btn-cantidad" onclick="cambiarCantidad(${index}, -1)"><i class="fas fa-minus"></i></button>
+                                                    <span id="cantidad-${index}">${producto.cantidad}</span>
+                                                    <button class="btn-cantidad" onclick="cambiarCantidad(${index}, 1)"><i class="fas fa-plus"></i></button>
+                                                </div>
+                                                <div class="precio-total">
+                                                    <span>Total: <span id="precio-total-${index}">${formatearPrecio(producto.cantidad * producto.precio)}</span></span>
+                                                </div>
+                                                <button class="btn-eliminar" onclick="eliminarProducto(${index})"><i class="fas fa-trash"></i> Eliminar</button>
                                             </div>
-                                        </div>
-                                        <div class="cantidad">
-                                            <button class="btn-cantidad" onclick="cambiarCantidad(${index}, -1)"><i class="fas fa-minus"></i></button>
-                                            <span id="cantidad-${index}">${producto.cantidad}</span>
-                                            <button class="btn-cantidad" onclick="cambiarCantidad(${index}, 1)"><i class="fas fa-plus"></i></button>
-                                        </div>
-                                        <div class="precio-total">
-                                            <span>Total: <span id="precio-total-${index}">${formatearPrecio(producto.cantidad * producto.precio)}</span></span>
-                                        </div>
-                                        <button class="btn-eliminar" onclick="eliminarProducto(${index})"><i class="fas fa-trash"></i> Eliminar</button>
-                                    </div>
-                                `;
+                                        `;
             });
         }
 
@@ -122,15 +121,15 @@
                 totalProductos += producto.cantidad;
                 nombres.push(producto.nombre);
                 resumenProductos.innerHTML += `
-                                    <p>${producto.nombre} x ${producto.cantidad} = ${formatearPrecio(subtotal)}</p>
-                                `;
+                                            <p>${producto.nombre} x ${producto.cantidad} = ${formatearPrecio(subtotal)}</p>
+                                        `;
             });
 
             // Crear un resumen general al inicio
             const resumenGeneral = `
-                                <p><strong>Total de productos:</strong> ${totalProductos}</p>
-                                <p><strong>Productos:</strong> ${nombres.join(", ")}</p>
-                            `;
+                                        <p><strong>Total de productos:</strong> ${totalProductos}</p>
+                                        <p><strong>Productos:</strong> ${nombres.join(", ")}</p>
+                                    `;
 
             // Insertar el resumen general antes del detalle de cada producto
             resumenProductos.insertAdjacentHTML('afterbegin', resumenGeneral);
@@ -148,7 +147,8 @@
             document.getElementById('popup-resumen').style.display = 'none';
         }
 
-        const usuarioId = @ViewBag.UsuarioId;
+    const usuarioId = parseInt('@ViewBag.UsuarioId');
+
 
         let cuponAplicado = null;
 
@@ -282,4 +282,3 @@
         // Cargar el carrito cuando se cargue la página
         document.addEventListener("DOMContentLoaded", mostrarCarrito);
     </script>
-</body>

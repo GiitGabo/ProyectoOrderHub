@@ -12,8 +12,12 @@ namespace JarredsOrderHub.Models
         public DateTime FechaPedido { get; set; } = DateTime.Now;
         public string EstadoPedido { get; set; } = "Pendiente"; // Estados: Pendiente, En preparación, En camino, Entregado, Cancelado
         public string MetodoPago { get; set; } // Efectivo, Tarjeta, PayPal
+        
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Total { get; set; }
         public string Comentarios { get; set; }
+
+
         [ForeignKey("Cupon")]
         public int? CuponId { get; set; } // Puede ser null si el pedido no tiene cupón
         public virtual Cupon? Cupon { get; set; }
