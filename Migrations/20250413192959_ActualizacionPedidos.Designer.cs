@@ -4,6 +4,7 @@ using JarredsOrderHub.DbaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JarredsOrderHub.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250413192959_ActualizacionPedidos")]
+    partial class ActualizacionPedidos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -361,8 +364,6 @@ namespace JarredsOrderHub.Migrations
 
                     b.HasIndex("CuponId");
 
-                    b.HasIndex("UsuarioId");
-
                     b.ToTable("Pedidos");
                 });
 
@@ -639,14 +640,6 @@ namespace JarredsOrderHub.Migrations
                     b.HasOne("JarredsOrderHub.Models.Cupon", "Cupon")
                         .WithMany()
                         .HasForeignKey("CuponId");
-
-                    b.HasOne("JarredsOrderHub.Models.Cliente", "Cliente")
-                        .WithMany()
-                        .HasForeignKey("UsuarioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cliente");
 
                     b.Navigation("Cupon");
                 });

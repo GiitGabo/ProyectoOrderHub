@@ -17,10 +17,17 @@ namespace JarredsOrderHub.Models
         public decimal Total { get; set; }
         public string Comentarios { get; set; }
 
+        public double? LatitudEntrega { get; set; }
+        public double? LongitudEntrega { get; set; }
+
+        public int? IdRepartidor { get; set; }
 
         [ForeignKey("Cupon")]
         public int? CuponId { get; set; } // Puede ser null si el pedido no tiene cupón
         public virtual Cupon? Cupon { get; set; }
+
+        [ForeignKey("UsuarioId")]
+        public virtual Cliente? Cliente { get; set; }
 
         public virtual List<DetallePedido>? Detalles { get; set; }
     }

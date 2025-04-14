@@ -127,6 +127,7 @@ namespace JarredsOrderHub.Controllers
 
                 HttpContext.Session.SetString("UserName", empleado.Nombre);
                 HttpContext.Session.SetString("UserType", "Empleado");
+                HttpContext.Session.SetInt32("EmpleadoId", empleado.IdEmpleado);
                 return RedirectToAction("Menu", "Catalogo");
             }
 

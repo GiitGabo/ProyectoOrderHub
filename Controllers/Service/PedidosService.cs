@@ -25,8 +25,10 @@ namespace JarredsOrderHub.Controllers.Service
         [HttpGet("{id}")]
         public async Task<ActionResult<Pedidos>> GetPedido(int id)
         {
-            var pedido = await _context.Pedidos.Include(p => p.Detalles)
-                                               .FirstOrDefaultAsync(p => p.Id == id);
+            var pedido = await _context.Pedidos
+                                .Include(p => p.Detalles)
+                                    .ThenInclude(d => d.Platillo)
+                                .FirstOrDefaultAsync(p => p.Id == id);
 
             if (pedido == null)
             {
@@ -35,6 +37,7 @@ namespace JarredsOrderHub.Controllers.Service
 
             return pedido;
         }
+
 
         [HttpGet("Detalles/{id}")]
         public async Task<ActionResult<IEnumerable<DetallePedido>>> GetDetalles(int id)
@@ -140,5 +143,18 @@ namespace JarredsOrderHub.Controllers.Service
 
             return NoContent();
         }
+
+        [HttpPut("AsignarRepartidor/{id}/{idRepartidor}")]
+        public async Task<IActionResult> AsignarRepartidor(int id, int idRepartidor)
+        {
+            var pedido = await _context.Pedidos.FindAsync(id);
+            if (pedido == null)
+                return NotFound();
+            pedido.IdRepartidor = idRepartidor;
+            _context.Entry(pedido).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return Ok(new { success = true });
+        }
+
     }
 }

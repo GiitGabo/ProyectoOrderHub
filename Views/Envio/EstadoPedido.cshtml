@@ -1,48 +1,125 @@
-﻿
-<link rel="stylesheet" href="~/css/Pedidos.css" />
+﻿@model IEnumerable<JarredsOrderHub.Models.Pedidos>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Mis Pedidos";
+}
 <link rel="stylesheet" href="~/css/Calificar.css" />
+<!-- Incluye Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
 
-<h1>Estado del Pedido</h1>
+<style>
+    /* Estilos para la tarjeta de pedido */
+    .pedido-card {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 30px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        background-color: #fff;
+    }
 
-<!-- Contenedor Principal -->
-<div class="container">
+    /* Columna del mapa */
+    .pedido-map {
+        width: 50%; /* La mitad de la tarjeta */
+    }
 
-    <!-- Mapa de Seguimiento con Google Maps Embed -->
-    <div class="map-container">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d982.498799237249!2d-84.0752851732372!3d9.934356916771877!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses-419!2scr!4v1733957520858!5m2!1ses-419!2scr"
-                allowfullscreen>
-        </iframe>
-    </div>
+    /* Columna de información */
+    .pedido-info {
+        width: 50%;
+        padding: 20px;
+    }
 
-    <!-- Detalles del Pedido -->
-    <div class="order-details">
-        <h3>Detalles del Pedido</h3>
-        <p><i class="fas fa-utensils"></i> <span class="bold-text">Plato:</span> Pasta Alfredo</p>
-        <p><i class="fas fa-list"></i> <span class="bold-text">Ingredientes:</span> Pasta, Queso, Crema, Pollo</p>
-        <p><i class="fas fa-sort-numeric-up-alt"></i> <span class="bold-text">Cantidad:</span> 2</p>
-        <p><i class="fas fa-dollar-sign"></i> <span class="bold-text">Precio Total:</span> $20.00</p>
-        <p><i class="fas fa-credit-card"></i> <span class="bold-text">Método de Pago:</span> PayPal</p>
-    </div>
+    /* Asegúrate de que el iframe se adapte al contenedor */
+    .pedido-map iframe {
+        width: 100%;
+        height: 100%;
+    }
 
-    <!-- Tiempo Aproximado -->
-    <div class="delivery-time">
-        <p>Tiempo Estimado de Entrega: <span id="time-left">25 Minutos</span></p>
-    </div>
+    /* Puedes ajustar los márgenes y fuentes según sea necesario */
+    .header-detalle-pedido h1 {
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+    }
+
+    .order-info-detalle-pedido p {
+        margin: 5px 0;
+    }
+
+</style>
+
+<div class="container-detalle-pedido">
+    @if (Model == null || !Model.Any())
+    {
+        <p>No se encontró información para tus pedidos.</p>
+    }
+    else
+    {
+        @foreach (var pedido in Model)
+        {
+            var estado = pedido.EstadoPedido.ToLower();
+            <div class="pedido-card">
+                <!-- Columna Izquierda: Mapa (usando Leaflet) -->
+                @if (estado != "en_camino")
+                {
+                    <div class="pedido-map">
+                        <!-- Un contenedor para el mapa, usando data attributes para coordenadas -->
+                        <div class="leaflet-map" data-lat="@pedido.LatitudEntrega" data-lng="@pedido.LongitudEntrega" style="width:100%; height:400px;"></div>
+                    </div>
+                }
+                else
+                {
+                    <div class="pedido-map">
+                        <p>No se puede mostrar una ubicacion del pedido.</p>
+                    </div>
+                }
+
+                <!-- Columna Derecha: Información -->
+                <div class="pedido-info">
+                    <header class="header-detalle-pedido">
+                        <h1>Pedido #@pedido.Id</h1>
+                        <p><strong>Fecha:</strong> @pedido.FechaPedido.ToString("yyyy-MM-dd HH:mm")</p>
+                        <p><strong>Estado:</strong> @pedido.EstadoPedido</p>
+                    </header>
+                    <div class="order-info-detalle-pedido">
+                        <p><strong>Método de Pago:</strong> @pedido.MetodoPago</p>
+                        <p><strong>Total:</strong> @pedido.Total.ToString("C", new System.Globalization.CultureInfo("es-CR"))</p>
+                        <h3>Detalles del Pedido</h3>
+                        <ul class="detalle-pedido-lista">
+                            @if (pedido.Detalles != null && pedido.Detalles.Any())
+                            {
+                                foreach (var detalle in pedido.Detalles)
+                                {
+                                    <li>
+                                        <span class="detalle-nombre">Plato: @(detalle.Platillo?.Nombre ?? "Sin nombre")</span>
+                                        <span class="detalle-cantidad">Cantidad: @detalle.Cantidad</span>
+                                        <span class="detalle-precio">Precio: @detalle.Total.ToString("C", new System.Globalization.CultureInfo("es-CR"))</span>
+                                    </li>
+                                }
+                            }
+                            else
+                            {
+                                <li>No hay detalles disponibles.</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <hr />
+        }
+    }
 </div>
 
-
-<!-- Modal para Calificación -->
-<div id="ratingModal" class="modal active">
+<!-- Modal para Calificación (Opcional) -->
+<div id="ratingModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
             <h2 class="secondary-title">Califica tu Pedido</h2>
             <span class="close" id="closeRatingModal">&times;</span>
         </div>
-        
-        
-        <p>Por favor califica tu experiencia con el pedido entregado.</p>
-
-        <!-- Sección de estrellas -->
+        <p>Por favor, califica tu experiencia con el pedido entregado.</p>
         <div class="stars" id="ratingStars">
             <i class="fa-regular fa-star" data-star="1"></i>
             <i class="fa-regular fa-star" data-star="2"></i>
@@ -50,18 +127,43 @@
             <i class="fa-regular fa-star" data-star="4"></i>
             <i class="fa-regular fa-star" data-star="5"></i>
         </div>
-
-        <!-- Área de comentarios -->
         <textarea id="ratingComment" rows="4" placeholder="Deja un comentario sobre tu pedido..." required></textarea>
-
-        <!-- Botón de envío -->
         <button id="submitRating" class="btn-submit">Enviar Calificación</button>
     </div>
 </div>
 
-<!-- Script JS -->
+<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
 <script>
-    // Modal y elementos
+    document.addEventListener("DOMContentLoaded", function() {
+        // Selecciona todos los contenedores que tienen la clase "leaflet-map"
+        const maps = document.querySelectorAll('.leaflet-map');
+
+        maps.forEach(mapDiv => {
+            // Obtén las coordenadas de los atributos data-lat y data-lng
+            const lat = parseFloat(mapDiv.getAttribute('data-lat'));
+            const lng = parseFloat(mapDiv.getAttribute('data-lng'));
+
+            // Verifica si las coordenadas son válidas, de lo contrario, usa coordenadas por defecto (opcional)
+            if (isNaN(lat) || isNaN(lng)) return;
+
+            // Inicializa el mapa
+            var map = L.map(mapDiv).setView([lat, lng], 15);
+
+            // Carga la capa de OpenStreetMap
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Agrega un marcador en la ubicación
+            L.marker([lat, lng]).addTo(map)
+                .bindPopup("Ubicación de entrega")
+                .openPopup();
+        });
+    });
+</script>
+
+<script>
+    // Script para modal de calificación (opcional)
     const ratingModal = document.getElementById("ratingModal");
     const closeRatingModal = document.getElementById("closeRatingModal");
     const stars = document.querySelectorAll("#ratingStars i");
@@ -70,20 +172,17 @@
 
     let currentRating = 0;
 
-    // Función para manejar las estrellas
     stars.forEach(star => {
         star.addEventListener("mouseover", function () {
             const starValue = this.getAttribute("data-star");
             highlightStars(starValue);
         });
-
         star.addEventListener("click", function () {
             currentRating = this.getAttribute("data-star");
             console.log("Calificación seleccionada:", currentRating);
         });
     });
 
-    // Función para resaltar las estrellas
     function highlightStars(count) {
         stars.forEach((star, index) => {
             star.classList.toggle("fa-solid", index < count);
@@ -91,26 +190,23 @@
         });
     }
 
-    // Cerrar modal
     closeRatingModal.onclick = () => {
         ratingModal.style.display = "none";
     };
 
-    // Enviar calificación
     submitButton.onclick = () => {
         const comment = commentBox.value;
         if (currentRating > 0 && comment.trim() !== "") {
             alert(`Gracias por tu calificación de ${currentRating} estrellas.\nComentario: ${comment}`);
-            // Aquí enviar los datos al servidor si es necesario
             ratingModal.style.display = "none";
         } else {
             alert("Por favor selecciona una calificación y escribe un comentario.");
         }
     };
 
-    // Cerrar modal al hacer clic fuera
     window.onclick = function (event) {
         if (event.target == ratingModal) {
             ratingModal.style.display = "none";
         }
-    };</script>
+    };
+</script>

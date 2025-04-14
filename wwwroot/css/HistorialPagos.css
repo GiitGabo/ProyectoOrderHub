@@ -1,12 +1,4 @@
-﻿/* Estilos generales */
-body {
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #F2EAD0; /* Color de fondo principal */
-    color: #262626; /* Color de texto principal */
-}
-
+﻿
 /* --- Contenedor principal --- */
 .perfil-container {
     background-color: #fff; /* Fondo blanco */
@@ -41,31 +33,14 @@ body {
 }
 
 
-.container {
+.container-pagos {
     width: 90%;
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
 }
 
-header {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-    header h1 {
-        font-size: 2.5em;
-        font-weight: 700; /* Roboto Bold */
-        color: #2EA629; /* Verde */
-    }
-
-    header p {
-        font-size: 1.1em;
-        color: #262626;
-        font-weight: 400; /* Roboto Regular */
-    }
-
-.pagos-container {
+.pagos-container-historial {
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -162,4 +137,47 @@ header {
 /* Iconos de FontAwesome */
 .fas {
     font-size: 18px;
+}
+
+/*-----FILTROS-----*/
+/* Estilos para los filtros del historial de pagos */
+.filtros {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    background-color: #f8f8f8;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+    .filtros label {
+        font-weight: 600;
+        color: #262626;
+        margin-right: 5px;
+    }
+
+    .filtros input[type="date"],
+    .filtros select {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        outline: none;
+        transition: border-color 0.3s;
+    }
+
+        .filtros input[type="date"]:focus,
+        .filtros select:focus {
+            border-color: #f2a413;
+        }
+
+/* Opcional: estilos para que los filtros se centren en la página */
+.filtros-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 10px;
 }

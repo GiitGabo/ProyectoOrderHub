@@ -4,6 +4,7 @@ using JarredsOrderHub.DbaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JarredsOrderHub.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250413234707_Act")]
+    partial class Act
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -324,6 +327,9 @@ namespace JarredsOrderHub.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("ClienteIdCliente")
+                        .HasColumnType("int");
+
                     b.Property<string>("Comentarios")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -359,9 +365,9 @@ namespace JarredsOrderHub.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CuponId");
+                    b.HasIndex("ClienteIdCliente");
 
-                    b.HasIndex("UsuarioId");
+                    b.HasIndex("CuponId");
 
                     b.ToTable("Pedidos");
                 });
@@ -636,15 +642,13 @@ namespace JarredsOrderHub.Migrations
 
             modelBuilder.Entity("JarredsOrderHub.Models.Pedidos", b =>
                 {
+                    b.HasOne("JarredsOrderHub.Models.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteIdCliente");
+
                     b.HasOne("JarredsOrderHub.Models.Cupon", "Cupon")
                         .WithMany()
                         .HasForeignKey("CuponId");
-
-                    b.HasOne("JarredsOrderHub.Models.Cliente", "Cliente")
-                        .WithMany()
-                        .HasForeignKey("UsuarioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("Cliente");
 
