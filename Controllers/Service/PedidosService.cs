@@ -10,10 +10,16 @@ namespace JarredsOrderHub.Controllers.Service
     public class PedidosService : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ILogger<UsuarioService> _logger;
+        private readonly EmailService _emailService;
 
-        public PedidosService(ApplicationDbContext context)
+        public PedidosService(ApplicationDbContext context, ILogger<UsuarioService> logger, EmailService emailService, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
+            _logger = logger;
+            _emailService = emailService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpGet]
@@ -55,6 +61,29 @@ namespace JarredsOrderHub.Controllers.Service
             return Ok(detalles);
         }
 
+        [HttpGet("enviarRecibo/{pedidoId}")]
+        public async Task<IActionResult> CompletarPedido(int pedidoId)
+        {
+            try
+            {
+                var pedido = await _context.Pedidos
+                .Include(p => p.Detalles)
+                .ThenInclude(d => d.Platillo)
+                .Include(p => p.Cupon)
+                .FirstOrDefaultAsync(p => p.Id == pedidoId);
+
+                var usuario = await _context.Clientes.FindAsync(pedido.UsuarioId);
+
+                await _emailService.EnviarReciboPedido(pedido, usuario);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.ToString());
+            }
+        }
+
         [HttpPost]
         public async Task<ActionResult<Pedidos>> CreatePedido(Pedidos pedido)
         {
@@ -91,6 +120,8 @@ namespace JarredsOrderHub.Controllers.Service
 
                 _context.Pagos.Add(pago);
                 await _context.SaveChangesAsync();
+
+                CompletarPedido(pedido.Id);
 
                 return Ok(new { success = true, data = pedido.Id });
             }

@@ -3,70 +3,27 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="~/css/HistorialPagos.css" />
 
-<div class="container-pagos-historial">
+<div class="container">
     <header>
         <h1>Historial de Pagos</h1>
         <p>Consulta tus pagos realizados y accede a los detalles de tus pedidos.</p>
     </header>
-    <style>
-        .filtros {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 1rem;
-            background-color: #f8f8f8;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
 
-            .filtros label {
-                font-weight: 600;
-                color: #262626;
-                margin-right: 5px;
-            }
-
-            .filtros input[type="date"],
-            .filtros select {
-                padding: 8px 12px;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                font-size: 0.9rem;
-                outline: none;
-                transition: border-color 0.3s;
-            }
-
-                .filtros input[type="date"]:focus,
-                .filtros select:focus {
-                    border-color: #f2a413;
-                }
-
-        /* Opcional: estilos para que los filtros se centren en la página */
-        .filtros-container {
-            display: flex;
-            justify-content: center;
-            width: 100%;
-            padding: 10px;
-        }
-    </style>
     <!-- Filtros -->
-    <div class="filtros-container">
-        <div class="filtros">
-            <label for="fechaInicio">Fecha de Inicio:</label>
-            <input type="date" id="fechaInicio" onchange="aplicarFiltros()">
+    <div class="filters" style="margin-bottom:10px">
+        <label for="fechaInicio">Fecha de Inicio:</label>
+        <input type="date" id="fechaInicio" onchange="aplicarFiltros()">
 
-            <label for="fechaFin">Fecha de Fin:</label>
-            <input type="date" id="fechaFin" onchange="aplicarFiltros()">
+        <label for="fechaFin">Fecha de Fin:</label>
+        <input type="date" id="fechaFin" onchange="aplicarFiltros()">
 
-            <label for="metodoPago">Método de Pago:</label>
-            <select id="metodoPago" onchange="aplicarFiltros()">
-                <option value="">Todos</option>
-                <option value="Efectivo">Efectivo</option>
-                <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
-                <option value="PayPal">PayPal</option>
-            </select>
-        </div>
+        <label for="metodoPago">Método de Pago:</label>
+        <select id="metodoPago" onchange="aplicarFiltros()">
+            <option value="">Todos</option>
+            <option value="Efectivo">Efectivo</option>
+            <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
+            <option value="PayPal">PayPal</option>
+        </select>
     </div>
 
     <!-- Sección de pagos -->
@@ -117,10 +74,17 @@
 <!-- Modal para reenviar factura -->
 <div id="modalReenviarFactura" class="modal">
     <div class="modal-content">
-        <span class="close" onclick="cerrarModal()">&times;</span>
-        <h2>Reenviar Factura</h2>
+        <div class="modal-header">
+            <h2>Reenviar Factura</h2>
+            <span class="close" onclick="cerrarModal()">&times;</span>
+        </div>
         <p id="reenviarMensaje"></p>
-        <button onclick="reenviarFacturaConfirmado()">Enviar Factura</button>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
+            <button class="btn btn-primary" onclick="reenviarFacturaConfirmado()">
+                <i class="fas fa-paper-plane"></i> Enviar Factura
+            </button>
+        </div>
     </div>
 </div>
 
@@ -203,11 +167,42 @@
 
 
 
-    // Función para reenviar la factura
+    let pedidoIdActual = null;
+
     function reenviarFactura(pedidoId) {
+        pedidoIdActual = pedidoId;
         let mensaje = `¿Deseas reenviar la factura del pedido #${pedidoId}?`;
         document.getElementById("reenviarMensaje").innerText = mensaje;
         document.getElementById("modalReenviarFactura").style.display = "block";
+    }
+
+    function reenviarFacturaConfirmado() {
+        if (!pedidoIdActual) {
+            alert("No se ha seleccionado un pedido válido");
+            return;
+        }
+
+        const btnEnviar = document.querySelector("#modalReenviarFactura button");
+        btnEnviar.disabled = true;
+        btnEnviar.textContent = "Enviando...";
+
+        fetch(`/api/PedidosService/enviarRecibo/${pedidoIdActual}`)
+            .then(response => {
+                if (response.ok) {
+                    alert("Recibo enviado correctamente");
+                } else {
+                    throw new Error("Error al enviar el recibo");
+                }
+                cerrarModal();
+            })
+            .catch(error => {
+                alert(error.message);
+            })
+            .finally(() => {
+                btnEnviar.disabled = false;
+                btnEnviar.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Factura';
+                pedidoIdActual = null;
+            });
     }
 
     // Función para cerrar el modal
