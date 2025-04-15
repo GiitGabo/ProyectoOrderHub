@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JarredsOrderHub.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250413192959_ActualizacionPedidos")]
-    partial class ActualizacionPedidos
+    [Migration("20250415222052_Migrations")]
+    partial class Migrations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -364,6 +364,8 @@ namespace JarredsOrderHub.Migrations
 
                     b.HasIndex("CuponId");
 
+                    b.HasIndex("UsuarioId");
+
                     b.ToTable("Pedidos");
                 });
 
@@ -640,6 +642,14 @@ namespace JarredsOrderHub.Migrations
                     b.HasOne("JarredsOrderHub.Models.Cupon", "Cupon")
                         .WithMany()
                         .HasForeignKey("CuponId");
+
+                    b.HasOne("JarredsOrderHub.Models.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cliente");
 
                     b.Navigation("Cupon");
                 });
