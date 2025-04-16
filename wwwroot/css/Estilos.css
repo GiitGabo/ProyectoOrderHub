@@ -1,25 +1,5 @@
-﻿/* Variables de diseño */
-:root {
-    --verde: #2EA629;
-    --beige: #F2EAD0;
-    --naranja: #F2A413;
-    --rojo: #D91E1E;
-    --oscuro: #262626;
-    --radio: 16px;
-    --sombra: 0 8px 24px rgba(0,0,0,0.15);
-}
 
-body {
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #fff !important;
-    color: var(--oscuro);
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
+﻿
 .btn-hero {
     display: inline-flex;
     align-items: center;
@@ -79,8 +59,6 @@ body {
     font-weight: 500;
     color: #262626;
 }
-
-
 
 h1 {
     text-align: center;
@@ -155,32 +133,30 @@ button.btn-login, .register-btn {
 
 
 table {
-    width: 80%;
+    width: 100% !important;
     border-collapse: collapse;
-    background-color: #ffff;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 20px;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
     overflow: hidden;
-    margin: 20px auto;
 }
 
-th,
-td {
-    padding: 13px;
-    text-align: left;
-    background-color: #ffff;
-}
+    table th,
+    table td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #f0f0f0;
+    }
 
-th {
-    background-color: #F2A413;
-    color: #fff;
-    font-family: "Roboto Medium", sans-serif;
-}
+    table th {
+        background-color: #f2a413;
+        font-weight: 600;
+        color: #262626;
+    }
 
-tr:hover {
-    color: #4a4a4a;
-    cursor: pointer;
-}
+    table tr:hover {
+        background-color: #f9f9f9;
+    }
 
 /* Botones de acción */
 .icon-btn {
@@ -253,9 +229,9 @@ button.btn-add-task {
     border-radius: 5px;
 }
 
-button.btn-add-task:hover {
-    background-color: #D91E1E;
-}
+    button.btn-add-task:hover {
+        background-color: #D91E1E;
+    }
 
 button.add-plate {
     background-color: #F2A413;
@@ -378,7 +354,7 @@ button.add-category {
     padding: 20px;
     border-radius: 8px;
     width: 90%;
-    max-width: 500px; 
+    max-width: 500px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
@@ -467,8 +443,6 @@ button.add-category {
 .no-disponible {
     color: var(--rojo);
 }
-
-
 
 
 /* Estilos generales del formulario */
@@ -910,7 +884,6 @@ button.add-category {
         background: var(--oscuro);
     }
 
- 
 /* Responsive: en pantallas pequeñas, 1 columna */
 @media (max-width: 600px) {
     .menu-container {
@@ -921,7 +894,7 @@ button.add-category {
 /* ========================
        Footer
     ======================== */
-footer {
+/*footer {
     background-color: var(--oscuro);
     color: #fff;
     padding: 2rem 1rem;
@@ -932,3 +905,4 @@ footer {
         color: var(--naranja);
         text-decoration: none;
     }
+    */

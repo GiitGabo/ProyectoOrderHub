@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JarredsOrderHub.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250318180817_rec")]
-    partial class rec
+    [Migration("20250415222052_Migrations")]
+    partial class Migrations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -127,6 +127,87 @@ namespace JarredsOrderHub.Migrations
                     b.ToTable("Clientes");
                 });
 
+            modelBuilder.Entity("JarredsOrderHub.Models.Cupon", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Codigo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Descuento")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("EsPorcentual")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("FechaExpiracion")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Cupones");
+                });
+
+            modelBuilder.Entity("JarredsOrderHub.Models.CuponCliente", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClienteId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CuponId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("FechaUso")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CuponId");
+
+                    b.ToTable("CuponClientes");
+                });
+
+            modelBuilder.Entity("JarredsOrderHub.Models.DetallePedido", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Cantidad")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PedidoId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("PrecioUnitario")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ProductoId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Total")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PedidoId");
+
+                    b.HasIndex("ProductoId");
+
+                    b.ToTable("DetallePedidos");
+                });
+
             modelBuilder.Entity("JarredsOrderHub.Models.Empleado", b =>
                 {
                     b.Property<int>("IdEmpleado")
@@ -210,6 +291,84 @@ namespace JarredsOrderHub.Migrations
                         });
                 });
 
+            modelBuilder.Entity("JarredsOrderHub.Models.Pago", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("FechaPago")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Monto")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("PedidoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PedidoId");
+
+                    b.ToTable("Pagos");
+                });
+
+            modelBuilder.Entity("JarredsOrderHub.Models.Pedidos", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Comentarios")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("CuponId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EstadoPedido")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("FechaPedido")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("IdRepartidor")
+                        .HasColumnType("int");
+
+                    b.Property<double?>("LatitudEntrega")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("LongitudEntrega")
+                        .HasColumnType("float");
+
+                    b.Property<string>("MetodoPago")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Total")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CuponId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("Pedidos");
+                });
+
             modelBuilder.Entity("JarredsOrderHub.Models.Platillo", b =>
                 {
                     b.Property<int>("IdPlatillo")
@@ -272,6 +431,35 @@ namespace JarredsOrderHub.Migrations
                     b.ToTable("RecuperacionesContrasenias");
                 });
 
+            modelBuilder.Entity("JarredsOrderHub.Models.Reporte", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DescripcionReporte")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("FechaReporte")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("IdCliente")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdCliente");
+
+                    b.ToTable("Reportes");
+                });
+
             modelBuilder.Entity("JarredsOrderHub.Models.Rol", b =>
                 {
                     b.Property<int>("Id")
@@ -303,7 +491,65 @@ namespace JarredsOrderHub.Migrations
                             Descripcion = "Acceso total a la pagina.",
                             Nombre = "Administrador",
                             Permisos = "Administrar usuarios, Ver empleados, Ver tareas, Administrar tareas"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Descripcion = "Acceso a pedidos e historiales",
+                            Nombre = "Cocinero",
+                            Permisos = "Administrar Pedidos, Ver Tareas, Ver tareas"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Descripcion = "Acceso a ciertos pedidos asignados",
+                            Nombre = "Repartidor",
+                            Permisos = "Administrar usuarios, Ver tareas, Historial de Pedidos entregados"
                         });
+                });
+
+            modelBuilder.Entity("JarredsOrderHub.Models.SeccionContenido", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ArchivoPdf")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Contenido")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Direccion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PreguntasFrecuentes")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Seccion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Telefono")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SeccionesContenido");
                 });
 
             modelBuilder.Entity("JarredsOrderHub.Models.Tareas", b =>
@@ -335,6 +581,36 @@ namespace JarredsOrderHub.Migrations
                     b.ToTable("Tareas");
                 });
 
+            modelBuilder.Entity("JarredsOrderHub.Models.CuponCliente", b =>
+                {
+                    b.HasOne("JarredsOrderHub.Models.Cupon", "Cupon")
+                        .WithMany()
+                        .HasForeignKey("CuponId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cupon");
+                });
+
+            modelBuilder.Entity("JarredsOrderHub.Models.DetallePedido", b =>
+                {
+                    b.HasOne("JarredsOrderHub.Models.Pedidos", "Pedido")
+                        .WithMany("Detalles")
+                        .HasForeignKey("PedidoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JarredsOrderHub.Models.Platillo", "Platillo")
+                        .WithMany()
+                        .HasForeignKey("ProductoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pedido");
+
+                    b.Navigation("Platillo");
+                });
+
             modelBuilder.Entity("JarredsOrderHub.Models.Empleado", b =>
                 {
                     b.HasOne("JarredsOrderHub.Models.Horario", "Horario")
@@ -350,6 +626,34 @@ namespace JarredsOrderHub.Migrations
                     b.Navigation("Rol");
                 });
 
+            modelBuilder.Entity("JarredsOrderHub.Models.Pago", b =>
+                {
+                    b.HasOne("JarredsOrderHub.Models.Pedidos", "Pedido")
+                        .WithMany()
+                        .HasForeignKey("PedidoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pedido");
+                });
+
+            modelBuilder.Entity("JarredsOrderHub.Models.Pedidos", b =>
+                {
+                    b.HasOne("JarredsOrderHub.Models.Cupon", "Cupon")
+                        .WithMany()
+                        .HasForeignKey("CuponId");
+
+                    b.HasOne("JarredsOrderHub.Models.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cliente");
+
+                    b.Navigation("Cupon");
+                });
+
             modelBuilder.Entity("JarredsOrderHub.Models.Platillo", b =>
                 {
                     b.HasOne("JarredsOrderHub.Models.Categoria", "Categoria")
@@ -357,6 +661,17 @@ namespace JarredsOrderHub.Migrations
                         .HasForeignKey("IdCategoria");
 
                     b.Navigation("Categoria");
+                });
+
+            modelBuilder.Entity("JarredsOrderHub.Models.Reporte", b =>
+                {
+                    b.HasOne("JarredsOrderHub.Models.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("IdCliente")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cliente");
                 });
 
             modelBuilder.Entity("JarredsOrderHub.Models.Tareas", b =>
@@ -372,6 +687,11 @@ namespace JarredsOrderHub.Migrations
             modelBuilder.Entity("JarredsOrderHub.Models.Categoria", b =>
                 {
                     b.Navigation("Platillos");
+                });
+
+            modelBuilder.Entity("JarredsOrderHub.Models.Pedidos", b =>
+                {
+                    b.Navigation("Detalles");
                 });
 #pragma warning restore 612, 618
         }

@@ -5,6 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+
+});
 // Configurar el servicio de base de datos
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -34,6 +39,9 @@ builder.Services.AddScoped<AuditService>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<ReporteService>();
 builder.Services.AddScoped<IExportacionService, ExportacionService>();
+builder.Services.AddScoped<CuponService>();
+builder.Services.AddScoped<PagosService>();
+builder.Services.AddScoped<PedidosService>();
 
 //Agregar sesiones 
 builder.Services.AddSession(options =>

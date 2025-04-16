@@ -1,0 +1,265 @@
+﻿@model List<JarredsOrderHub.Models.Cupon>
+
+@{
+    ViewData["Title"] = "Administrar Cupones";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="~/css/Estilos.css" />
+<link rel="stylesheet" href="~/css/dataTable.css" />
+
+<h1 class="titulo-tabla">Cupones</h1>
+
+<!-- Tabla de Cupones -->
+<div class="contenedor-tabla">
+<table id="cuponTable">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Código</th>
+            <th>Descuento (%)</th>
+            <th>Fecha Expiración</th>
+            <th>Porcentual</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var cupon in Model)
+        {
+            <tr id="cupon-@cupon.Id">
+                <td>@cupon.Id</td>
+                <td>@cupon.Codigo</td>
+                <td>@cupon.Descuento%</td>
+                <td>@cupon.FechaExpiracion.ToString("dd/MM/yyyy")</td>
+                <td>@(cupon.EsPorcentual ? "Si" : "No")</td>
+                <td>
+                    <button class="icon-btn edit" onclick="editarCupon(@cupon.Id)">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="icon-btn delete" onclick="eliminarCupon(@cupon.Id)">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Botón Añadir Cupon -->
+<button id="addCuponBtn" class="add-category">
+    Añadir Cupon
+</button>
+</div>
+
+<!-- Modal para Añadir/Editar Cupon -->
+<div id="cuponModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="title-modal">Añadir Cupon</h2>
+            <span class="close" id="closeCuponModal">&times;</span>
+        </div>
+
+        <form id="cuponForm">
+            <label for="cuponDescuento">Descuento (%):</label>
+            <input type="number" id="cuponDescuento" placeholder="Ej: 10" required>
+
+            <label for="cuponFechaExpiracion">Fecha Expiración:</label>
+            <input type="date" id="cuponFechaExpiracion" required>
+
+            <fieldset>
+                <legend>Descuento</legend>
+                <label>
+                    <input type="radio" id="estadoActivo" name="estado" value="true" checked>
+                    Porcentaje
+                </label>
+                <label>
+                    <input type="radio" id="estadoInactivo" name="estado" value="false">
+                    Monto
+                </label>
+            </fieldset>
+
+            <button type="submit">Guardar</button>
+        </form>
+    </div>
+</div>
+
+<!-- Incluir jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<!-- Incluir DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<script>
+    let cuponEditandoId = null;
+    let cuponEditandoCodigo = null;
+
+    document.getElementById("addCuponBtn").onclick = function () {
+        cuponEditandoId = null;
+        document.getElementById("cuponDescuento").value = '';
+        document.getElementById("cuponFechaExpiracion").value = '';
+        document.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
+        document.getElementById("title-modal").textContent = "Añadir Cupon";
+        cuponModal.style.display = "block";
+    };
+
+    closeCuponModal.onclick = function () {
+        cuponModal.style.display = "none";
+        cuponEditandoId = null;
+        cuponEditandoCodigo = null;
+    }
+
+    window.onclick = function (event) {
+        if (event.target == cuponModal) {
+            cuponModal.style.display = "none";
+            cuponEditandoId = null;
+            cuponEditandoCodigo = null;
+        }
+    }
+
+    document.getElementById("cuponForm").onsubmit = async function (event) {
+        event.preventDefault();
+
+        const descuento = document.getElementById("cuponDescuento").value;
+        const fechaExpiracion = document.getElementById("cuponFechaExpiracion").value;
+        const esPorcentual = document.querySelector('input[name="estado"]:checked').value === "true";
+
+        if (!descuento || !fechaExpiracion) {
+            alert("Todos los campos son obligatorios.");
+            return;
+        }
+
+        const cuponData = {
+            id: cuponEditandoId ?? 0,
+            codigo: cuponEditandoCodigo ?? "",
+            Descuento: parseFloat(descuento),
+            FechaExpiracion: fechaExpiracion,
+            EsPorcentual: esPorcentual
+        };
+
+        console.log("cupon: ", cuponData);
+
+        const url = cuponEditandoId ? `/api/CuponService/${cuponEditandoId}` : "/api/CuponService";
+        const method = cuponEditandoId ? "PUT" : "POST";
+
+        try {
+            const response = await fetch(url, {
+                method: method,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(cuponData)
+            });
+
+            if (!response.ok) throw new Error("Error en la solicitud");
+
+            actualizarTabla();
+
+            document.getElementById("cuponModal").style.display = "none";
+
+        } catch (error) {
+            console.error("Error al guardar cupón:", error);
+            alert("Hubo un problema al guardar el cupón.");
+        }
+    };
+
+    function editarCupon(id) {
+        cuponEditandoId = id;
+
+        fetch(`/api/CuponService/${id}`)
+            .then(response => response.json())
+            .then(cupon => {
+                cuponEditandoCodigo = cupon.codigo;
+                document.getElementById("cuponDescuento").value = cupon.descuento;
+                document.getElementById("cuponFechaExpiracion").value = cupon.fechaExpiracion.split("T")[0];
+                document.querySelector(`input[name="estado"][value="${cupon.esPorcentual}"]`).checked = true;
+
+                document.getElementById("title-modal").textContent = "Editar Cupon";
+
+                document.getElementById("cuponModal").style.display = "block";
+            })
+            .catch(error => {
+                console.error("Error al obtener el cupón:", error);
+                alert("Hubo un problema al cargar los datos del cupón.");
+            });
+    }
+
+    async function actualizarTabla() {
+        try {
+            const response = await fetch("/api/CuponService");
+            const cupones = await response.json();
+            const tbody = document.querySelector("#cuponTable tbody");
+
+            tbody.innerHTML = "";
+
+            cupones.forEach(cupon => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                        <td>${cupon.id}</td>
+                        <td>${cupon.codigo}</td>
+                        <td>${cupon.descuento}%</td>
+                        <td>${new Date(cupon.fechaExpiracion).toLocaleDateString()}</td>
+                        <td>${cupon.esPorcentual ? "Sí" : "No"}</td>
+                        <td>
+                            <button class="icon-btn edit" onclick="editarCupon(${cupon.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="icon-btn delete" onclick="eliminarCupon(${cupon.id})">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    `;
+                tbody.appendChild(row);
+            });
+        } catch (error) {
+            console.error("Error al actualizar la tabla:", error);
+        }
+    }
+
+    actualizarTabla();
+
+    async function eliminarCupon(id) {
+        const confirmation = confirm("¿Estás seguro de que deseas eliminar este cupón?");
+        if (!confirmation) return;  // Si el usuario cancela, no hace nada
+
+        try {
+            const response = await fetch(`/api/CuponService/${id}`, {
+                method: "DELETE",
+            });
+
+            if (!response.ok) {
+                throw new Error("Error al eliminar el cupón");
+            }
+
+            actualizarTabla();
+
+            alert("Cupón eliminado con éxito.");
+        } catch (error) {
+            console.error("Error al eliminar el cupón:", error);
+            alert("Hubo un problema al eliminar el cupón.");
+        }
+    }
+
+    $('#cuponTable').DataTable({
+        "order": [[0, "asc"]],
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+        },
+        "dom": "<'dataTables_wrapper'<'dataTables_top'<'dataTables_length'l><'dataTables_filter'f>>r>t<'dataTables_bottom'<'dataTables_info'i><'dataTables_paginate'p>>",
+        "responsive": true,
+        "autoWidth": false,
+        "initComplete": function (settings, json) {
+            // Añadir clase personalizada a los inputs
+            $('.dataTables_filter input').addClass('search-input');
+            $('.dataTables_length select').addClass('custom-select');
+        },
+        "columnDefs": [{
+            "orderable": true,
+            "targets": '_all'
+        }],
+        "drawCallback": function (settings) {
+            // Ajustar posición de la paginación después de dibujar
+            $('.dataTables_paginate').css({
+                'display': 'flex',
+                'justify-content': 'center',
+                'width': '100%'
+            });
+        }
+    });
+</script>
+

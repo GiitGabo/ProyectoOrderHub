@@ -1,0 +1,307 @@
+﻿@model List<JarredsOrderHub.Models.Pedidos>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Pedidos Asignados";
+}
+<link rel="stylesheet" href="~/css/Calificar.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+
+<h1 class="titulo-primario" style="text-align:center; color:#2EA629; margin:20px 0;">
+    Pedidos Asignados al Repartidor
+</h1>
+
+<style>
+    /* Contenedor general para la lista de pedidos asignados */
+    .container-detalle-pedido {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px;
+    }
+    /* Tarjeta de pedido para repartidor */
+    .pedido-card {
+        display: flex;
+        gap: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        overflow: hidden;
+        background-color: #fff;
+        cursor: pointer;
+    }
+    .pedido-map {
+        width: 50%;
+        position: relative;
+    }
+    .pedido-info {
+        width: 50%;
+        padding: 20px;
+    }
+    .pedido-info h2 {
+        margin-top: 0;
+        color: #F2A413;
+    }
+    .leaflet-map {
+        width: 100%;
+        height: 400px;
+    }
+    /* Modal para ver detalles del pedido */
+    .modal-pedido {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.5);
+    }
+    .modal-pedido-content {
+        background-color: #ffffff;
+        margin: 5% auto;
+        padding: 20px;
+        border-radius: 10px;
+        width: 90%;
+        max-width: 800px;
+    }
+    .modal-pedido-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .modal-pedido-close {
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .detalle-pedido-info p {
+        font-size: 14px;
+        margin: 8px 0;
+    }
+    .detalle-pedido-info span.bold-text {
+        font-weight: bold;
+    }
+    /* Botón para trazar la ruta */
+    .btn-mostrar-ruta {
+        background-color: #2EA629;
+        color: #ffffff;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 15px;
+        cursor: pointer;
+        font-size: 14px;
+        margin-top: 15px;
+    }
+    .btn-mostrar-ruta:hover {
+        background-color: #1F7D1C;
+    }
+</style>
+
+<!-- Serializar la lista de repartidores en JavaScript -->
+<script>
+    // Nota: Revisa en la consola la salida de repartidores para confirmar las propiedades.
+    var repartidores = @Html.Raw(System.Text.Json.JsonSerializer.Serialize((List<JarredsOrderHub.Models.Empleado>)ViewBag.Repartidores));
+</script>
+
+<!-- Listado de Pedidos Asignados -->
+@if (Model == null || !Model.Any())
+{
+    <div style="text-align:center; margin:40px 0;">
+        <h2>No cuentas con pedidos asignados.</h2>
+    </div>
+}
+else
+{
+    <div class="container-detalle-pedido">
+        @foreach (var pedido in Model)
+        {
+            <div class="pedido-card" onclick="mostrarDetallesPedido(@pedido.Id)">
+                <div class="pedido-map">
+                    <!-- Muestra un mapa pequeño con la ubicación de entrega -->
+                    <div class="leaflet-map" data-lat="@pedido.LatitudEntrega" data-lng="@pedido.LongitudEntrega"></div>
+                </div>
+                <div class="pedido-info">
+                    <h2>Pedido #@pedido.Id</h2>
+                    <p><strong>Fecha:</strong> @pedido.FechaPedido.ToString("yyyy-MM-dd HH:mm")</p>
+                    <p><strong>Estado:</strong> @pedido.EstadoPedido</p>
+                    <p><strong>Método de Pago:</strong> @pedido.MetodoPago</p>
+                    <p><strong>Total:</strong> @pedido.Total.ToString("C", new System.Globalization.CultureInfo("es-CR"))</p>
+                    @if (pedido.Cliente != null)
+                    {
+                        <p><strong>Cliente:</strong> @pedido.Cliente.Nombre @pedido.Cliente.Apellido</p>
+                        <p><strong>Correo:</strong> @pedido.Cliente.Email</p>
+                    }
+                    else
+                    {
+                        <p><strong>Cliente:</strong> Sin información</p>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<!-- Modal para ver detalles y trazar la ruta -->
+<div id="modal-pedido" class="modal-pedido">
+    <div class="modal-pedido-content">
+        <div class="modal-pedido-header">
+            <h2>Detalles del Pedido</h2>
+            <span class="modal-pedido-close" onclick="cerrarModalPedido()">&times;</span>
+        </div>
+        <div class="detalle-pedido-info">
+            <p><strong>Pedido N°:</strong> <span id="detalle-id"></span></p>
+            <p><strong>Fecha:</strong> <span id="detalle-fecha"></span></p>
+            <p><strong>Método de Pago:</strong> <span id="detalle-metodopago"></span></p>
+            <p><strong>Total:</strong> <span id="detalle-total"></span></p>
+            <p><strong>Comentarios:</strong> <span id="detalle-comentarios"></span></p>
+        </div>
+        <!-- Contenedor para el mapa del modal -->
+        <div id="modal-mapa" style="height:400px; margin:20px 0;"></div>
+        <!-- Botón para trazar la ruta manualmente -->
+        <div style="text-align:center;">
+            <button class="btn-mostrar-ruta" onclick="mostrarRuta()">Mostrar Ruta</button>
+        </div>
+    </div>
+</div>
+
+<!-- Incluir Leaflet JS y Leaflet Routing Machine -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+
+<script>
+    var mapaDetalle;    // Mapa del modal
+    var rutaControl;     // Control de la ruta
+    window.pedidoActual = null; // Pedido cargado actualmente
+
+    // Inicializa los mapas pequeños en las tarjetas (vista de asignación)
+    document.addEventListener("DOMContentLoaded", function() {
+        const maps = document.querySelectorAll('.leaflet-map');
+        maps.forEach(mapDiv => {
+            const lat = parseFloat(mapDiv.getAttribute('data-lat'));
+            const lng = parseFloat(mapDiv.getAttribute('data-lng'));
+            if (isNaN(lat) || isNaN(lng)) return;
+            var map = L.map(mapDiv).setView([lat, lng], 15);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+            L.marker([lat, lng]).addTo(map).bindPopup("Ubicación de entrega").openPopup();
+        });
+    });
+
+    // Función para abrir el modal y cargar los detalles del pedido
+    function mostrarDetallesPedido(pedidoId) {
+        fetch(`/api/PedidosService/${pedidoId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(pedido => {
+                window.pedidoActual = pedido; // Guarda el pedido actual
+
+                document.getElementById("detalle-id").textContent = pedido.id;
+                document.getElementById("detalle-fecha").textContent = new Date(pedido.fechaPedido).toLocaleString();
+                document.getElementById("detalle-total").textContent = "$" + pedido.total;
+                document.getElementById("detalle-metodopago").textContent = pedido.metodoPago;
+                document.getElementById("detalle-comentarios").textContent = pedido.comentarios;
+
+                // Inicializa el mapa del modal sin trazar ruta
+                if (pedido.latitudEntrega && pedido.longitudEntrega) {
+                    if (mapaDetalle) {
+                        mapaDetalle.remove();
+                    }
+                    mapaDetalle = L.map('modal-mapa').setView([pedido.latitudEntrega, pedido.longitudEntrega], 15);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; OpenStreetMap contributors'
+                    }).addTo(mapaDetalle);
+                    L.marker([pedido.latitudEntrega, pedido.longitudEntrega]).addTo(mapaDetalle);
+                } else {
+                    document.getElementById("modal-mapa").innerHTML = "<p>Ubicación no definida.</p>";
+                    if (mapaDetalle) { mapaDetalle.remove(); mapaDetalle = null; }
+                }
+
+                // Guarda el ID del pedido en el modal
+                document.getElementById("modal-pedido").setAttribute("data-pedidoid", pedido.id);
+                // Muestra el modal
+                document.getElementById("modal-pedido").style.display = "block";
+            })
+            .catch(error => {
+                console.error("Error al obtener el pedido:", error);
+                alert("No se pudo cargar el detalle del pedido.");
+            });
+    }
+
+    // Función para cerrar el modal
+    function cerrarModalPedido() {
+        document.getElementById("modal-pedido").style.display = "none";
+    }
+
+    // Función para trazar la ruta cuando se presione el botón "Mostrar Ruta"
+function mostrarRuta() {
+    if (!window.pedidoActual) {
+        alert("No hay un pedido cargado.");
+        return;
+    }
+    if (!window.pedidoActual.idRepartidor) {
+        alert("Este pedido no tiene repartidor asignado.");
+        return;
+    }
+    // Convertir a entero para evitar problemas de comparación
+    var idRepPedido = parseInt(window.pedidoActual.idRepartidor, 10);
+    // Utiliza la propiedad 'IdEmpleado' (porque se serializa con ese nombre)
+    var rep = repartidores.find(r => parseInt(r.IdEmpleado, 10) === idRepPedido);
+    if (!rep) {
+        alert("No se encontró la información del repartidor asignado.");
+        console.log("Pedido idRepartidor:", window.pedidoActual.idRepartidor);
+        console.log("Repartidores:", repartidores);
+        return;
+    }
+    
+    // Función interna para trazar la ruta
+    function trazarRuta(latInicio, lngInicio) {
+        if (rutaControl) {
+            mapaDetalle.removeControl(rutaControl);
+            rutaControl = null;
+        }
+        rutaControl = L.Routing.control({
+            waypoints: [
+                L.latLng(latInicio, lngInicio),
+                L.latLng(window.pedidoActual.latitudEntrega, window.pedidoActual.longitudEntrega)
+            ],
+            routeWhileDragging: false,
+            draggableWaypoints: false,
+            addWaypoints: false,
+            createMarker: function(i, wp) {
+                return L.marker(wp.latLng);
+            }
+        }).addTo(mapaDetalle);
+    }
+    
+    // Si el repartidor tiene las coordenadas definidas, usarlas; de lo contrario, obtener la geolocalización del dispositivo
+    if (rep.latitudActual && rep.longitudActual) {
+        trazarRuta(rep.latitudActual, rep.longitudActual);
+    } else {
+        // Usar el API de geolocalización del navegador
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var lat = position.coords.latitude;
+                var lng = position.coords.longitude;
+                console.log("Geolocalización obtenida:", lat, lng);
+                // Trazar la ruta usando la ubicación actual del navegador
+                trazarRuta(lat, lng);
+            }, function(error) {
+                console.error("Error al obtener geolocalización:", error);
+                alert("No se pudo obtener la geolocalización para trazar la ruta.");
+            });
+        } else {
+            alert("El navegador no soporta la geolocalización.");
+        }
+    }
+}
+
+
+</script>

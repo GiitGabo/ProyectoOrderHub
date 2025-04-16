@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace JarredsOrderHub.Migrations
 {
     /// <inheritdoc />
-    public partial class rec : Migration
+    public partial class Migrations : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -65,6 +65,22 @@ namespace JarredsOrderHub.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Cupones",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Codigo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Descuento = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    FechaExpiracion = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EsPorcentual = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cupones", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Horarios",
                 columns: table => new
                 {
@@ -110,6 +126,26 @@ namespace JarredsOrderHub.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SeccionesContenido",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Seccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Contenido = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Direccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ArchivoPdf = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PreguntasFrecuentes = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Estado = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SeccionesContenido", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Platillos",
                 columns: table => new
                 {
@@ -130,6 +166,82 @@ namespace JarredsOrderHub.Migrations
                         column: x => x.IdCategoria,
                         principalTable: "Categorias",
                         principalColumn: "IdCategoria");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Reportes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdCliente = table.Column<int>(type: "int", nullable: false),
+                    FechaReporte = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DescripcionReporte = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Estado = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reportes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Reportes_Clientes_IdCliente",
+                        column: x => x.IdCliente,
+                        principalTable: "Clientes",
+                        principalColumn: "IdCliente",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CuponClientes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CuponId = table.Column<int>(type: "int", nullable: false),
+                    ClienteId = table.Column<int>(type: "int", nullable: false),
+                    FechaUso = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CuponClientes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CuponClientes_Cupones_CuponId",
+                        column: x => x.CuponId,
+                        principalTable: "Cupones",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Pedidos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UsuarioId = table.Column<int>(type: "int", nullable: false),
+                    FechaPedido = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EstadoPedido = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MetodoPago = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Comentarios = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LatitudEntrega = table.Column<double>(type: "float", nullable: true),
+                    LongitudEntrega = table.Column<double>(type: "float", nullable: true),
+                    IdRepartidor = table.Column<int>(type: "int", nullable: true),
+                    CuponId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Pedidos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Pedidos_Clientes_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "Clientes",
+                        principalColumn: "IdCliente",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Pedidos_Cupones_CuponId",
+                        column: x => x.CuponId,
+                        principalTable: "Cupones",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -160,6 +272,57 @@ namespace JarredsOrderHub.Migrations
                         column: x => x.IdRol,
                         principalTable: "Roles",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DetallePedidos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PedidoId = table.Column<int>(type: "int", nullable: false),
+                    ProductoId = table.Column<int>(type: "int", nullable: false),
+                    Cantidad = table.Column<int>(type: "int", nullable: false),
+                    PrecioUnitario = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DetallePedidos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DetallePedidos_Pedidos_PedidoId",
+                        column: x => x.PedidoId,
+                        principalTable: "Pedidos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DetallePedidos_Platillos_ProductoId",
+                        column: x => x.ProductoId,
+                        principalTable: "Platillos",
+                        principalColumn: "IdPlatillo",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Pagos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PedidoId = table.Column<int>(type: "int", nullable: false),
+                    Monto = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Estado = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FechaPago = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Pagos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Pagos_Pedidos_PedidoId",
+                        column: x => x.PedidoId,
+                        principalTable: "Pedidos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -197,7 +360,27 @@ namespace JarredsOrderHub.Migrations
             migrationBuilder.InsertData(
                 table: "Roles",
                 columns: new[] { "Id", "Descripcion", "Nombre", "Permisos" },
-                values: new object[] { 1, "Acceso total a la pagina.", "Administrador", "Administrar usuarios, Ver empleados, Ver tareas, Administrar tareas" });
+                values: new object[,]
+                {
+                    { 1, "Acceso total a la pagina.", "Administrador", "Administrar usuarios, Ver empleados, Ver tareas, Administrar tareas" },
+                    { 2, "Acceso a pedidos e historiales", "Cocinero", "Administrar Pedidos, Ver Tareas, Ver tareas" },
+                    { 3, "Acceso a ciertos pedidos asignados", "Repartidor", "Administrar usuarios, Ver tareas, Historial de Pedidos entregados" }
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CuponClientes_CuponId",
+                table: "CuponClientes",
+                column: "CuponId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DetallePedidos_PedidoId",
+                table: "DetallePedidos",
+                column: "PedidoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DetallePedidos_ProductoId",
+                table: "DetallePedidos",
+                column: "ProductoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Empleados_IdHorario",
@@ -210,9 +393,29 @@ namespace JarredsOrderHub.Migrations
                 column: "IdRol");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Pagos_PedidoId",
+                table: "Pagos",
+                column: "PedidoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Pedidos_CuponId",
+                table: "Pedidos",
+                column: "CuponId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Pedidos_UsuarioId",
+                table: "Pedidos",
+                column: "UsuarioId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Platillos_IdCategoria",
                 table: "Platillos",
                 column: "IdCategoria");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reportes_IdCliente",
+                table: "Reportes",
+                column: "IdCliente");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tareas_IdEmpleado",
@@ -227,22 +430,43 @@ namespace JarredsOrderHub.Migrations
                 name: "AuditLogs");
 
             migrationBuilder.DropTable(
-                name: "Clientes");
+                name: "CuponClientes");
 
             migrationBuilder.DropTable(
-                name: "Platillos");
+                name: "DetallePedidos");
+
+            migrationBuilder.DropTable(
+                name: "Pagos");
 
             migrationBuilder.DropTable(
                 name: "RecuperacionesContrasenias");
 
             migrationBuilder.DropTable(
+                name: "Reportes");
+
+            migrationBuilder.DropTable(
+                name: "SeccionesContenido");
+
+            migrationBuilder.DropTable(
                 name: "Tareas");
+
+            migrationBuilder.DropTable(
+                name: "Platillos");
+
+            migrationBuilder.DropTable(
+                name: "Pedidos");
+
+            migrationBuilder.DropTable(
+                name: "Empleados");
 
             migrationBuilder.DropTable(
                 name: "Categorias");
 
             migrationBuilder.DropTable(
-                name: "Empleados");
+                name: "Clientes");
+
+            migrationBuilder.DropTable(
+                name: "Cupones");
 
             migrationBuilder.DropTable(
                 name: "Horarios");

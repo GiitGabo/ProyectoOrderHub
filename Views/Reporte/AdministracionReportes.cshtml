@@ -1,5 +1,9 @@
-﻿<link rel="stylesheet" href="~/css/Estilos.css" />
-@model IEnumerable<JarredsOrderHub.Models.Reporte>
+﻿@model IEnumerable<JarredsOrderHub.Models.Reporte>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="~/css/Estilos.css" />
+<link rel="stylesheet" href="~/css/dataTable.css" />
 
 <h1>Realizar Reporte</h1>
 
@@ -25,8 +29,13 @@
 
 <h1 class="titulo-tabla">Administración de Reportes</h1>
 
+
 <!-- Tabla de Reportes -->
 <table>
+
+<div class="contenedor-tabla">
+<table id="tabla">
+
     <thead>
         <tr>
             <th>ID</th>
@@ -57,7 +66,7 @@
         }
     </tbody>
 </table>
-
+</div>
 <!-- Modal para ver detalles -->
 <div id="detallesModal" class="modal" style="display:none;">
     <div class="modal-content">
@@ -83,11 +92,18 @@
     </div>
 </div>
 
+
 <!-- Botones para generar reportes -->
 <div>
     <a href="@Url.Action("GenerarReporteVentas", new { tipoReporte = 1 })" class="btn btn-primary">Generar Reporte PDF</a>
     <a href="@Url.Action("GenerarReporteVentas", new { tipoReporte = 2 })" class="btn btn-success">Generar Reporte Excel</a>
 </div>
+
+<!-- Incluir jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<!-- Incluir DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
 
 <script>
     // Función para ver detalles del reporte
@@ -138,6 +154,7 @@
         }
     }
 
+
     // Función para enviar el formulario de reporte
     const reportForm = document.getElementById("reportForm");
     const reportConfirmationModal = document.getElementById("reportConfirmationModal");
@@ -183,3 +200,31 @@
         }
     };
 </script>
+    $('#tabla').DataTable({
+        "order": [[0, "asc"]],
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+        },
+        "dom": "<'dataTables_wrapper'<'dataTables_top'<'dataTables_length'l><'dataTables_filter'f>>r>t<'dataTables_bottom'<'dataTables_info'i><'dataTables_paginate'p>>",
+        "responsive": true,
+        "autoWidth": false,
+        "initComplete": function (settings, json) {
+            // Añadir clase personalizada a los inputs
+            $('.dataTables_filter input').addClass('search-input');
+            $('.dataTables_length select').addClass('custom-select');
+        },
+        "columnDefs": [{
+            "orderable": true,
+            "targets": '_all'
+        }],
+        "drawCallback": function (settings) {
+            // Ajustar posición de la paginación después de dibujar
+            $('.dataTables_paginate').css({
+                'display': 'flex',
+                'justify-content': 'center',
+                'width': '100%'
+            });
+        }
+    });
+</script>
+

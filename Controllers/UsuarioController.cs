@@ -92,6 +92,7 @@ namespace JarredsOrderHub.Controllers
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, cliente.Nombre),
+                    new Claim(ClaimTypes.NameIdentifier, cliente.IdCliente.ToString()),
                     new Claim("UserType", "Cliente")
                 };
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -126,6 +127,7 @@ namespace JarredsOrderHub.Controllers
 
                 HttpContext.Session.SetString("UserName", empleado.Nombre);
                 HttpContext.Session.SetString("UserType", "Empleado");
+                HttpContext.Session.SetInt32("EmpleadoId", empleado.IdEmpleado);
                 return RedirectToAction("Menu", "Catalogo");
             }
 
@@ -222,6 +224,8 @@ namespace JarredsOrderHub.Controllers
                 return View(model);
             }
         }
+
+
 
     }
 }

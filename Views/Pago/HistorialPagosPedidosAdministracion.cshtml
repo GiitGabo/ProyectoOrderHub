@@ -1,67 +1,85 @@
 ﻿<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="~/css/AdminPagos.css" />
+@model List<Pago>
 
 <header>
     <h1>Historial de Pagos</h1>
 </header>
 
-<!-- Tabla de pagos -->
-<table class="tabla-pagos">
-    <thead>
-        <tr>
-            <th>Pedido ID</th>
-            <th>Fecha de Pedido</th>
-            <th>Total</th>
-            <th>Pago ID</th>
-            <th>Monto</th>
-            <th>Fecha de Pago</th>
-            <th>Método de Pago</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>123</td>
-            <td>2024-12-10</td>
-            <td>$150.00</td>
-            <td>1</td>
-            <td>$150.00</td>
-            <td>2024-12-10</td>
-            <td>Tarjeta de Crédito</td>
-            <td>Pagado</td>
-            <td>
-                <button onclick="verDetalles(124)">
-                    <i class="fas fa-eye"></i> Ver Detalles
-                </button>
-                <button onclick="reenviarFactura(124)">
-                    <i class="fas fa-envelope"></i> Reenviar Factura
-                </button>
+<!-- Filtros -->
+<div class="filtros">
+    <label for="fechaInicio">Fecha de Inicio</label>
+    <input type="date" id="fechaInicio" onchange="aplicarFiltros()">
 
-            </td>
-        </tr>
-        <tr>
-            <td>124</td>
-            <td>2024-12-05</td>
-            <td>$200.00</td>
-            <td>2</td>
-            <td>$200.00</td>
-            <td>2024-12-06</td>
-            <td>PayPal</td>
-            <td>Pagado</td>
-            <td>
-                <button onclick="verDetalles(124)">
-                    <i class="fas fa-eye"></i> Ver Detalles
-                </button>
-                <button onclick="reenviarFactura(124)">
-                    <i class="fas fa-envelope"></i> Reenviar Factura
-                </button>
+    <label for="fechaFin">Fecha de Fin</label>
+    <input type="date" id="fechaFin" onchange="aplicarFiltros()">
 
-            </td>
-        </tr>
-    </tbody>
-</table>
+    <label for="metodoPago">Método de Pago</label>
+    <select id="metodoPago" onchange="aplicarFiltros()">
+        <option value="">Todos</option>
+        <option value="Efectivo">Efectivo</option>
+        <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
+        <option value="PayPal">PayPal</option>
+    </select>
+
+    <label for="estadoPago">Estado del Pago</label>
+    <select id="estadoPago" onchange="aplicarFiltros()">
+        <option value="">Todos</option>
+        <option value="Pagado">Pagado</option>
+        <option value="Pendiente">Pendiente</option>
+    </select>
+</div>
+
+@if (Model.Count == 0)
+{
+    <div class="no-pagos text-center" style="margin:30px 0px;">
+        <p>Aún no existen pagos registrados.</p>
     </div>
+}
+else
+{
+    <!-- Tabla de pagos -->
+    <table class="tabla-pagos">
+        <thead>
+            <tr>
+                <th>Pedido ID</th>
+                <th>Fecha de Pedido</th>
+                <th>Total</th>
+                <th>Pago ID</th>
+                <th>Monto</th>
+                <th>Fecha de Pago</th>
+                <th>Método de Pago</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tablaPagosBody">
+            @foreach (var pago in Model)
+            {
+                <tr class="pago-card"
+                    data-fecha="@pago.Pedido.FechaPedido.ToString("yyyy-MM-dd")"
+                    data-metodopago="@pago.Pedido.MetodoPago">
+                    <td>@pago.PedidoId</td>
+                    <td>@pago.Pedido.FechaPedido.ToString("yyyy-MM-dd")</td>
+                    <td>@pago.Pedido.Total</td>
+                    <td>@pago.Id</td>
+                    <td>@pago.Monto</td>
+                    <td>@pago.FechaPago</td>
+                    <td>@pago.Pedido.MetodoPago</td>
+                    <td>@pago.Estado</td>
+                    <td>
+                        <button onclick="verDetalles(@pago.PedidoId)">
+                            <i class="fas fa-eye"></i> Ver Detalles
+                        </button>
+                        <button onclick="reenviarFactura(@pago.PedidoId)">
+                            <i class="fas fa-envelope"></i> Reenviar Factura
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 <!-- Modal de Detalles del Pedido -->
 <div id="modalDetalles" class="modal">
@@ -70,7 +88,6 @@
             <h2 id="modalTitle">Detalles del Pedido</h2>
             <span class="close" onclick="cerrarModal()">&times;</span>
         </div>
-
         <p id="detallesPedido"></p>
     </div>
 </div>
@@ -82,57 +99,141 @@
             <h2>Reenviar Factura</h2>
             <span class="close" onclick="cerrarModal()">&times;</span>
         </div>
-        
         <p id="reenviarMensaje"></p>
-        <button onclick="reenviarFacturaConfirmado()">Enviar Factura</button>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
+            <button class="btn btn-primary" onclick="reenviarFacturaConfirmado()">
+                <i class="fas fa-paper-plane"></i> Enviar Factura
+            </button>
+        </div>
     </div>
 </div>
 
 <script>
+    function aplicarFiltros() {
+        // Obtener los valores de los filtros
+        const fechaInicio = document.getElementById("fechaInicio").value;
+        const fechaFin = document.getElementById("fechaFin").value;
+        const metodoPago = document.getElementById("metodoPago").value;
+        const estadoPago = document.getElementById("estadoPago").value;
+
+        // Obtener todas las filas de la tabla
+        const filas = document.querySelectorAll(".tabla-pagos tbody tr");
+
+        filas.forEach(fila => {
+            // Obtener los valores de cada fila
+            const fechaPedido = fila.querySelector("td:nth-child(2)").innerText;
+            const metodo = fila.querySelector("td:nth-child(7)").innerText;
+            const estado = fila.querySelector("td:nth-child(8)").innerText;
+            const fechaPago = fila.querySelector("td:nth-child(6)").innerText;
+
+            // Inicializar un flag para determinar si la fila debe mostrarse
+            let mostrarFila = true;
+
+            // Filtro por fecha de inicio
+            if (fechaInicio && new Date(fechaPedido) < new Date(fechaInicio)) {
+                mostrarFila = false;
+            }
+
+            // Filtro por fecha de fin
+            if (fechaFin && new Date(fechaPedido) > new Date(fechaFin)) {
+                mostrarFila = false;
+            }
+
+            // Filtro por método de pago
+            if (metodoPago && metodo !== metodoPago) {
+                mostrarFila = false;
+            }
+
+            // Filtro por estado de pago
+            if (estadoPago && estado !== estadoPago) {
+                mostrarFila = false;
+            }
+
+            // Mostrar u ocultar la fila según los filtros
+            fila.style.display = mostrarFila ? "" : "none";
+        });
+    }
+
+
     // Función para ver detalles del pedido
     function verDetalles(pedidoId) {
-        // Simular la carga de los detalles del pedido
-        let detalles = `Detalles del pedido #${pedidoId}:
-                    - Pizza Margarita
-                    - Rice and Beans
-                    Total: $12.00`;
+        fetch(`/api/PedidosService/Detalles/${pedidoId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("No se encontraron detalles para este pedido.");
+                }
+                return response.json();
+            })
+            .then(detalles => {
+                let contenido = `Detalles del pedido #${pedidoId}:\n`;
 
-        // Mostrar el contenido en el modal
-        document.getElementById("detallesPedido").innerText = detalles;
+                if (detalles.length > 0) {
+                    detalles.forEach(d => {
+                        contenido += `- ${d.platillo.nombre} x ${d.cantidad} ($${d.precioUnitario.toFixed(2)})\n`;
+                    });
 
-        // Mostrar el modal
-        document.getElementById("modalDetalles").style.display = "block";
+                    const total = detalles.reduce((sum, d) => sum + d.total, 0);
+                    contenido += `Total: $${total.toFixed(2)}`;
+                } else {
+                    contenido += "No hay detalles disponibles.";
+                }
+
+                document.getElementById("detallesPedido").innerText = contenido;
+                document.getElementById("modalDetalles").style.display = "block";
+            })
+            .catch(error => {
+                document.getElementById("detallesPedido").innerText = error.message;
+                document.getElementById("modalDetalles").style.display = "block";
+            });
     }
 
-    // Función para reenviar la factura
-    function reenviarFactura(pedidoId) {
-        // Simular la acción de reenviar factura
-        let mensaje = `¿Deseas reenviar la factura del pedido #${pedidoId}?`;
-
-        // Mostrar el mensaje en el modal
-        document.getElementById("reenviarMensaje").innerText = mensaje;
-
-        // Mostrar el modal
-        document.getElementById("modalReenviarFactura").style.display = "block";
-    }
-
-    // Función para confirmar el envío de la factura
-    function reenviarFacturaConfirmado() {
-        alert("Factura reenviada exitosamente!");
-        cerrarModal();
-    }
-
-    // Función para cerrar el modal
     function cerrarModal() {
         document.getElementById("modalDetalles").style.display = "none";
         document.getElementById("modalReenviarFactura").style.display = "none";
     }
 
-    // Cerrar el modal si se hace clic fuera de él
     window.onclick = function (event) {
         if (event.target == document.getElementById("modalDetalles") || event.target == document.getElementById("modalReenviarFactura")) {
             cerrarModal();
         }
     }
 
+    let pedidoIdActual = null;
+
+    function reenviarFactura(pedidoId) {
+        pedidoIdActual = pedidoId;
+        let mensaje = `¿Deseas reenviar la factura del pedido #${pedidoId}?`;
+        document.getElementById("reenviarMensaje").innerText = mensaje;
+        document.getElementById("modalReenviarFactura").style.display = "block";
+    }
+
+    function reenviarFacturaConfirmado() {
+        if (!pedidoIdActual) {
+            alert("No se ha seleccionado un pedido válido");
+            return;
+        }
+
+        const btnEnviar = document.querySelector("#modalReenviarFactura button");
+        btnEnviar.disabled = true;
+        btnEnviar.textContent = "Enviando...";
+
+        fetch(`/api/PedidosService/enviarRecibo/${pedidoIdActual}`)
+            .then(response => {
+                if (response.ok) {
+                    alert("Recibo enviado correctamente");
+                } else {
+                    throw new Error("Error al enviar el recibo");
+                }
+                cerrarModal();
+            })
+            .catch(error => {
+                alert(error.message);
+            })
+            .finally(() => {
+                btnEnviar.disabled = false;
+                btnEnviar.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Factura';
+                pedidoIdActual = null;
+            });
+    }
 </script>

@@ -1,14 +1,17 @@
-﻿<link rel="stylesheet" href="@Url.Content("~/css/Estilos.css")" />
-@model List<JarredsOrderHub.Models.Platillo>
+﻿@model List<JarredsOrderHub.Models.Platillo>
 
 @{
     ViewData["Title"] = "Administrar Platos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<link rel="stylesheet" href="~/css/Estilos.css" />
+<link rel="stylesheet" href="~/css/dataTable.css" />
 
 <h1 class="titulo-tabla">Platos</h1>
 
-<!-- Tabla de Platos -->
-<table id="categoryTable" >
+<!-- Tabla de Platos  / SI FALLA ALGO ES POR EL ID-->
+<div class="contenedor-tabla">
+<table id="tabla">
     <thead>
         <tr>
             <th>ID</th>
@@ -49,6 +52,7 @@
 <button id="addPlateBtn" class="add-plate">
     Añadir Plato
 </button>
+</div>
 
 <!-- Popup Modal para Añadir/Editar Plato -->
 <div id="plateModal" class="modal">
@@ -100,191 +104,221 @@
     </div>
 </div>
 
-<!-- Scripts para manejar el POPUP y AJAX -->
-<!-- Scripts para manejar el POPUP y AJAX -->
+<!-- Incluir jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<!-- Incluir DataTables JS AJAX-->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
 <script>
-    const plateModal = document.getElementById("plateModal");
-    const addPlateBtn = document.getElementById("addPlateBtn");
-    const closePlateModal = document.getElementById("closePlateModal");
-    const plateForm = document.getElementById("plateForm");
-    let platilloEditandoId = null;
+        const plateModal = document.getElementById("plateModal");
+        const addPlateBtn = document.getElementById("addPlateBtn");
+        const closePlateModal = document.getElementById("closePlateModal");
+        const plateForm = document.getElementById("plateForm");
+        let platilloEditandoId = null;
 
-    // Cargar categorías al iniciar (para el select de platillos)
-    function cargarCategorias() {
-        fetch('/api/CatalogoService/categorias')
-            .then(response => response.json())
-            .then(categorias => {
-                const select = document.getElementById("platilloCategoria");
-                select.innerHTML = '';
-                categorias.forEach(categoria => {
-                    if (categoria.activa) {
-                        const option = document.createElement('option');
-                        option.value = categoria.idCategoria;
-                        option.textContent = categoria.nombre;
-                        select.appendChild(option);
-                    }
-                });
-            })
-            .catch(error => console.error('Error al cargar categorías:', error));
-    }
-
-    // Llamar a cargarCategorías cuando se carga la página
-    document.addEventListener('DOMContentLoaded', cargarCategorias);
-
-    // Abrir el POPUP para añadir o editar
-    addPlateBtn.onclick = function () {
-        platilloEditandoId = null;
-
-        document.getElementById("platilloNombre").value = '';
-        document.getElementById("platilloDescripcion").value = '';
-        document.getElementById("platilloPrecio").value = '';
-        document.getElementById("platilloImagen").value = '';
-        document.querySelectorAll('input[name="estado"]').forEach(radio => radio.checked = false);
-        document.getElementById("estadoActivo").checked = true;
-
-        // Actualizar el texto del botón y del título del modal
-        document.querySelector("#plateForm button[type='submit']").textContent = "Guardar";
-        document.getElementById("title-modal").textContent = "Añadir Plato";
-
-        plateModal.style.display = "block";
-    };
-
-    // Cerrar el POPUP
-    closePlateModal.onclick = function () {
-        plateModal.style.display = "none";
-    };
-
-    // Cerrar el POPUP si se hace clic fuera de él
-    window.onclick = function (event) {
-        if (event.target == plateModal) {
-            plateModal.style.display = "none";
+        // Cargar categorías al iniciar (para el select de platillos)
+        function cargarCategorias() {
+            fetch('/api/CatalogoService/categorias')
+                .then(response => response.json())
+                .then(categorias => {
+                    const select = document.getElementById("platilloCategoria");
+                    select.innerHTML = '';
+                    categorias.forEach(categoria => {
+                        if (categoria.activa) {
+                            const option = document.createElement('option');
+                            option.value = categoria.idCategoria;
+                            option.textContent = categoria.nombre;
+                            select.appendChild(option);
+                        }
+                    });
+                })
+                .catch(error => console.error('Error al cargar categorías:', error));
         }
-    };
 
-    // Manejar el envío del formulario (Crear o Editar)
-    plateForm.onsubmit = function (e) {
-        e.preventDefault();
+        // Llamar a cargarCategorías cuando se carga la página
+        document.addEventListener('DOMContentLoaded', cargarCategorias);
 
+        // Abrir el POPUP para añadir o editar
+        addPlateBtn.onclick = function () {
+            platilloEditandoId = null;
 
-        const platilloData = {
-        ...(platilloEditandoId && { idPlatillo: platilloEditandoId }), // Solo incluye el ID si existe
-        nombre: document.getElementById("platilloNombre").value,
-        descripcion: document.getElementById("platilloDescripcion").value,
-        precio: parseFloat(document.getElementById("platilloPrecio").value),
-        imagen: document.getElementById("platilloImagen").value,
-        idCategoria: parseInt(document.getElementById("platilloCategoria").value),
-        activo: document.querySelector('input[name="estado"]:checked').value === 'true'
-        };
+            document.getElementById("platilloNombre").value = '';
+            document.getElementById("platilloDescripcion").value = '';
+            document.getElementById("platilloPrecio").value = '';
+            document.getElementById("platilloImagen").value = '';
+            document.querySelectorAll('input[name="estado"]').forEach(radio => radio.checked = false);
+            document.getElementById("estadoActivo").checked = true;
 
-    
-        console.log('Datos a enviar:', platilloData); // Añade este log
-
-        const url = platilloEditandoId ? `/api/CatalogoService/platillos/${platilloEditandoId}` : '/api/CatalogoService/platillos';
-        const method = platilloEditandoId ? 'PUT' : 'POST';
-
-        console.log('URL:', url); // Añade este log
-
-        fetch(url, {
-            method: method,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(platilloData)
-        })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(err => Promise.reject(err));
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (!data.idPlatillo || !data.nombre) {
-                    throw new Error('Respuesta incompleta del servidor');
-                }
-
-            const rowHtml = `
-                <tr id="platillo-${data.idPlatillo}">
-                    <td>${data.idPlatillo}</td>
-                    <td>${data.nombre}</td>
-                    <td>${data.descripcion || ''}</td>
-                    <td>${data.precio ? data.precio.toLocaleString('es-ES', { style: 'currency', currency: 'CRC' }) : 'N/A'}</td>
-                    <td><img src="${data.imagen}" alt="${data.nombre}" width="50" /></td>
-                    <td>${data.idCategoria}</td>
-                    <td>${data.activo ? "Disponible" : "No Disponible"}</td>
-                    <td>
-                        <button class="icon-btn edit" onclick="editarPlatillo(${data.idPlatillo})">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="icon-btn delete" onclick="eliminarPlatillo(${data.idPlatillo})">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </td>
-                </tr>
-             `;
-            
-
-
-                if (platilloEditandoId) {
-                    document.getElementById(`platillo-${platilloEditandoId}`).outerHTML = rowHtml;
-}                else {
-                    document.querySelector("table tbody").insertAdjacentHTML('beforeend', rowHtml);
-                 }
-
-                plateModal.style.display = "none";
-                plateForm.reset();
-                platilloEditandoId = null;
-
-                alert(platilloEditandoId ? 'Platillo actualizado con éxito' : 'Actualizacion de Platillos realizada con Exito!!');
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error al procesar el platillo: ' + (error.message || 'Error desconocido'));
-                console.log(platilloData);
-            });
-    };
-
-// función editarPlatillo
-function editarPlatillo(platilloId) {
-    console.log('Editando platillo ID:', platilloId); 
-    platilloEditandoId = platilloId;
-
-    fetch(`/api/CatalogoService/platillos/${platilloId}`)
-        .then(response => response.json())
-        .then(data => {
-            console.log('Datos obtenidos del servidor:', data);
-            document.getElementById("platilloNombre").value = data.nombre;
-            document.getElementById("platilloDescripcion").value = data.descripcion;
-            document.getElementById("platilloPrecio").value = data.precio;
-            document.getElementById("platilloImagen").value = data.imagen;
-            document.getElementById("platilloCategoria").value = data.idCategoria;
-            document.getElementById(data.activo ? "estadoActivo" : "estadoInactivo").checked = true;
-
-            document.getElementById("title-modal").textContent = "Editar Plato";
-            document.querySelector("#plateForm button[type='submit']").textContent = "Actualizar";
+            // Actualizar el texto del botón y del título del modal
+            document.querySelector("#plateForm button[type='submit']").textContent = "Guardar";
+            document.getElementById("title-modal").textContent = "Añadir Plato";
 
             plateModal.style.display = "block";
-        })
-        .catch(error => {
-            console.error('Error al obtener el plato:', error);
-            alert('Error al cargar los datos del platillo');
-        });
-}
+        };
 
-    // Función para eliminar un platillo
-    function eliminarPlatillo(platilloId) {
-        if (!confirm('¿Está seguro de que desea eliminar este plato?')) {
-            return;
-        }
+        // Cerrar el POPUP
+        closePlateModal.onclick = function () {
+            plateModal.style.display = "none";
+        };
 
-        fetch(`/api/CatalogoService/platillos/${platilloId}`, { method: 'DELETE' })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(err => Promise.reject(err));
-                }
-                document.getElementById(`platillo-${platilloId}`).remove();
-                alert('Platillo eliminado con éxito');
+        // Cerrar el POPUP si se hace clic fuera de él
+        window.onclick = function (event) {
+            if (event.target == plateModal) {
+                plateModal.style.display = "none";
+            }
+        };
+
+        // Manejar el envío del formulario (Crear o Editar)
+        plateForm.onsubmit = function (e) {
+            e.preventDefault();
+
+
+            const platilloData = {
+            ...(platilloEditandoId && { idPlatillo: platilloEditandoId }), // Solo incluye el ID si existe
+            nombre: document.getElementById("platilloNombre").value,
+            descripcion: document.getElementById("platilloDescripcion").value,
+            precio: parseFloat(document.getElementById("platilloPrecio").value),
+            imagen: document.getElementById("platilloImagen").value,
+            idCategoria: parseInt(document.getElementById("platilloCategoria").value),
+            activo: document.querySelector('input[name="estado"]:checked').value === 'true'
+            };
+
+
+            console.log('Datos a enviar:', platilloData); // Añade este log
+
+            const url = platilloEditandoId ? `/api/CatalogoService/platillos/${platilloEditandoId}` : '/api/CatalogoService/platillos';
+            const method = platilloEditandoId ? 'PUT' : 'POST';
+
+            console.log('URL:', url); // Añade este log
+
+            fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(platilloData)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => Promise.reject(err));
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (!data.idPlatillo || !data.nombre) {
+                        throw new Error('Respuesta incompleta del servidor');
+                    }
+
+                const rowHtml = `
+                    <tr id="platillo-${data.idPlatillo}">
+                        <td>${data.idPlatillo}</td>
+                        <td>${data.nombre}</td>
+                        <td>${data.descripcion || ''}</td>
+                        <td>${data.precio ? data.precio.toLocaleString('es-ES', { style: 'currency', currency: 'CRC' }) : 'N/A'}</td>
+                        <td><img src="${data.imagen}" alt="${data.nombre}" width="50" /></td>
+                        <td>${data.idCategoria}</td>
+                        <td>${data.activo ? "Disponible" : "No Disponible"}</td>
+                        <td>
+                            <button class="icon-btn edit" onclick="editarPlatillo(${data.idPlatillo})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="icon-btn delete" onclick="eliminarPlatillo(${data.idPlatillo})">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                 `;
+
+
+
+                    if (platilloEditandoId) {
+                        document.getElementById(`platillo-${platilloEditandoId}`).outerHTML = rowHtml;
+    }                else {
+                        document.querySelector("table tbody").insertAdjacentHTML('beforeend', rowHtml);
+                     }
+
+                    plateModal.style.display = "none";
+                    plateForm.reset();
+                    platilloEditandoId = null;
+
+                    alert(platilloEditandoId ? 'Platillo actualizado con éxito' : 'Actualizacion de Platillos realizada con Exito!!');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al procesar el platillo: ' + (error.message || 'Error desconocido'));
+                    console.log(platilloData);
+                });
+        };
+
+    // función editarPlatillo
+    function editarPlatillo(platilloId) {
+        console.log('Editando platillo ID:', platilloId);
+        platilloEditandoId = platilloId;
+
+        fetch(`/api/CatalogoService/platillos/${platilloId}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Datos obtenidos del servidor:', data);
+                document.getElementById("platilloNombre").value = data.nombre;
+                document.getElementById("platilloDescripcion").value = data.descripcion;
+                document.getElementById("platilloPrecio").value = data.precio;
+                document.getElementById("platilloImagen").value = data.imagen;
+                document.getElementById("platilloCategoria").value = data.idCategoria;
+                document.getElementById(data.activo ? "estadoActivo" : "estadoInactivo").checked = true;
+
+                document.getElementById("title-modal").textContent = "Editar Plato";
+                document.querySelector("#plateForm button[type='submit']").textContent = "Actualizar";
+
+                plateModal.style.display = "block";
             })
             .catch(error => {
-                console.error('Error:', error);
-                alert('Error al eliminar el platillo: ' + (error.message || 'Error desconocido'));
+                console.error('Error al obtener el plato:', error);
+                alert('Error al cargar los datos del platillo');
             });
     }
+
+        // Función para eliminar un platillo
+        function eliminarPlatillo(platilloId) {
+            if (!confirm('¿Está seguro de que desea eliminar este plato?')) {
+                return;
+            }
+
+            fetch(`/api/CatalogoService/platillos/${platilloId}`, { method: 'DELETE' })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => Promise.reject(err));
+                    }
+                    document.getElementById(`platillo-${platilloId}`).remove();
+                    alert('Platillo eliminado con éxito');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al eliminar el platillo: ' + (error.message || 'Error desconocido'));
+                });
+        }
+
+    $('#tabla').DataTable({
+        "order": [[0, "asc"]],
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+        },
+        "dom": "<'dataTables_wrapper'<'dataTables_top'<'dataTables_length'l><'dataTables_filter'f>>r>t<'dataTables_bottom'<'dataTables_info'i><'dataTables_paginate'p>>",
+        "responsive": true,
+        "autoWidth": false,
+        "initComplete": function (settings, json) {
+            // Añadir clase personalizada a los inputs
+            $('.dataTables_filter input').addClass('search-input');
+            $('.dataTables_length select').addClass('custom-select');
+        },
+        "columnDefs": [{
+            "orderable": true,
+            "targets": '_all'
+        }],
+        "drawCallback": function (settings) {
+            // Ajustar posición de la paginación después de dibujar
+            $('.dataTables_paginate').css({
+                'display': 'flex',
+                'justify-content': 'center',
+                'width': '100%'
+            });
+        }
+    });
 </script>

@@ -25,6 +25,12 @@ namespace JarredsOrderHub.Controllers
             return View(platillos);
         }
 
+        public async Task<IActionResult> AdministrarCupones()
+        {
+            var cupones = await _context.Cupones.ToListAsync();
+            return View(cupones);
+        }
+
         public async Task<IActionResult> AdministrarCategorias()
         {
             var categorias = await _context.Categorias

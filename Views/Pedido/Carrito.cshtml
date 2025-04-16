@@ -1,171 +1,346 @@
-﻿@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+﻿<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="~/css/Carrito.css" />
 
-<body>
     <div class="carrito-container">
-        <h2 style="color: #262626">Mi Carrito</h2>
+        <h2>Mi Carrito</h2>
         <div id="productos-carrito">
             <!-- Aquí se inyectarán los productos -->
         </div>
         <div class="pagar">
-            <button class="btn-pagar" onclick="mostrarResumen()">
-                <i class="fas fa-credit-card"></i> Pagar
-            </button>
+        <!-- Botón para abrir el modal de selección de ubicación -->
+        <button class="btn-pagar" onclick="mostrarMapa()">
+            <i class="fas fa-map-marker-alt"></i> Seleccionar Ubicación y Pagar
+        </button>
+
+
         </div>
     </div>
 
-    <!-- Modal de Resumen del Pedido con nuevo diseño -->
+    <!-- Popup para el resumen del pedido -->
+    <div id="popup-resumen" class="popup">
+        <div class="popup-contenido">
+            <h3>Resumen del Pedido</h3>
+            <div id="resumen-productos"></div>
+            <p><strong>Total:</strong> <span id="resumen-total">0.00</span></p>
+            <p id="precio-descuento"><strong>Total con descuento:</strong> <span id="total-descuento">0.00</span></p>
 
-    <div id="popup-resumen" class="modal" style="display: none; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5);">
-        <div class="modal-content" style="max-width: 600px; width: 90%; background: #fff; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); font-family: 'Roboto', sans-serif;">
-            <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ccc; padding-bottom: 0.5rem;">
-                <h2 style="font-size: 2rem; color: #262626;">Resumen del Pedido</h2>
-                <span class="close" onclick="cerrarResumen()" style="font-size: 2rem; cursor: pointer; color: #262626;">&times;</span>
-            </div>
-            <div id="resumen-productos" style="margin-top: 1.5rem; text-align: left; line-height: 1.5; color: #262626;">
-                <!-- Se inyecta el detalle de productos aquí -->
-            </div>
-            <p style="font-size: 1.25rem; margin-top: 1rem; text-align: left;"><strong>Total:</strong> <span id="resumen-total">0.00</span></p>
-            <label for="comentarios" style="display: block; margin-top: 1rem; font-weight: 500; text-align: left;">Comentarios sobre el pedido:</label>
-            <textarea id="comentarios" rows="3" placeholder="Ej. Sin albahaca..." style="width: 100%; padding: 0.5rem; margin-top: 0.5rem; border: 1px solid #ccc; border-radius: 5px;"></textarea>
-            <div class="metodo-pago" style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: flex-end;">
-                <button class="btn-pago" onclick="pagarConEfectivo()" style="background-color: #f2a413; color: #fff; padding: 0.8rem 1.5rem; border: none; border-radius: 30px; cursor: pointer;">
+            <label for="codigo-cupon">Descuento:</label>
+            <input type="text" id="codigo-cupon" placeholder="Ingresa tu cupón" class="input-cupon">
+            <button class="btn-validar" onclick="validarCupon()">Validar Cupón</button>
+            <p id="mensaje-cupon" class="mensaje-cupon"></p>
+
+            <label for="comentarios">Comentarios sobre el pedido:</label>
+            <textarea id="comentarios" rows="3" placeholder="Ej. Sin albahaca, extra queso..."></textarea>
+            <div class="metodo-pago">
+                <button class="btn-pago" onclick="pagarConEfectivo()">
                     <i class="fas fa-cash-register"></i> Efectivo
                 </button>
-                <button class="btn-pago" onclick="pagarConTarjeta()" style="background-color: #f2a413; color: #fff; padding: 0.8rem 1.5rem; border: none; border-radius: 30px; cursor: pointer;">
+                <button class="btn-pago" onclick="pagarConTarjeta()">
                     <i class="fas fa-credit-card"></i> Tarjeta
                 </button>
+                <button class="btn-pago" onclick="pagarConPaypal()">
+                    <i class="fab fa-paypal"></i> PayPal
+                </button>
             </div>
-            <button class="btn-cerrar" onclick="cerrarResumen()" style="display: block; width: 100%; margin-top: 1.5rem; background: #262626; color: #fff; padding: 0.8rem; border: none; border-radius: 30px; font-weight: 700; cursor: pointer;">
-                Cerrar
-            </button>
+            <button class="btn-cerrar" onclick="cerrarResumen()">Cerrar</button>
         </div>
     </div>
 
-    <script>
-        // Función para formatear precios en colones (CRC)
-        function formatearPrecio(precio) {
-            return new Intl.NumberFormat('es-CR', {
-                style: 'currency',
-                currency: 'CRC'
-            }).format(precio);
+<!-- Modal de selección de ubicación -->
+<!-- Modal de Mapa -->
+<div id="mapModal" class="popup" style="display: none;">
+    <div class="popup-contenido">
+        <h3>Selecciona tu ubicación de entrega</h3>
+        <div id="map" style="height: 400px;"></div>
+        <button onclick="confirmarUbicacion()">Confirmar Ubicación</button>
+        <button onclick="cerrarMapa()">Cancelar</button>
+    </div>
+</div>
+
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+
+<script>
+    // Variable global para almacenar la ubicación seleccionada
+    let ubicacionSeleccionada = null;
+    let marcadorMapa = null;
+
+    // Función para formatear precios en colones (CRC)
+    function formatearPrecio(precio) {
+        return new Intl.NumberFormat('es-CR', {
+            style: 'currency',
+            currency: 'CRC'
+        }).format(precio);
+    }
+
+    // Función para mostrar el carrito (ya la tienes)
+    function mostrarCarrito() {
+        const contenedor = document.getElementById('productos-carrito');
+        contenedor.innerHTML = '';
+        let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+
+        if (carrito.length === 0) {
+            contenedor.innerHTML = '<p>El carrito está vacío</p>';
+            return;
         }
 
-        // Función para mostrar el carrito
-        function mostrarCarrito() {
-            const contenedor = document.getElementById('productos-carrito');
-            contenedor.innerHTML = ''; // Limpiar contenido
-            let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-
-            if (carrito.length === 0) {
-                contenedor.innerHTML = '<p class="text-center">El carrito está vacío</p>';
-                return;
-            }
-
-    carrito.forEach((producto, index) => {
-        contenedor.innerHTML += `
-            <div class="producto card mb-3 p-2">
-                <div class="row g-0 align-items-left">
-                    <div class="col-auto">
-                        <img src="${producto.imagen}" alt="${producto.nombre}" class="imagen-producto img-fluid rounded">
-                    </div>
-                    <div class="col">
-                        <div class="card-body">
-                            <h5 class="card-title">${producto.nombre}</h5>
-                            <p class="precio-unitario card-text mb-1">${formatearPrecio(producto.precio)}</p>
-                            <div class="d-flex align-items-center">
-                                <button class="btn-cantidad btn btn-sm btn-warning me-2" onclick="cambiarCantidad(${index}, -1)">
-                                    <i class="fas fa-minus"></i>
-                                </button>
-                                <span id="cantidad-${index}" class="mx-2">${producto.cantidad}</span>
-                                <button class="btn-cantidad btn btn-sm btn-warning ms-2" onclick="cambiarCantidad(${index}, 1)">
-                                    <i class="fas fa-plus"></i>
-                                </button>
+        carrito.forEach((producto, index) => {
+            contenedor.innerHTML += `
+                    <div class="producto">
+                        <div class="info-producto">
+                            <img src="${producto.imagen}" alt="${producto.nombre}" class="imagen-producto">
+                            <div class="detalles-producto">
+                                <h3>${producto.nombre}</h3>
+                                <p>Precio Unitario: ${formatearPrecio(producto.precio)}</p>
                             </div>
-                            <p class="precio-total card-text mt-2"><strong>Total: </strong><span id="precio-total-${index}">${formatearPrecio(producto.cantidad * producto.precio)}</span></p>
                         </div>
-                    </div>
-                    <div class="col-auto pe-3">
-                        <button class="btn-eliminar btn btn-danger btn-sm" onclick="eliminarProducto(${index})">
-                            <i class="fas fa-trash"></i>
+                        <div class="cantidad">
+                            <button class="btn-cantidad" onclick="cambiarCantidad(${index}, -1)">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <span id="cantidad-${index}">${producto.cantidad}</span>
+                            <button class="btn-cantidad" onclick="cambiarCantidad(${index}, 1)">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        <div class="precio-total">
+                            <span>Total: <span id="precio-total-${index}">${formatearPrecio(producto.cantidad * producto.precio)}</span></span>
+                        </div>
+                        <button class="btn-eliminar" onclick="eliminarProducto(${index})">
+                            <i class="fas fa-trash"></i> Eliminar
                         </button>
                     </div>
-                </div>
-            </div>
-        `;
-    });
-}
-
-        // Función para cambiar la cantidad de un producto en el carrito
-        function cambiarCantidad(index, cambio) {
-            let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-            carrito[index].cantidad = Math.max(1, carrito[index].cantidad + cambio);
-            localStorage.setItem('carrito', JSON.stringify(carrito));
-            mostrarCarrito();
-        }
-
-        // Función para eliminar un producto del carrito
-        function eliminarProducto(index) {
-            let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-            carrito.splice(index, 1);
-            localStorage.setItem('carrito', JSON.stringify(carrito));
-            mostrarCarrito();
-        }
-
-        // Función para mostrar el resumen del pedido en el modal
-        function mostrarResumen() {
-            let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-            let resumenProductos = document.getElementById('resumen-productos');
-            let total = 0;
-            let totalProductos = 0;
-            let nombres = [];
-
-            resumenProductos.innerHTML = '';
-
-            carrito.forEach(producto => {
-                const subtotal = producto.cantidad * producto.precio;
-                total += subtotal;
-                totalProductos += producto.cantidad;
-                nombres.push(producto.nombre);
-                resumenProductos.innerHTML += `
-                    <p>${producto.nombre} x ${producto.cantidad} = ${formatearPrecio(subtotal)}</p>
                 `;
-            });
+        });
+    }
 
-            const resumenGeneral = `
+    function cambiarCantidad(index, cambio) {
+        let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+        carrito[index].cantidad = Math.max(1, carrito[index].cantidad + cambio);
+        localStorage.setItem('carrito', JSON.stringify(carrito));
+        mostrarCarrito();
+    }
+
+    function eliminarProducto(index) {
+        let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+        carrito.splice(index, 1);
+        localStorage.setItem('carrito', JSON.stringify(carrito));
+        mostrarCarrito();
+    }
+
+    // Función para mostrar el popup de resumen del pedido
+    function mostrarResumen() {
+        let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+        let resumenProductos = document.getElementById('resumen-productos');
+        let total = 0;
+        let totalProductos = 0;
+        let nombres = [];
+
+        resumenProductos.innerHTML = '';
+
+        carrito.forEach(producto => {
+            const subtotal = producto.cantidad * producto.precio;
+            total += subtotal;
+            totalProductos += producto.cantidad;
+            nombres.push(producto.nombre);
+            resumenProductos.innerHTML += `<p>${producto.nombre} x ${producto.cantidad} = ${formatearPrecio(subtotal)}</p>`;
+        });
+
+        const resumenGeneral = `
                 <p><strong>Total de productos:</strong> ${totalProductos}</p>
                 <p><strong>Productos:</strong> ${nombres.join(", ")}</p>
             `;
+        resumenProductos.insertAdjacentHTML('afterbegin', resumenGeneral);
+        document.getElementById('resumen-total').innerText = formatearPrecio(total);
+        document.getElementById('popup-resumen').style.display = 'flex';
 
-            resumenProductos.insertAdjacentHTML('afterbegin', resumenGeneral);
-            document.getElementById('resumen-total').innerText = formatearPrecio(total);
-            document.getElementById('popup-resumen').style.display = 'flex';
+        // Ocultar elementos de cupón y reiniciar cupón
+        document.getElementById('precio-descuento').style.display = 'none';
+        document.getElementById('mensaje-cupon').style.display = 'none';
+        document.getElementById('codigo-cupon').value = '';
+        cuponAplicado = null;
+    }
+
+    function cerrarResumen() {
+        document.getElementById('popup-resumen').style.display = 'none';
+    }
+
+    // Variables para cupón
+    const usuarioId = parseInt('@ViewBag.UsuarioId');
+    let cuponAplicado = null;
+
+    async function validarCupon() {
+        let codigo = document.getElementById('codigo-cupon').value;
+        let mensajeCupon = document.getElementById('mensaje-cupon');
+        mensajeCupon.style.display = 'block';
+
+        if (!codigo) {
+            mensajeCupon.textContent = "Por favor, ingresa un código de cupón.";
+            mensajeCupon.style.color = "red";
+            return;
         }
 
-        // Función para cerrar el modal del resumen
-        function cerrarResumen() {
-            document.getElementById('popup-resumen').style.display = 'none';
+        try {
+            let response = await fetch(`/api/CuponService/ValidarCupon?usuarioId=${usuarioId}&codigo=${codigo}`);
+            let data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || "Error al validar cupón");
+            }
+            document.getElementById('precio-descuento').style.display = 'block';
+            let totalTexto = document.getElementById('resumen-total').innerText;
+            let totalNumerico = parseFloat(totalTexto.replace(/[^\d,.-]/g, '').replace(',', '.'));
+            let descuento = totalNumerico * (data.cupon.descuento / 100);
+            document.getElementById('total-descuento').innerText = formatearPrecio(totalNumerico - descuento);
+            cuponAplicado = data.cupon;
+            mensajeCupon.textContent = "Cupón válido: " + cuponAplicado.codigo;
+            mensajeCupon.style.color = "green";
+        } catch (error) {
+            mensajeCupon.textContent = error.message;
+            mensajeCupon.style.color = "red";
+            cuponAplicado = null;
+        }
+    }
+
+    async function procesarPago(metodoPago) {
+        const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+        const comentarios = document.getElementById('comentarios').value;
+        const total = carrito.reduce((sum, producto) => sum + (producto.cantidad * producto.precio), 0);
+        const ubicacion = ubicacionSeleccionada;
+
+        if (!ubicacion) {
+            alert("Por favor selecciona una ubicación de entrega antes de pagar.");
+            return false;
         }
 
-        function pagarConEfectivo() {
+        let pedido = {
+            Id: 0,
+            UsuarioId: usuarioId,
+            FechaPedido: new Date().toISOString().slice(0, 19),
+            EstadoPedido: "Pendiente",
+            MetodoPago: metodoPago,
+            Total: total,
+            Comentarios: comentarios,
+            CuponId: cuponAplicado ? cuponAplicado.id : null,
+            Cupon: cuponAplicado || null,
+            Detalles: carrito.map(producto => ({
+                Id: 0,
+                PedidoId: 0,
+                ProductoId: parseInt(producto.id),
+                Cantidad: producto.cantidad,
+                PrecioUnitario: producto.precio,
+                Total: producto.cantidad * producto.precio,
+            })),
+            LatitudEntrega: ubicacion.latitud,
+            LongitudEntrega: ubicacion.longitud
+        };
+
+        try {
+            let response = await fetch("/api/PedidosService/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(pedido)
+            });
+
+            const responseBody = await response.text();
+
+            if (!response.ok) {
+                throw new Error(`Error al realizar el pedido. Respuesta del servidor: ${responseBody}`);
+            }
+
+            return true;
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Hubo un problema al realizar el pedido: " + error.message);
+            return false;
+        }
+    }
+
+    async function pagarConEfectivo() {
+        const exito = await procesarPago("Efectivo");
+        if (exito) {
             alert("Pedido realizado con éxito. Puedes pagar en efectivo.");
+            localStorage.removeItem("carrito");
+            mostrarCarrito();
             cerrarResumen();
         }
+    }
 
-        function pagarConTarjeta() {
-            const datosTarjeta = prompt("Introduce los datos de tu tarjeta:");
-            alert("Datos recibidos. Pago procesado con tarjeta.");
-            cerrarResumen();
+    async function pagarConTarjeta() {
+        const datosTarjeta = prompt("Introduce los datos de tu tarjeta (número, fecha exp., CVV):");
+
+        if (!datosTarjeta || datosTarjeta.trim() === "") {
+            alert("Debes introducir los datos de la tarjeta para continuar.");
+            return;
         }
 
-        function pagarConPaypal() {
-            alert("Redirigiendo a PayPal...");
+        const exito = await procesarPago("Tarjeta de Crédito");
+        if (exito) {
+            alert("Pago con tarjeta procesado con éxito.");
+            localStorage.removeItem("carrito");
+            mostrarCarrito();
             cerrarResumen();
         }
+    }
 
-        document.addEventListener("DOMContentLoaded", mostrarCarrito);
-    </script>
-</body>
+    async function pagarConPaypal() {
+        const confirmacion = confirm("Serás redirigido a PayPal para completar el pago. ¿Continuar?");
+        if (!confirmacion) return;
+        const exito = await procesarPago("PayPal");
+        if (exito) {
+            alert("Pago con PayPal procesado con éxito.");
+            localStorage.removeItem("carrito");
+            mostrarCarrito();
+            cerrarResumen();
+        }
+    }
+
+    // Funciones para la selección de ubicación a través de Leaflet
+
+    function mostrarMapa() {
+        document.getElementById("mapModal").style.display = "flex";
+
+        // Inicializar el mapa
+        const map = L.map('map').setView([9.7489, -83.7534], 8); // Coordenadas iniciales de Costa Rica
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Configurar el evento click para seleccionar ubicación
+        map.on('click', function (e) {
+            const { lat, lng } = e.latlng;
+            ubicacionSeleccionada = { latitud: lat, longitud: lng };
+
+            // Mostrar o actualizar el marcador
+            if (marcadorMapa) {
+                marcadorMapa.setLatLng([lat, lng]);
+            } else {
+                marcadorMapa = L.marker([lat, lng]).addTo(map);
+            }
+        });
+    }
+
+    function confirmarUbicacion() {
+        if (!ubicacionSeleccionada) {
+            alert("Selecciona una ubicación en el mapa.");
+            return;
+        }
+        alert("Ubicación seleccionada con éxito.");
+        document.getElementById("mapModal").style.display = "none";
+        // Una vez confirmada la ubicación, abre el resumen del pedido
+        mostrarResumen();
+    }
+
+    function cerrarMapa() {
+        document.getElementById("mapModal").style.display = "none";
+        ubicacionSeleccionada = null;
+    }
+
+    // Cargar el carrito cuando se cargue la página
+    document.addEventListener("DOMContentLoaded", mostrarCarrito);
+</script>
+

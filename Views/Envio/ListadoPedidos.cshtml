@@ -1,62 +1,379 @@
-﻿
+﻿@model List<JarredsOrderHub.Models.Pedidos>
+
+@{
+    ViewBag.Title = "Listado de Pedidos";
+}
 <link rel="stylesheet" href="~/css/ListadoPedidos.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
+<h1 class="titulo-primario" style="text-align:center; color:#2EA629; margin:20px 0;">Listado de Pedidos</h1>
 
-<h1>Listado de Pedidos</h1>
+<style>
+    /* Contenedor general de pedidos en esta vista */
+    .container-detalle-pedido {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        padding: 20px;
+    }
+    /* Tarjeta resumen de pedido (card) */
+    .card-pedido {
+        background-color: #ffffff;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        width: 300px;
+        padding: 15px;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+    .card-pedido:hover {
+        transform: scale(1.02);
+    }
+    .card-pedido h3 {
+        margin: 0;
+        color: #F2A413;
+    }
+    .card-pedido p {
+        font-size: 14px;
+        margin: 5px 0;
+    }
+    .card-pedido .bold-text {
+        font-weight: bold;
+    }
+    /* Modal de detalle del pedido */
+    .modal-pedido {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.5);
+    }
+    .modal-pedido-content {
+        background-color: #ffffff;
+        margin: 5% auto;
+        padding: 20px;
+        border-radius: 10px;
+        width: 90%;
+        max-width: 800px;
+    }
+    .modal-pedido-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .modal-pedido-header h2 {
+        margin: 0;
+    }
+    .modal-pedido-close {
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .detalle-pedido-info p {
+        font-size: 14px;
+        margin: 8px 0;
+    }
+    .detalle-pedido-info span.bold-text {
+        font-weight: bold;
+    }
+    /* Sección de repartidores (tarjetas) */
+    .repartidor-lista {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    .card-repartidor {
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 10px;
+        width: 150px;
+        text-align: center;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+    .card-repartidor:hover {
+        transform: scale(1.05);
+    }
+    .card-repartidor p {
+        margin: 5px 0;
+        font-size: 14px;
+        color: #262626;
+    }
+    /* Sección para cambiar el estado del pedido */
+    .container-asignar-estados {
+        margin-top: 20px;
+        border-top: 1px solid #ddd;
+        padding-top: 15px;
+    }
+    .container-asignar-estados h3 {
+        margin-bottom: 10px;
+    }
+    .container-asignar-estados select {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    .btn-actualizar-estado {
+        background-color: #2EA629;
+        color: #ffffff;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 15px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+    .btn-actualizar-estado:hover {
+        background-color: #1F7D1C;
+    }
+    /* Estilo para mostrar el repartidor asignado */
+    .detalle-repartidor {
+        margin-top: 15px;
+        padding: 8px;
+        border: 2px solid #F2A413;
+        font-weight: bold;
+        text-align: center;
+    }
+</style>
 
-<!-- Contenedor de Cards -->
-<div class="container">
-    <!-- Ejemplo de un Pedido -->
-    <div class="card">
-        <h3>Pedido #001</h3>
-        <p><i class="fas fa-utensils"></i> <span class="bold-text">Plato:</span> Pasta Alfredo</p>
-        <p><i class="fas fa-sort-numeric-up-alt"></i> <span class="bold-text">Cantidad:</span> 2</p>
-        <p><i class="fas fa-list"></i> <span class="bold-text">Ingredientes:</span> Pasta, Queso, Crema, Pollo</p>
-        <p><i class="fas fa-comment"></i> <span class="bold-text">Comentarios:</span> Sin cebolla, por favor.</p>
+<!-- Contenedor de Cards de Pedidos -->
+<div class="container-detalle-pedido">
+    @foreach (var pedido in Model)
+    {
+        <div class="card-pedido" onclick="mostrarDetallesPedido(@pedido.Id)">
+            <h3>Pedido @pedido.Id</h3>
+            @if (pedido.Cliente != null)
+            {
+                <p>
+                    <i class="fas fa-user"></i>
+                    <span class="bold-text">Cliente:</span> @pedido.Cliente.Nombre @pedido.Cliente.Apellido
+                </p>
+                <p>
+                    <i class="fas fa-envelope"></i>
+                    <span class="bold-text">Correo:</span> @pedido.Cliente.Email
+                </p>
+            }
+            else
+            {
+                <p><i class="fas fa-user"></i> Sin información de cliente</p>
+            }
+            <p>
+                <i class="fas fa-comment"></i>
+                <span class="bold-text">Comentarios:</span> @pedido.Comentarios
+            </p>
+            <p>
+                <i class="fas fa-hourglass-half"></i>
+                <span class="bold-text">Estado:</span> @pedido.EstadoPedido
+            </p>
+        </div>
+    }
+</div>
 
-        <!-- Dropdown para cambiar estado -->
-        <label for="estado-1"><span class="bold-text">Estado:</span></label>
-        <select id="estado-1" class="status-dropdown">
-            <option value="pendiente">Pendiente</option>
-            <option value="preparando">Preparando</option>
-            <option value="en_camino">En Camino</option>
-            <option value="entregado">Entregado</option>
-        </select>
-
-        <!-- Botón de guardar -->
-        <button class="save-button" onclick="guardarEstado('001')">Guardar Estado</button>
-    </div>
-
-    <!-- Más Cards de Pedidos -->
-    <div class="card">
-        <h3>Pedido #002</h3>
-        <p><i class="fas fa-utensils"></i> <span class="bold-text">Plato:</span> Pizza Margarita</p>
-        <p><i class="fas fa-sort-numeric-up-alt"></i> <span class="bold-text">Cantidad:</span> 1</p>
-        <p><i class="fas fa-list"></i> <span class="bold-text">Ingredientes:</span> Queso, Tomate, Albahaca</p>
-        <p><i class="fas fa-comment"></i> <span class="bold-text">Comentarios:</span> Agregar extra queso.</p>
-
-        <!-- Dropdown para cambiar estado -->
-        <label for="estado-2"><span class="bold-text">Estado:</span></label>
-        <select id="estado-2" class="status-dropdown">
-            <option value="pendiente">Pendiente</option>
-            <option value="preparando">Preparando</option>
-            <option value="en_camino">En Camino</option>
-            <option value="entregado">Entregado</option>
-        </select>
-
-        <!-- Botón de guardar -->
-        <button class="save-button" onclick="guardarEstado('002')">Guardar Estado</button>
+<!-- Modal para ver detalle del Pedido, asignar repartidor y actualizar estado -->
+<div id="modal-pedido" class="modal-pedido">
+    <div class="modal-pedido-content">
+        <div class="modal-pedido-header">
+            <h2>Detalles del Pedido</h2>
+            <span class="modal-pedido-close" onclick="cerrarModalPedido()">&times;</span>
+        </div>
+        <!-- Detalle del Pedido -->
+        <div class="detalle-pedido-info">
+            <p><strong>Pedido N°:</strong> <span id="detalle-id"></span></p>
+            <p><strong>Fecha:</strong> <span id="detalle-fecha"></span></p>
+            <div id="detalle-platos">
+                <!-- Listado de platos se renderiza aquí -->
+            </div>
+            <p><strong>Total:</strong> <span id="detalle-total"></span></p>
+            <p><strong>Ubicación de entrega:</strong></p>
+            <div id="detalle-mapa" style="height:300px; margin-bottom:15px;"></div>
+            <p><strong>Comentarios:</strong> <span id="detalle-comentarios"></span></p>
+            <!-- Sección para mostrar repartidor asignado -->
+            <div id="detalle-repartidor" class="detalle-repartidor"></div>
+        </div>
+        <!-- Sección para asignar repartidor mediante tarjetas -->
+        <div id="asignar-repartidor" class="container-asignar-repartidor">
+            <h3>Asignar Repartidor</h3>
+            <div class="repartidor-lista">
+                @if (ViewBag.Repartidores != null && ((List<JarredsOrderHub.Models.Empleado>)ViewBag.Repartidores).Any())
+                {
+                    foreach (var rep in (List<JarredsOrderHub.Models.Empleado>)ViewBag.Repartidores)
+                    {
+                        <div class="card-repartidor" onclick="asignarRepartidor(@rep.IdEmpleado)">
+                            <i class="fas fa-motorcycle" style="font-size:24px;"></i>
+                            <p>@rep.Nombre @rep.Apellido</p>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p>No hay repartidores disponibles.</p>
+                }
+            </div>
+        </div>
+        <!-- Sección para actualizar el estado del pedido -->
+        <div class="container-asignar-estados">
+            <h3>Cambiar Estado del Pedido</h3>
+            <select id="select-estado">
+                <option value="Pendiente">Pendiente</option>
+                <option value="En preparación">En preparación</option>
+                <option value="En camino">En camino</option>
+                <option value="Entregado">Entregado</option>
+                <option value="Cancelado">Cancelado</option>
+            </select>
+            <button class="btn-actualizar-estado" onclick="actualizarEstado()">Actualizar Estado</button>
+        </div>
     </div>
 </div>
 
-<!-- Script JS -->
-<script>
-    // Función para guardar el estado del pedido
-    function guardarEstado(pedidoId) {
-        const dropdown = document.getElementById(`estado-${pedidoId}`);
-        const nuevoEstado = dropdown.value;
+<!-- Incluir Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-        // Simulación de guardado (podrías enviar este valor a una base de datos aquí)
-        alert(`El estado del Pedido #${pedidoId} ha sido actualizado a: ${nuevoEstado}`);
+<!-- Serializar la lista de repartidores a una variable JavaScript -->
+<script>
+    var repartidores = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.Repartidores));
+</script>
+
+<script>
+    var mapaDetalle; // Variable global para el mapa en el modal
+
+    // Función para abrir el modal y cargar los detalles del pedido
+    function mostrarDetallesPedido(pedidoId) {
+        fetch(`/api/PedidosService/${pedidoId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(pedido => {
+                document.getElementById("detalle-id").textContent = pedido.id;
+                document.getElementById("detalle-fecha").textContent = new Date(pedido.fechaPedido).toLocaleString();
+                document.getElementById("detalle-total").textContent = "$" + pedido.total;
+                document.getElementById("detalle-comentarios").textContent = pedido.comentarios;
+
+                // Listar los platos
+                let platosHtml = "";
+                if (pedido.detalles && pedido.detalles.length > 0) {
+                    pedido.detalles.forEach(detalle => {
+                        platosHtml += `<p>
+                            <i class="fas fa-utensils"></i> 
+                            <span class="bold-text">Plato:</span> ${detalle.platillo.nombre} — 
+                            <span class="bold-text">Cantidad:</span> ${detalle.cantidad} — 
+                            <span class="bold-text">Subtotal:</span> $${detalle.total}
+                        </p>`;
+                    });
+                } else {
+                    platosHtml = "<p>No hay platos asociados.</p>";
+                }
+                document.getElementById("detalle-platos").innerHTML = platosHtml;
+
+                // Inicializar el mapa si hay coordenadas
+                if (pedido.latitudEntrega && pedido.longitudEntrega) {
+                    if (mapaDetalle) {
+                        mapaDetalle.remove();
+                    }
+                    mapaDetalle = L.map('detalle-mapa').setView([pedido.latitudEntrega, pedido.longitudEntrega], 15);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; OpenStreetMap contributors'
+                    }).addTo(mapaDetalle);
+                    L.marker([pedido.latitudEntrega, pedido.longitudEntrega]).addTo(mapaDetalle);
+                } else {
+                    document.getElementById("detalle-mapa").innerHTML = "<p>Ubicación no definida.</p>";
+                    if (mapaDetalle) {
+                        mapaDetalle.remove();
+                        mapaDetalle = null;
+                    }
+                }
+                
+                // Actualizar la información del repartidor asignado
+                // Actualizar la información del repartidor asignado
+const detalleRepartidor = document.getElementById("detalle-repartidor");
+if (pedido.idRepartidor) {
+    // Buscar el repartidor en la lista serializada usando propiedades con mayúscula
+    const rep = repartidores.find(r => r.IdEmpleado === pedido.idRepartidor);
+    if (rep) {
+        detalleRepartidor.textContent = "Repartidor asignado: " + rep.Nombre + " " + rep.Apellido;
+
+    } else {
+        detalleRepartidor.textContent = "Repartidor asignado: " + pedido.idRepartidor;
+
+    }
+} else {
+    detalleRepartidor.textContent = "Sin repartidor asignado";
+}
+
+
+
+                // Guardar el ID del pedido en el modal para usar en actualización de estado y asignación
+                document.getElementById("modal-pedido").setAttribute("data-pedidoid", pedido.id);
+
+                // Mostrar el modal
+                document.getElementById("modal-pedido").style.display = "block";
+            })
+            .catch(error => {
+                console.error("Error al obtener el pedido:", error);
+                alert("No se pudo cargar el detalle del pedido.");
+            });
+    }
+
+    // Función para cerrar el modal
+    function cerrarModalPedido() {
+        document.getElementById("modal-pedido").style.display = "none";
+    }
+
+    // Función para asignar repartidor cuando se hace clic en una tarjeta de repartidor
+    function asignarRepartidor(idRepartidor) {
+        const pedidoId = document.getElementById("modal-pedido").getAttribute("data-pedidoid");
+        if (!idRepartidor) {
+            alert("No se ha seleccionado un repartidor.");
+            return;
+        }
+        fetch(`/api/PedidosService/AsignarRepartidor/${pedidoId}/${idRepartidor}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => {
+            if (response.ok) return response.json();
+            throw new Error("Error al asignar repartidor");
+        })
+        .then(data => {
+            alert("Repartidor asignado correctamente");
+            cerrarModalPedido();
+        })
+        .catch(error => {
+            console.error(error);
+            alert("No se pudo asignar el repartidor");
+        });
+    }
+
+    // Función para actualizar el estado del pedido
+    function actualizarEstado() {
+        const pedidoId = document.getElementById("modal-pedido").getAttribute("data-pedidoid");
+        const nuevoEstado = document.getElementById("select-estado").value;
+        fetch(`/api/PedidosService/actualizarEstado/${pedidoId}/${nuevoEstado}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => {
+            if (response.ok) return response.json();
+            throw new Error("Error al actualizar el estado");
+        })
+        .then(data => {
+            alert("Estado actualizado correctamente");
+            cerrarModalPedido();
+        })
+        .catch(error => {
+            console.error(error);
+            alert("No se pudo actualizar el estado");
+        });
     }
 </script>

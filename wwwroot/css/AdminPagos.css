@@ -1,12 +1,4 @@
-﻿/* Estilos generales */
-body {
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #F2EAD0; /* Color de fondo principal */
-    color: #262626; /* Color de texto principal */
-}
-
+﻿
 /* --- Contenedor principal --- */
 .perfil-container {
     background-color: #fff; /* Fondo blanco */
@@ -63,27 +55,6 @@ h2 {
 }
 
 /* Estilos para la tabla */
-.tabla-pagos {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-}
-
-.tabla-pagos th, .tabla-pagos td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-.tabla-pagos th {
-    background-color: #2EA629; /* Fondo verde para los encabezados */
-    color: white;
-    font-weight: bold;
-}
-
-    .tabla-pagos td {
-        background-color: #e3e3e3; /* Fondo suave para las celdas */
-    }
 
 .tabla-pagos button {
     padding: 8px 16px;

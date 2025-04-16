@@ -8,6 +8,7 @@ using JarredsOrderHub.DbaseContext;
 using JarredsOrderHub.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace JarredsOrderHub.Controllers
 {
@@ -16,16 +17,30 @@ namespace JarredsOrderHub.Controllers
         private readonly ApplicationDbContext _context;
         private readonly AuditService _auditService;
         private readonly UsuarioService _usuarioService;
+        private readonly ILogger<UsuarioController> _logger;
 
-        public AdminController(ApplicationDbContext context, AuditService auditService, UsuarioService usuarioService)
+        public AdminController(ApplicationDbContext context, ILogger<UsuarioController> logger, AuditService auditService, UsuarioService usuarioService)
         {
             _context = context;
+            _logger = logger;
             _auditService = auditService;
             _usuarioService = usuarioService;
         }
-        public ActionResult AdministrarUsuarios()
+        // Acción para mostrar la lista de usuarios (clientes)
+        [HttpGet]
+        public async Task<IActionResult> AdministrarUsuarios()
         {
-            return View();
+            try
+            {
+                // Obtener todos los clientes de la base de datos
+                List<Cliente> usuarios = await _context.Clientes.ToListAsync();
+                return View(usuarios);
+            }
+            catch (System.Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener los usuarios");
+                return StatusCode(500, "Error interno del servidor");
+            }
         }
 
         [HttpGet]
