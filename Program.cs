@@ -33,7 +33,7 @@ builder.Services.AddScoped<CatalogoService>();
 builder.Services.AddScoped<AuditService>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<ReporteService>();
-
+builder.Services.AddScoped<IExportacionService, ExportacionService>();
 
 //Agregar sesiones 
 builder.Services.AddSession(options =>

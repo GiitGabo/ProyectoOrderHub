@@ -1,4 +1,5 @@
-﻿using JarredsOrderHub.DbaseContext;
+﻿// ReporteService.cs
+using JarredsOrderHub.DbaseContext;
 using JarredsOrderHub.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
@@ -8,11 +9,8 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 
-
-
 namespace JarredsOrderHub.Controllers.Service
 {
-
     public class ReporteService
     {
         private readonly ApplicationDbContext _context;
@@ -48,5 +46,12 @@ namespace JarredsOrderHub.Controllers.Service
             await _context.SaveChangesAsync();
         }
 
+        public async Task<List<Reporte>> ObtenerReportesPorRangoFechasAsync(DateTime inicio, DateTime fin)
+        {
+            return await _context.Reportes
+                                 .Where(r => r.FechaReporte >= inicio && r.FechaReporte <= fin)
+                                 .Include(r => r.Cliente)
+                                 .ToListAsync();
+        }
     }
 }

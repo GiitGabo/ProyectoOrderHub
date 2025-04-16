@@ -1203,3 +1203,13 @@ C:\Users\HP ProBook\Downloads\JarredsOrderHub (2)\JarredsOrderHub\JarredsOrderHu
 C:\Users\HP ProBook\Downloads\JarredsOrderHub (2)\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\JarredsOrderHub.genruntimeconfig.cache
 C:\Users\HP ProBook\Downloads\JarredsOrderHub (2)\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\ref\JarredsOrderHub.dll
 C:\Users\melvi\Documents\JarredsOrderHub\PROYECTO\JarredsOrderHub\JarredsOrderHub\obj\Debug\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+C:\Users\Keilyn\Desktop\JarredsOrderHub\JarredsOrderHub\JarredsOrderHub\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
+C:\Users\Keilyn\Desktop\JarredsOrderHub\JarredsOrderHub\JarredsOrderHub\bin\Debug\net8.0\EPPlus.dll
+C:\Users\Keilyn\Desktop\JarredsOrderHub\JarredsOrderHub\JarredsOrderHub\bin\Debug\net8.0\EPPlus.Interfaces.dll
+C:\Users\Keilyn\Desktop\JarredsOrderHub\JarredsOrderHub\JarredsOrderHub\bin\Debug\net8.0\itextsharp.dll
+C:\Users\Keilyn\Desktop\JarredsOrderHub\JarredsOrderHub\JarredsOrderHub\bin\Debug\net8.0\Microsoft.Extensions.Configuration.FileExtensions.dll
+C:\Users\Keilyn\Desktop\JarredsOrderHub\JarredsOrderHub\JarredsOrderHub\bin\Debug\net8.0\Microsoft.Extensions.Configuration.Json.dll
+C:\Users\Keilyn\Desktop\JarredsOrderHub\JarredsOrderHub\JarredsOrderHub\bin\Debug\net8.0\Microsoft.IO.RecyclableMemoryStream.dll
+C:\Users\Keilyn\Desktop\JarredsOrderHub\JarredsOrderHub\JarredsOrderHub\bin\Debug\net8.0\System.Security.Cryptography.Pkcs.dll
+C:\Users\Keilyn\Desktop\JarredsOrderHub\JarredsOrderHub\JarredsOrderHub\bin\Debug\net8.0\System.Security.Cryptography.Xml.dll
+C:\Users\Keilyn\Desktop\JarredsOrderHub\JarredsOrderHub\JarredsOrderHub\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
