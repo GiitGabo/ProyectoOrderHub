@@ -1,108 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using JarredsOrderHub.Controllers.Service;
-using JarredsOrderHub.DbaseContext;
+﻿using JarredsOrderHub.Controllers.Service;
 using JarredsOrderHub.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace JarredsOrderHub.Controllers
 {
     public class ReporteController : Controller
     {
-
         private readonly ReporteService _reporteService;
+        private readonly IExportacionService _exportacionService;
 
-        public ReporteController(ReporteService reporteService)
+        public ReporteController(ReporteService reporteService, IExportacionService exportacionService)
         {
             _reporteService = reporteService;
+            _exportacionService = exportacionService;
         }
 
-        public class EstadoUpdateModel
+        // Acción para generar reporte en PDF o Excel
+        public async Task<IActionResult> GenerarReporteVentas(int tipoReporte)
         {
-            public int Id { get; set; }
-            public string NuevoEstado { get; set; }
-        }
-
-
-        // Vista para realizar el reporte
-        public ActionResult ReportarProblema()
-        {
-            return View();
-        }
-
-        //Guardar reporte
-
-        [HttpPost]
-        public async Task<IActionResult> GuardarReporte([FromBody] Reporte reporte)
-        {
-            if (reporte == null || string.IsNullOrEmpty(reporte.DescripcionReporte))
-            {
-                return Json(new { success = false, message = "Datos inválidos" });
-            }
-
-            try
-            {
-                // Asigna la fecha
-                reporte.FechaReporte = DateTime.Today;
-
-                // Obtener el Id del cliente desde la sesión 
-                var clienteId = HttpContext.Session.GetInt32("ClienteId");
-                if (clienteId.HasValue)
-                {
-                    reporte.IdCliente = clienteId.Value;
-                }
-                else
-                {
-                    return Json(new { success = false, message = "No se encontró el cliente en la sesión." });
-                }
-
-                // Se fuerza el estado a "Pendiente"
-                reporte.Estado = "Pendiente";
-
-                await _reporteService.GuardarReporteAsync(reporte);
-
-                return Json(new { success = true, message = "Reporte guardado correctamente." });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = "Error al guardar el reporte: " + ex.Message });
-            }
-        }
-
-        // Acción para la administración de reportes
-        public async Task<IActionResult> AdministracionReportes()
-        {
+            // Obtener los reportes de ventas desde el servicio
             var reportes = await _reporteService.ObtenerReportesAsync();
-            return View(reportes);
-        }
+            byte[] archivo = null;
 
-        // Acción para actualizar el estado del reporte
-        [HttpPost]
-        public async Task<IActionResult> ActualizarEstado([FromBody] EstadoUpdateModel model)
-        {
-            if (model == null || model.Id <= 0 || string.IsNullOrEmpty(model.NuevoEstado))
+            // Verifica el tipo de reporte y genera el archivo correspondiente
+            if (tipoReporte == 1) // PDF
             {
-                return Json(new { success = false, message = "Datos inválidos." });
+                archivo = await _exportacionService.GenerarReporteVentasPDF(reportes);
+            }
+            else if (tipoReporte == 2) // Excel
+            {
+                archivo = await _exportacionService.GenerarReporteVentasExcel(reportes);
             }
 
-            try
-            {
-                var reporte = await _reporteService.ObtenerReportePorIdAsync(model.Id);
-                if (reporte == null)
-                {
-                    return Json(new { success = false, message = "Reporte no encontrado." });
-                }
-                reporte.Estado = model.NuevoEstado;
-                await _reporteService.ActualizarReporteAsync(reporte);
-                return Json(new { success = true, message = "Estado actualizado correctamente." });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = "Error al actualizar el estado: " + ex.Message });
-            }
+            // Retorna el archivo generado como una respuesta de tipo "file"
+            return File(archivo, "application/octet-stream", "Reporte_Ventas." + (tipoReporte == 1 ? "pdf" : "xlsx"));
         }
     }
 }
