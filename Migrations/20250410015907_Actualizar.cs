@@ -5,10 +5,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace JarredsOrderHub.Migrations
 {
-    /// <inheritdoc />
     public partial class Actualizar : Migration
     {
-        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<DateTime>(
@@ -38,8 +36,6 @@ namespace JarredsOrderHub.Migrations
                     table.PrimaryKey("PK_SeccionesContenido", x => x.Id);
                 });
         }
-
-        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
