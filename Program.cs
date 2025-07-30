@@ -14,6 +14,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+
 // Agregar soporte para controladores con vistas
 builder.Services.AddControllersWithViews();
 
@@ -70,7 +71,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
-app.UseSession();  // Sesiones habilitadas
+app.UseSession(); 
 app.UseAuthentication();  
 app.UseAuthorization();
 

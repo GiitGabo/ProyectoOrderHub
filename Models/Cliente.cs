@@ -31,5 +31,6 @@ namespace JarredsOrderHub.Models
         [NotMapped]
         [Compare("Contrasenia", ErrorMessage = "Las contraseñas no coinciden")]
         public string ConfirmarContrasenia { get; set; }
+        public int NumeroContacto { get; set; }
     }
 }

@@ -883,26 +883,3 @@ button.add-category {
     .add-to-cart-btn:hover {
         background: var(--oscuro);
     }
-
-/* Responsive: en pantallas pequeñas, 1 columna */
-@media (max-width: 600px) {
-    .menu-container {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* ========================
-       Footer
-    ======================== */
-/*footer {
-    background-color: var(--oscuro);
-    color: #fff;
-    padding: 2rem 1rem;
-    text-align: center;
-}
-
-    footer a {
-        color: var(--naranja);
-        text-decoration: none;
-    }
-    */

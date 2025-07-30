@@ -4,6 +4,7 @@ using JarredsOrderHub.DbaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JarredsOrderHub.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250414193638_ActualizacionUbi")]
+    partial class ActualizacionUbi
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -115,9 +118,6 @@ namespace JarredsOrderHub.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("NumeroContacto")
-                        .HasColumnType("int");
 
                     b.Property<bool>("estado")
                         .HasColumnType("bit");
@@ -233,11 +233,11 @@ namespace JarredsOrderHub.Migrations
                     b.Property<int?>("IdRol")
                         .HasColumnType("int");
 
-                    b.Property<double?>("LatitudActual")
-                        .HasColumnType("float");
+                    b.Property<decimal?>("LatitudActual")
+                        .HasColumnType("decimal(18,6)");
 
-                    b.Property<double?>("LongitudActual")
-                        .HasColumnType("float");
+                    b.Property<decimal?>("LongitudActual")
+                        .HasColumnType("decimal(18,6)");
 
                     b.Property<string>("Nombre")
                         .IsRequired()

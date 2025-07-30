@@ -31,5 +31,11 @@ namespace JarredsOrderHub.Models
         public string? Contrasenia { get; set; }
 
         public Boolean estado { get; set; }
+
+        // NUEVAS PROPIEDADES para ubicación actual:
+        [Column(TypeName = "float")]
+        public double? LatitudActual { get; set; }
+        [Column(TypeName = "float")]
+        public double? LongitudActual { get; set; }
     }
 }

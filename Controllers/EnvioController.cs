@@ -28,8 +28,8 @@ namespace JarredsOrderHub.Controllers
         public async Task<IActionResult> EstadoPedido(int id)
         {
             // Obtenemos el ID del usuario autenticado
-            var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(usuarioId))
+            var userId = User.FindFirst("UserId")?.Value;
+            if (string.IsNullOrEmpty(userId))
             {
                 return RedirectToAction("AccionesUsuario", "Usuario");
             }
@@ -38,8 +38,13 @@ namespace JarredsOrderHub.Controllers
             var pedidos = await _context.Pedidos
                 .Include(p => p.Detalles)
                     .ThenInclude(d => d.Platillo)
-                .Where(p => p.UsuarioId == int.Parse(usuarioId))
+                .Where(p => p.UsuarioId == int.Parse(userId))
                 .ToListAsync();
+
+            var repartidores = await _context.Empleados
+                          .Where(e => e.IdRol == 3 && !e.estado)
+                          .ToListAsync();
+            ViewBag.Repartidores = repartidores;
 
             return View(pedidos);
         }
@@ -47,33 +52,30 @@ namespace JarredsOrderHub.Controllers
         [HttpGet]
         public async Task<IActionResult> EstadoPedidoRepartidor()
         {
-            // Se obtiene el ID del empleado desde la sesión
-            int? empleadoId = HttpContext.Session.GetInt32("EmpleadoId");
-            if (!empleadoId.HasValue)
+            var userId = User.FindFirst("UserId")?.Value;
+            if (string.IsNullOrEmpty(userId))
             {
-                // Redirige al login u otra vista de acciones de usuario si no hay empleado autenticado
                 return RedirectToAction("AccionesUsuario", "Usuario");
             }
 
-            // Consulta los pedidos asignados al empleado, incluyendo los detalles y el cliente
             var pedidos = await _context.Pedidos
                 .Include(p => p.Detalles)
                     .ThenInclude(d => d.Platillo)
                 .Include(p => p.Cliente)
-                .Where(p => p.IdRepartidor == empleadoId.Value)
+                .Where(p => p.IdRepartidor == int.Parse(userId) &&
+                            p.EstadoPedido.ToLower() != "entregado")
                 .ToListAsync();
 
-            // Además, ya tienes en ViewBag.Repartidores la lista de repartidores (empleados con IdRol == 3)
             var repartidores = await _context.Empleados
-                                      .Where(e => e.IdRol == 3 && !e.estado)
-                                      .ToListAsync();
+                .Where(e => e.IdRol == 3 && !e.estado)
+                .ToListAsync();
+
             ViewBag.Repartidores = repartidores;
 
             return View(pedidos);
         }
 
 
-        // En el controlador
         [HttpPost]
         public async Task<IActionResult> MarcarEntregado(int id)
         {
@@ -91,6 +93,11 @@ namespace JarredsOrderHub.Controllers
             return Ok();
         }
 
+        public class UbicacionDto
+        {
+            public decimal Latitud { get; set; }
+            public decimal Longitud { get; set; }
+        }
 
 
 

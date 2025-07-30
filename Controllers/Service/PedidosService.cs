@@ -3,6 +3,7 @@ using JarredsOrderHub.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace JarredsOrderHub.Controllers.Service
 {
     [Route("api/[controller]")]
@@ -10,10 +11,16 @@ namespace JarredsOrderHub.Controllers.Service
     public class PedidosService : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ILogger<UsuarioService> _logger;
+        private readonly EmailService _emailService;
 
-        public PedidosService(ApplicationDbContext context)
+        public PedidosService(ApplicationDbContext context, ILogger<UsuarioService> logger, EmailService emailService, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
+            _logger = logger;
+            _emailService = emailService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpGet]
@@ -92,6 +99,8 @@ namespace JarredsOrderHub.Controllers.Service
                 _context.Pagos.Add(pago);
                 await _context.SaveChangesAsync();
 
+                CompletarPedido(pedido.Id);
+
                 return Ok(new { success = true, data = pedido.Id });
             }
             catch (Exception ex)
@@ -103,29 +112,36 @@ namespace JarredsOrderHub.Controllers.Service
         [HttpPut("actualizarEstado/{id}/{nuevoEstado}")]
         public async Task<IActionResult> UpdatePedido(int id, string nuevoEstado)
         {
-            var pedido = await _context.Pedidos.FindAsync(id);
-            if (pedido == null)
-            {
-                return BadRequest();
-            }
-
-            pedido.EstadoPedido = nuevoEstado;
-            _context.Entry(pedido).State = EntityState.Modified;
+            using var transaction = await _context.Database.BeginTransactionAsync();
 
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!_context.Pedidos.Any(p => p.Id == id))
-                {
-                    return NotFound();
-                }
-                throw;
-            }
+                // Actualizar estado del pedido
+                var pedido = await _context.Pedidos.FindAsync(id);
+                if (pedido == null) return NotFound("Pedido no encontrado");
 
-            return Ok(new { success = true });
+                pedido.EstadoPedido = nuevoEstado;
+                _context.Entry(pedido).State = EntityState.Modified;
+
+                // Actualizar estado del pago correspondiente
+                var pago = await _context.Pagos.FindAsync(id);
+                if (pago != null)
+                {
+                    pago.Estado = "Pagado";
+                    pago.FechaPago = DateTime.Now;
+                    _context.Entry(pago).State = EntityState.Modified;
+                }
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return Ok(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return StatusCode(500, new { error = ex.Message });
+            }
         }
 
 
@@ -155,6 +171,32 @@ namespace JarredsOrderHub.Controllers.Service
             await _context.SaveChangesAsync();
             return Ok(new { success = true });
         }
+
+        [HttpGet("enviarRecibo/{pedidoId}")]
+        public async Task<IActionResult> CompletarPedido(int pedidoId)
+        {
+            try
+            {
+                var pedido = await _context.Pedidos
+                .Include(p => p.Detalles)
+                .ThenInclude(d => d.Platillo)
+                .Include(p => p.Cupon)
+                .FirstOrDefaultAsync(p => p.Id == pedidoId);
+
+                var usuario = await _context.Clientes.FindAsync(pedido.UsuarioId);
+
+                await _emailService.EnviarReciboPedido(pedido, usuario);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.ToString());
+            }
+        }
+
+
+
 
     }
 }

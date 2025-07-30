@@ -9,7 +9,9 @@
       "JarredsOrderHub/1.0.0": {
         "dependencies": {
           "Microsoft.EntityFrameworkCore.SqlServer": "9.0.1",
-          "Microsoft.EntityFrameworkCore.Tools": "9.0.2"
+          "Microsoft.EntityFrameworkCore.Tools": "9.0.2",
+          "PayPalCheckoutSdk": "1.0.3",
+          "PayPalHttp": "1.0.1"
         },
         "runtime": {
           "JarredsOrderHub.dll": {}
@@ -742,6 +744,22 @@
           }
         }
       },
+      "PayPalCheckoutSdk/1.0.3": {
+        "runtime": {
+          "lib/netstandard2.0/PayPalCheckoutSdk.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "PayPalHttp/1.0.1": {
+        "runtime": {
+          "lib/netstandard2.0/PayPalHttp-Dotnet.dll": {
+            "assemblyVersion": "1.0.1.0",
+            "fileVersion": "1.0.1.0"
+          }
+        }
+      },
       "System.ClientModel/1.0.0": {
         "dependencies": {
           "System.Memory.Data": "1.0.2",
@@ -1359,6 +1377,20 @@
       "sha512": "sha512-YqueG52R/Xej4VVbKuRIodjiAhV0HR/XVbLbNrJhCZnzjnSjgMJ/dCdV0akQQxavX6hp/LC6rqLGLcXeQYU7XA==",
       "path": "mono.texttemplating/3.0.0",
       "hashPath": "mono.texttemplating.3.0.0.nupkg.sha512"
+    },
+    "PayPalCheckoutSdk/1.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-s6VaUtSbUmFHl10GB79Qw5lQtMoL/oZy46ow5+df4rR2P9D7RtRnr/lFaPDswOnilX2BNd4IsQ4Tt+S9vzklGg==",
+      "path": "paypalcheckoutsdk/1.0.3",
+      "hashPath": "paypalcheckoutsdk.1.0.3.nupkg.sha512"
+    },
+    "PayPalHttp/1.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Jlg8e9Egwxk+sfkIoGIkjQS+uxGNIOnY6NbUkWXKJiEGGqryeV9bIRNtSfjSgs/g02JcIQbKRFQW+8amtSo3ig==",
+      "path": "paypalhttp/1.0.1",
+      "hashPath": "paypalhttp.1.0.1.nupkg.sha512"
     },
     "System.ClientModel/1.0.0": {
       "type": "package",

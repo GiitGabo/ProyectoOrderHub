@@ -46,7 +46,7 @@ body {
 /* Contenedor principal para el login */
 .login-container {
     margin-top: 10px; /* Ajusta este valor según el alto del header para centrar verticalmente */
-    min-height: 600px; /* Asegura una altura mínima */
+    min-height: 750px; /* Asegura una altura mínima */
     position: relative;
     flex-direction: column;
     display: flex;
@@ -115,7 +115,7 @@ a {
 .login-wrap {
     width: 100%; /* Ocupa todo el ancho disponible */
     max-width: 525px; /* Limita el ancho máximo para evitar que se vea muy grande en pantallas grandes */
-    min-height: 670px; /* Asegura una altura mínima */
+    min-height: 750px; /* Asegura una altura mínima */
     position: relative; /* Define la posición relativa para elementos internos */
     background: url('https://animalgourmet.com/wp-content/uploads/2024/07/pollo-caribeno-cremoso-1.jpg') no-repeat center; /* Imagen de fondo centrada */
     background-size: cover; /* Ajusta la imagen para que cubra todo el contenedor */
@@ -362,3 +362,45 @@ a {
     color: #D91E1E;
     font-size: 0.875rem;
 }
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+    .login-html {
+        padding: 30px 20px;
+        min-height: 500px;
+    }
+
+    .login-form .group .input {
+        padding: 10px 15px;
+        font-size: 13px;
+    }
+
+    .login-html .tab {
+        font-size: 18px;
+        margin: 0 10px 8px 0;
+    }
+
+    .recuperar-link {
+        font-size: 12px;
+    }
+}
+
+/* Asegurar que los inputs no desborden */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"] {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Corrección específica para número de contacto */
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }

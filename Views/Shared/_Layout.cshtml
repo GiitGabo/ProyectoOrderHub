@@ -1,6 +1,10 @@
-﻿﻿@{
-    var userName = Context.Session.GetString("UserName");
-    var userType = Context.Session.GetString("UserType");
+﻿@using System.Security.Claims
+
+@{
+    var userName = User.Identity.IsAuthenticated ? User.FindFirst(ClaimTypes.Name)?.Value : "Invitado";
+    var userType = User.Identity.IsAuthenticated ? User.FindFirst("UserType")?.Value : "Desconocido";
+    var userRol = User.Identity.IsAuthenticated ? User.FindFirst(ClaimTypes.Role)?.Value : "Desconocido";
+    var userId = User.Identity.IsAuthenticated ? User.FindFirst("UserId")?.Value : null;
 }
 
 <!DOCTYPE html>
@@ -9,12 +13,12 @@
     <script src="https://kit.fontawesome.com/ddc6aa5d21.js" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="~/css/Layout.css" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @RenderSection("styles", required: false)
     <style>
+        /* Base Styles */
         html, body {
             margin: 0;
             padding: 0;
@@ -23,202 +27,913 @@
 
         body {
             font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
             background-color: #fff !important;
-            color: var(--oscuro);
+            color: #262626;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
         }
 
-        /* Contenedor principal con Flexbox */
         .wrapper {
             display: flex;
             flex-direction: column;
-            min-height: 100vh; /* Ocupa el alto completo de la pantalla */
+            min-height: 100vh;
         }
-        /* La sección de contenido se expande para ocupar el espacio disponible */
+
         .content {
             flex: 1;
         }
-        /* Footer: estilo para mantenerlo al final */
+
         footer.footer {
             background-color: #262626 !important;
             margin-top: auto;
             color: #fff;
             text-align: center;
             padding: 20px 0;
-            position: absolute; /* Posición absoluta */
-            bottom: 0; /* Alineado al fondo */
-            width: 100%; /* Ocupa todo el ancho */
-            white-space: nowrap; /* Evita el salto de línea */
-            line-height: 60px; /* Altura de línea de 60px para centrar el contenido verticalmente */
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            white-space: nowrap;
+            line-height: 60px;
         }
+        /* Drawer del Carrito */
+        .drawer-carrito {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 350px;
+            height: 100%;
+            background-color: #fff;
+            box-shadow: -2px 0 8px rgba(0,0,0,0.3);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 1050;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            border-left: 4px solid #f2a413;
+        }
+
+            .drawer-carrito.active {
+                transform: translateX(0);
+            }
+
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+            background-color: #f8f8f8;
+        }
+
+            .drawer-header h2 {
+                margin: 0;
+                font-size: 1.6rem;
+                font-family: 'Lobster', cursive;
+                color: #262626;
+            }
+
+        .close-drawer {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .drawer-body {
+            flex: 1;
+            padding: 1rem;
+        }
+
+        .drawer-footer {
+            padding: 1rem;
+            border-top: 1px solid #e0e0e0;
+            background-color: #f8f8f8;
+        }
+
+            .drawer-footer .cart-summary {
+                margin-bottom: 1rem;
+            }
+
+            .drawer-footer .row-coupon {
+                display: flex;
+                gap: 0.5rem;
+                margin: 1rem 0;
+            }
+
+            .drawer-footer input[type="text"] {
+                flex: 1;
+                padding: 0.4rem;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+        /* Overlay */
+        .overlay-carrito {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1040;
+            display: none;
+        }
+
+            .overlay-carrito.active {
+                display: block;
+            }
+        /* Items del Carrito */
+        .drawer-body .producto {
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            color: #262626;
+        }
+
+            .drawer-body .producto .info-producto {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .drawer-body .producto img {
+                width: 60px;
+                height: 60px;
+                object-fit: cover;
+                border-radius: 4px;
+            }
+
+            .drawer-body .producto h4 {
+                margin: 0;
+                font-size: 1.1rem;
+            }
+
+            .drawer-body .producto p {
+                margin: 0;
+                font-size: 0.9rem;
+            }
+
+            .drawer-body .producto .cantidad button,
+            .drawer-body .producto button {
+                background-color: #f2a413;
+                border: none;
+                padding: 5px 10px;
+                border-radius: 4px;
+                color: #262626;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+
+                .drawer-body .producto .cantidad button:hover,
+                .drawer-body .producto button:hover {
+                    background-color: #d18c0f;
+                }
+        /* Modal de Ubicación (Mapa) */
+        .modal-mapa {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            z-index: 1100;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            width: 80%;
+            max-width: 800px;
+            display: none;
+            flex-direction: column;
+        }
+
+            .modal-mapa .modal-content-t {
+                padding: 1.5rem;
+                text-align: center;
+                /* Forzamos el color de letra a #262626 */
+                color: #262626;
+            }
+        /* Modal de Checkout */
+        .modal-checkout {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            z-index: 1100;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            width: 90%;
+            max-width: 800px;
+            display: none;
+            flex-direction: column;
+        }
+
+            .modal-checkout .modal-content-t {
+                padding: 1.5rem;
+                text-align: left;
+                color: #262626;
+            }
+
+            .modal-checkout h3 {
+                margin-top: 0;
+                font-family: 'Lobster', cursive;
+            }
+
+            .modal-checkout label {
+                display: block;
+                margin-top: 1rem;
+                font-weight: bold;
+            }
+
+            .modal-checkout textarea,
+            .modal-checkout input[type="text"] {
+                width: 100%;
+                padding: 0.6rem;
+                margin-top: 0.5rem;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+
+            .modal-checkout .metodo-pago {
+                margin-top: 1rem;
+                text-align: center;
+            }
+
+                .modal-checkout .metodo-pago button {
+                    margin: 0.5rem;
+                }
+        /* Botones Modernos */
+        .btn-pagar, .btn-cerrar, .btn-validar, .btn-pago, .btn-cancelar, .btn-apply-coupon {
+            border: none;
+            background-color: #262626;
+            color: #fff;
+            padding: 0.6rem 1.2rem;
+            margin: 0.5rem 0;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+            .btn-pagar:hover, .btn-cerrar:hover, .btn-validar:hover, .btn-pago:hover, .btn-apply-coupon:hover {
+                background-color: #444;
+            }
+
+        .btn-cancelar {
+            background-color: #e74c3c;
+        }
+
+            .btn-cancelar:hover {
+                background-color: #c0392b;
+            }
     </style>
     <!-- ICONO -->
     <link rel="icon" type="image/png" href="~/LOGO-JARREDS.ico" />
 
-    <title>JarredsOrderHub - @(userType)</title>
+    <title>JarredsOrderHub</title>
 
 </head>
-
-
-    <!--Header -->
 <body>
     <div class="wrapper">
-<header>
-        <nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background-color: #262626 !important;">
-        <div class="container">
-            <!-- Logo -->
-            <a class="navbar-brand" href="@Url.Action("Index","Home")">
-                <i class="fas fa-box-open me-2"></i>Jarred's Order Hub
-            </a>
-
-            <!-- Toggler Button -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <!-- Menu -->
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    @if (User.Identity != null && User.Identity.IsAuthenticated)
-                    {
-                     @if (userType == "Empleado") {
-                    
-                        <!-- Admin -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-user-cog me-1"></i>Admin
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="adminDropdown">
-                                <li><a class="dropdown-item" href="@Url.Action("AdministrarEmpleados","Admin")">Empleados</a></li>
-                                <li><a class="dropdown-item" href="@Url.Action("AdministrarRoles","Admin")">Roles</a></li>
-                                <li><a class="dropdown-item" href="@Url.Action("AdministrarTareas","Admin")">Tareas</a></li>
-                                <li><a class="dropdown-item" href="@Url.Action("AdministrarUsuarios","Admin")">Usuarios</a></li>
-                                        <li><a class="dropdown-item" href="@Url.Action("ListadoPedidos","Envio")">Listado de Pedidos</a></li>
-                                            <li><a class="dropdown-item" href="@Url.Action("EstadoPedidoRepartidor","Envio")">Estado de mi pedido</a></li>
-                                <li><a class="dropdown-item" href="@Url.Action("HistorialPagosPedidosAdministracion","Pago")">Historial de Pagos Administracion</a></li>
-                                <li><a class="dropdown-item" href="@Url.Action("VisualizarRetroalimentaciones","Envio")">Ver Retroalimentacion</a></li>
-                                        <li><a class="dropdown-item" href="@Url.Action("AdministracionReportes","Reporte")"> Reportes </a></li>
-                                <li><a class="dropdown-item" href="@Url.Action("EdicionInformacion","Informacion")">Apartados Informativos</a></li>
-                            </ul>
-                        </li>
-
-                    <!-- Catálogo -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="catalogoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-boxes me-1"></i> Catálogo
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="catalogoDropdown">
-                                <li><a class="dropdown-item" href="@Url.Action("AdministrarCategorias","Catalogo")">Administrar Categorias</a></li>
-                                    <li><a class="dropdown-item" href="@Url.Action("AdministrarCupones","Catalogo")">Administrar Cupones</a></li>
-                                <li><a class="dropdown-item" href="@Url.Action("AdministrarPlatos","Catalogo")">Administrar Platos</a></li>
+        <!-- Header -->
+        <header>
+            <nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background-color: #262626 !important;">
+                <div class="container">
+                    <!-- Logo -->
+                    <a class="navbar-brand" href="@Url.Action("Index","Home")">
+                        <i class="fas fa-box-open me-2"></i>Jarred's Order Hub
+                    </a>
+                    <!-- Toggler Button -->
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <!-- Menú -->
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ms-auto">
+                            @* ... Menú de navegación existente ... *@
+                            @if (User.Identity != null && User.Identity.IsAuthenticated)
+                            {
+                                @if (userType == "Empleado")
+                                {
+                                    <!-- Gestión -->
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fas fa-user-cog me-1"></i>Gestion
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                                            @if (User.Identity.IsAuthenticated && userRol == "Admin")
+                                            {
+                                                <li><a class="dropdown-item" href="@Url.Action("AdministrarEmpleados","Admin")">Empleados</a></li>
+                                                <li><a class="dropdown-item" href="@Url.Action("AdministrarRoles","Admin")">Roles</a></li>
+                                                <li><a class="dropdown-item" href="@Url.Action("AdministrarTareas","Admin")">Tareas</a></li>
+                                                <li><a class="dropdown-item" href="@Url.Action("AdministrarUsuarios","Admin")">Usuarios</a></li>
+                                                <li><a class="dropdown-item" href="@Url.Action("HistorialPagosPedidosAdministracion","Pago")">Historial de Pagos Administracion</a></li>
+                                                <li><a class="dropdown-item" href="@Url.Action("AdministracionReportes","Reporte")"> Reportes </a></li>
+                                                //<li><a class="dropdown-item" href="@Url.Action("EdicionInformacion","Informacion")">Apartados Informativos</a></li>
+                                                <li><a class="dropdown-item" href="@Url.Action("VisualizarRetroalimentaciones","Envio")">Ver Retroalimentacion</a></li>
+                                            }
+                                            <li><a class="dropdown-item" href="@Url.Action("ListadoPedidos","Envio")">Listado de Pedidos</a></li>
+                                            <li><a class="dropdown-item" href="@Url.Action("EstadoPedidoRepartidor","Envio")">Entrega de Pedidos</a></li>
+                                        </ul>
+                                    </li>
+                                    <!-- Catálogo -->
+                                    @if (User.Identity.IsAuthenticated && userRol == "Admin" || userRol == "Cocinero")
+                                    {
+                                        <li class="nav-item dropdown">
+                                            <a class="nav-link dropdown-toggle" href="#" id="catalogoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fas fa-boxes me-1"></i> Catálogo
+                                            </a>
+                                            <ul class="dropdown-menu" aria-labelledby="catalogoDropdown">
+                                                <li><a class="dropdown-item" href="@Url.Action("AdministrarCategorias","Catalogo")">Administrar Categorias</a></li>
+                                                <li><a class="dropdown-item" href="@Url.Action("AdministrarPlatos","Catalogo")">Administrar Platos</a></li>
+                                                <li><a class="dropdown-item" href="@Url.Action("AdministrarCupones","Catalogo")">Administrar Cupones</a></li>
+                                            </ul>
+                                        </li>
+                                    }
+                                }
+                            }
+                            @if (User.Identity != null && User.Identity.IsAuthenticated)
+                            {
+                                <!-- Pedidos -->
+                                @if (userType == "Cliente")
+                                {
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" href="#" id="envioDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fa-solid fa-motorcycle"></i> Pedidos
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="envioDropdown">
+                                            <li><a class="dropdown-item" href="@Url.Action("EstadoPedido","Envio")">Estado de mi pedido</a></li>
+                                            <li><a class="dropdown-item" href="@Url.Action("HistorialPagosPedidos","Pago")">Historia de pedidos pagados</a></li>
+                                        </ul>
+                                    </li>
+                                }
+                            }
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Menu", "Catalogo")" id="pedidoDropdown" role="button">
+                                    <i class="fa-solid fa-utensils"></i> Menu
+                                </a>
+                            </li>
+                            @if (userType != "Empleado")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" href="javascript:void(0);" onclick="toggleCart()" id="cartBtn" role="button">
+                                        <i class="fa-solid fa-cart-shopping"></i>
+                                    </a>
+                                </li>
+                            }
+                            @if (User.Identity != null && User.Identity.IsAuthenticated)
+                            {
+                                <!-- Mi Usuario -->
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="usuarioDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-user me-1"></i> Bienvenid@@ @userName
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="usuarioDropdown">
+                                        <li><a class="dropdown-item" href="@Url.Action("GestionPerfil","Usuario")"> Gestion Perfil</a></li>
+                                        @if (userType != "Empleado")
+                                        {
+                                        <li><a class="dropdown-item" href="@Url.Action("ReportarProblema","Reporte")">Reportar un problema</a></li>
+                                        }
+                                        <li><a class="dropdown-item" href="/Usuario/Logout"> Cerrar Sesión</a></li>
+                                    </ul>
+                                </li>
+                            }
+                            else
+                            {
+                                <!-- Menú para usuario no autenticado -->
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("AccionesUsuario", "Usuario")">
+                                        <i class="fas fa-user me-1"></i> Iniciar Sesión
+                                    </a>
+                                </li>
+                            }
                         </ul>
-                    </li>
-                    }}
-                   
-                    @if (User.Identity != null && User.Identity.IsAuthenticated)
-                    {
-                        <!-- Pedidos -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="envioDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa-solid fa-motorcycle"></i> Pedidos
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="envioDropdown">
-                                <li><a class="dropdown-item" href="@Url.Action("EstadoPedido","Envio")">Estado de mi pedido</a></li>
-                                <li><a class="dropdown-item" href="@Url.Action("ReportarProblema","Reporte")">Reportar un problema</a></li>
-                                <li><a class="dropdown-item" href="@Url.Action("HistorialPagosPedidos","Pago")">Historia de pedidos pagados</a></li>
-                            </ul>
-                        </li>
-                    }
-
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="@Url.Action("Menu", "Catalogo")" id="pedidoDropdown" role="button">
-                            <i class="fa-solid fa-utensils"></i> Menu
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="@Url.Action("Carrito", "Pedido")" id="pedidoDropdown" role="button">
-                            <i class="fa-solid fa-cart-shopping"></i>
-                        </a>
-                    </li>
-
-                    @if (User.Identity != null && User.Identity.IsAuthenticated)
-                    {
-                        <!-- Mi Usuario -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="usuarioDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-user me-1"></i> Bienvenido @userName
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="usuarioDropdown">
-                                <li><a class="dropdown-item" href="@Url.Action("GestionPerfil","Usuario")"> Gestion Perfil</a></li>
-                                <li><a class="dropdown-item" href="/Usuario/Logout"> Cerrar Sesión</a></li>
-                            </ul>
-                        </li>
-                    }
-                    else
-                    {
-                        <!-- Menú para usuario no autenticado -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="@Url.Action("AccionesUsuario", "Usuario")">
-                                <i class="fas fa-user me-1"></i> Iniciar Sesión
-                            </a>
-                        </li>
-                    }
-                </ul>
-            </div>
-        </div>
-    </nav>
-</header>
+                    </div>
+                </div>
+            </nav>
+        </header>
 
         <!-- Contenido principal -->
         <div class="content">
             @RenderBody()
         </div>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-light py-5 " style="background-color: #262626 !important;">
-        <div class="container">
-            <div class="row">
-                <!-- ACERCA -->
-                <div class="col-md-4 mb-4">
-                    <h5 class="fw-bold">Acerca de Nosotros</h5>
-                    <p>Explora una amplia variedad de productos y servicios seleccionados especialmente para ti.</p>
+        <!-- Footer -->
+        <footer class="bg-dark text-light py-5" style="background-color: #262626 !important;">
+            <div class="container">
+                <div class="row">
+                    <!-- ACERCA -->
+                    <div class="col-md-4 mb-4">
+                        <h5 class="fw-bold">Acerca de Nosotros</h5>
+                        <p style="text-align: justify;">
+                            Bienvenidos a JarredsOrderHub. Si deseas experimentar el auténtico sabor caribeño,
+                            somos tu mejor opción. Utilizamos los mejores productos e ingredientes, y seguimos
+                            meticulosamente los tradicionales procedimientos de preparación para ofrecerte una experiencia
+                            culinaria única.
+                    </div>
+                    <!-- FAQ -->
+                    <div class="col-md-4 mb-4">
+                        <h5 class="fw-bold">Preguntas Frecuentes</h5>
+                        <ul class="list-unstyled">
+                            <li>¿Cada cuánto se realizan entregas?</li>
+                            <li>Dos veces al mes, los 15 y los 30</li>
+                            <br>
+                            <li>¿Dónde realizan entregas?</li>
+                            <li>Dentro de la GAM</li>
+                            <br>
+                            <li>¿Dónde puedo hacer mis consultas si no encuentro respuesta en el sitio web?</li>
+                            <li>A nuestras redes puedes realizar las consultas</li>
+                            <br>
+                        </ul>
+                    </div>
+                    <!-- CONTACTO -->
+                    <div class="col-md-4 mb-4 text-center">
+                        <h5 class="fw-bold">En todas las redes como JarredsCaribbeanTaste</h5>
+                        <a href="https://www.facebook.com/share/1585WXnDoe/?mibextid=wwXIfr" class="text-light me-3"><i class="fab fa-facebook fa-2x"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-tiktok fa-2x"></i></a>
+                        <a href="https://www.instagram.com/jarreds_caribbeantaste?igsh=MTVqNXd5ajFmODkxZw==" class="text-light"><i class="fab fa-instagram fa-2x"></i></a>
+                        <br><br>
+                        <a href="mailto:jarredsorderhub@gmail.com" class="text-light">jarredsorderhub@gmail.com</a>
+                    </div>
                 </div>
-                <!-- FAQ -->
-                <div class="col-md-4 mb-4">
-                    <h5 class="fw-bold">Preguntas Frecuentes</h5>
-                    <ul class="list-unstyled">
-                        <li>¿Cada cuánto se realizan entregas?</li>
-                        <li class="text-muted">Dos veces al mes.</li>
-                    </ul>
-                </div>
-                <!-- CONTACTO -->
-                <div class="col-md-4 mb-4 text-center">
-                    <h5 class="fw-bold">Contacto</h5>
-                    <a href="#" class="text-light me-3"><i class="fab fa-facebook fa-2x"></i></a>
-                    <a href="#" class="text-light me-3"><i class="fab fa-twitter fa-2x"></i></a>
-                    <a href="#" class="text-light"><i class="fab fa-instagram fa-2x"></i></a>
-                    <br>
-                    <br>
-                    <a href="#" class="text-light">jarredsOrderHub@gmail.com</a>
+                <hr class="border-secondary"> 
+                <div class="text-center">
+                    <p class="text-center">&copy; @DateTime.Now.Year Jarred's Order Hub. Todos los derechos reservados.</p>
                 </div>
             </div>
-            <div class="col-md-4 mb-4">
-                <!-- TERMINOS Y CONDICIONES -->
-                <h5 class="fw-bold">Terminos y Condiciones</h5>
-                </ul>
-            </div>
-            <hr class="border-secondary">
-            <div class="text-center">
-                <p class="text-center">&copy; @DateTime.Now.Year Jarred's Order Hub. Todos los derechos reservados.</p>
-            </div>
-        </div>
 
+
+            <!-- Overlay para Drawer -->
+            <div id="drawerOverlay" class="overlay-carrito" onclick="toggleCart()"></div>
+
+            <!-- Drawer del Carrito -->
+            <div id="cartDrawer" class="drawer-carrito">
+                <div class="drawer-header">
+                    <h2>Carrito</h2>
+                    <button class="close-drawer" onclick="toggleCart()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div id="productos-carrito" class="drawer-body">
+                    <!-- Se cargan productos o mensaje de carrito vacío -->
+                </div>
+                <div class="drawer-footer">
+                    <div class="cart-summary">
+                        <div class="mb-2">
+                            <strong style="color: #262626;" >Subtotal: </strong>
+                            <span style="color: #262626;" id="cart-subtotal">0.00</span>
+                        </div>
+                        <div class="row-coupon">
+                            <input type="text" id="codigo-cupon" placeholder="Ingresa tu cupón">
+                            <button class="btn-apply-coupon" onclick="validarCupon()">Aplicar</button>
+                        </div>
+                        <!-- Se muestra el envío -->
+                        <div class="mb-2">
+                            <strong style="color: #262626;">Envío: </strong>
+                            <span style="color: #262626;" id="cart-envio">0.00</span>
+                            <span style="font-size: 0.8rem; color: #262626;">(Envíos a toda la GAM)</span>
+                        </div>
+                        <div>
+                            <strong style="color: #262626;">Total: </strong>
+                            <span style="color: #262626;" id="cart-total">0.00</span>
+                        </div>
+                        <p id="mensaje-cupon" style="font-style: italic; color: red; margin: 0;"></p>
+                    </div>
+                    <!-- Botón para iniciar el flujo de pago -->
+                    <button class="btn-pagar" onclick="seleccionarUbicacionYpagar()">
+                        <i class="fas fa-map-marker-alt"></i> Seleccionar Ubicación y Pagar
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Modal de Checkout (Resumen y Pago) -->
+            <div id="popup-checkout" class="modal-checkout">
+                <div class="modal-content-t">
+                    <h3>Resumen del Pedido</h3>
+                    <div id="resumen-productos">
+                        <!-- Detalle del pedido (si se desea cargar dinámicamente) -->
+                    </div>
+                    <p><strong>Subtotal:</strong> <span id="resumen-subtotal">0.00</span></p>
+                    <p>
+                        <strong>Envío:</strong> <span id="resumen-envio">0.00</span>
+                        <em>(Envíos a toda la GAM)</em>
+                    </p>
+                    <p><strong>Total:</strong> <span id="resumen-total">0.00</span></p>
+                    <p id="precio-descuento" style="display:none;">
+                        <strong>Total con descuento:</strong>
+                        <span id="total-descuento">0.00</span>
+                    </p>
+                    <label for="comentarios">Comentarios sobre el pedido:</label>
+                    <textarea id="comentarios" rows="3" placeholder="Ej. Sin cebolla, llamarme o enviar mensaje al estar cerca..."></textarea>
+                    <div class="metodo-pago">
+                        <button class="btn-pago" onclick="pagarConEfectivo()">
+                            <i class="fas fa-cash-register"></i> Efectivo
+                        </button>
+                        <!-- Dentro de tu popup-checkout, junto a los botones de Efectivo y Tarjeta -->
+                        <button onclick="pagarConPaypal()" class="btn-pago">
+                            <i class="fa-brands fa-paypal"></i>Pagar con PayPal
+                        </button>
+
+                        <!-- Contenedor invisible que usaremos para el Smart Button -->
+                        <div id="paypal-button-container" style="display:none; margin-top:20px;"></div>
+
+                        <!-- Contenedor para PayPal -->
+                        <div id="paypal-button-container" style="display:none; margin-top:20px;"></div>
+
+                    </div>
+                    <button class="btn-cerrar" onclick="cerrarCheckout()">Cerrar</button>
+                </div>
+            </div>
+
+
+            <!-- Modal para la Selección de Ubicación (Mapa) -->
+            <div id="mapModal" class="modal-mapa">
+                <div class="modal-content-t">
+                    <h3>Selecciona tu ubicación de entrega</h3>
+                    <div id="map" style="height: 500px;"></div>
+                    <button class="btn-pagar" onclick="confirmarUbicacion()">Confirmar Ubicación</button>
+                    <button class="btn-cancelar" onclick="cerrarMapa()">Cancelar</button>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://www.paypal.com/sdk/js?client-id=Ab-ktZt8jhs61OODQNASIRgLYKlgvV7zK5LPPcKAMcHNuSXh8v6Gv1T_7THW4cNtUA1fVzpJhky-yvG5&currency=USD"></script>
+    <!-- Scripts de Bootstrap, jQuery, Leaflet, etc. -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/_framework/aspnetcore-browser-refresh.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+
+    <script>
+        // Variables globales para mapa y carrito
+        let ubicacionSeleccionada = null,
+            marcadorMapa = null,
+            map = null; // Variable global para la instancia de Leaflet
+        let carrito = [];
+        let cuponAplicado = null;
+        let descuentoActual = 0;
+        const shippingFee = 2000;
+
+        // Función para abrir/cerrar el Drawer del carrito
+        function toggleCart() {
+            const drawer = document.getElementById('cartDrawer');
+            const overlay = document.getElementById('drawerOverlay');
+            if (drawer.classList.contains('active')) {
+                drawer.classList.remove('active');
+                overlay.classList.remove('active');
+            } else {
+                drawer.classList.add('active');
+                overlay.classList.add('active');
+                mostrarCarrito();
+            }
+        }
+
+        // Función para formatear precios
+        function formatearPrecio(precio) {
+            return new Intl.NumberFormat('es-CR', { style: 'currency', currency: 'CRC' }).format(precio);
+        }
+
+        // Mostrar carrito: carga los productos y calcula el subtotal y total (con descuento si aplica cupón)
+                function mostrarCarrito() {
+            carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            const contenedor = document.getElementById('productos-carrito');
+            const subtotalElem = document.getElementById('cart-subtotal');
+            const envioElem = document.getElementById('cart-envio');
+            const totalElem = document.getElementById('cart-total');
+            const mensajeCupon = document.getElementById('mensaje-cupon');
+            contenedor.innerHTML = '';
+            mensajeCupon.innerText = '';
+
+            if (carrito.length === 0) {
+                contenedor.innerHTML = '<p style="text-align:center; font-style: italic; color: #262626;">No se ha añadido ningún producto</p>';
+                subtotalElem.innerText = '0.00';
+                envioElem.innerText = '0.00';
+                totalElem.innerText = '0.00';
+                return;
+            }
+
+            let subtotal = 0;
+            carrito.forEach((producto, index) => {
+                const precioTotal = producto.cantidad * producto.precio;
+                subtotal += precioTotal;
+                contenedor.innerHTML += `
+                    <div class="producto">
+                        <div class="info-producto">
+                            <img src="${producto.imagen}" alt="${producto.nombre}">
+                            <div>
+                                <h4>${producto.nombre}</h4>
+                                <p>Precio: ${formatearPrecio(producto.precio)}</p>
+                            </div>
+                        </div>
+                        <div class="cantidad">
+                            <button onclick="cambiarCantidad(${index}, -1)">-</button>
+                            <span id="cantidad-${index}">${producto.cantidad}</span>
+                            <button onclick="cambiarCantidad(${index}, 1)">+</button>
+                        </div>
+                        <div class="precio-total">
+                            <span>Total: <span id="precio-total-${index}">${formatearPrecio(precioTotal)}</span></span>
+                        </div>
+                        <button onclick="eliminarProducto(${index})">Eliminar</button>
+                    </div>
+                `;
+            });
+
+            let descuento = cuponAplicado ? subtotal * descuentoActual : 0;
+            let total = subtotal - descuento + shippingFee;
+            subtotalElem.innerText = formatearPrecio(subtotal);
+            envioElem.innerText = formatearPrecio(shippingFee);
+            totalElem.innerText = formatearPrecio(total);
+        }
+
+
+        // Cambiar cantidad y eliminar producto
+        function cambiarCantidad(index, cambio) {
+            carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            carrito[index].cantidad = Math.max(1, carrito[index].cantidad + cambio);
+            localStorage.setItem('carrito', JSON.stringify(carrito));
+            mostrarCarrito();
+        }
+        function eliminarProducto(index) {
+            carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            carrito.splice(index, 1);
+            localStorage.setItem('carrito', JSON.stringify(carrito));
+            mostrarCarrito();
+        }
+
+        // Validar cupón (opcional)
+        async function validarCupon() {
+            const usuarioId = parseInt('@ViewBag.UsuarioId');
+            let codigo = document.getElementById('codigo-cupon').value;
+            let mensajeCupon = document.getElementById('mensaje-cupon');
+            mensajeCupon.style.display = 'block';
+            if (!codigo) {
+                mensajeCupon.textContent = "No se ha ingresado cupón, se continuará sin descuento.";
+                mensajeCupon.style.color = "blue";
+                cuponAplicado = null;
+                descuentoActual = 0;
+                mostrarCarrito();
+                return;
+            }
+            try {
+                let response = await fetch(`/api/CuponService/ValidarCupon?usuarioId=${usuarioId}&codigo=${codigo}`);
+                let data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.message || "Error al validar cupón");
+                }
+                document.getElementById('precio-descuento').style.display = 'block';
+                // Se utiliza el valor del cupón para el checkout, pero el total en el drawer se recalcula
+                cuponAplicado = data.cupon;
+                descuentoActual = data.cupon.descuento / 100;
+                mensajeCupon.textContent = "Cupón válido: " + cuponAplicado.codigo;
+                mensajeCupon.style.color = "green";
+                mostrarCarrito();
+            } catch (error) {
+                mensajeCupon.textContent = error.message;
+                mensajeCupon.style.color = "red";
+                cuponAplicado = null;
+                descuentoActual = 0;
+            }
+        }
+
+        // Funciones para el Mapa
+        function mostrarMapa() {
+            document.getElementById("mapModal").style.display = "flex";
+            // Si el mapa ya se creó, se reajusta su tamaño; de lo contrario, se crea
+            if (!map) {
+                map = L.map('map').setView([9.9281, -84.0907], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(map);
+                map.on('click', function (e) {
+                    const { lat, lng } = e.latlng;
+                    ubicacionSeleccionada = { latitud: lat, longitud: lng };
+                    if (marcadorMapa) {
+                        marcadorMapa.setLatLng([lat, lng]);
+                    } else {
+                        marcadorMapa = L.marker([lat, lng]).addTo(map);
+                    }
+                });
+            } else {
+                map.invalidateSize();
+            }
+        }
+                // Función para actualizar el resumen de checkout (subtotal, descuento y total final)
+                    function actualizarResumenCheckout() {
+            carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            let subtotal = carrito.reduce((sum, producto) => sum + (producto.cantidad * producto.precio), 0);
+            let descuento = cuponAplicado ? subtotal * descuentoActual : 0;
+            // Se suma el envío al total final
+            let totalFinal = subtotal - descuento + shippingFee;
+
+            document.getElementById('resumen-subtotal').innerText = formatearPrecio(subtotal);
+            document.getElementById('resumen-envio').innerText = formatearPrecio(shippingFee);
+            document.getElementById('resumen-total').innerText = formatearPrecio(totalFinal);
+
+            if (cuponAplicado) {
+                document.getElementById('precio-descuento').style.display = 'block';
+                document.getElementById('total-descuento').innerText = formatearPrecio(totalFinal);
+            } else {
+                document.getElementById('precio-descuento').style.display = 'none';
+            }
+        }
+
+
+
+                function confirmarUbicacion() {
+            if (!ubicacionSeleccionada) {
+                alert("Selecciona una ubicación en el mapa.");
+                return;
+            }
+            alert("Ubicación seleccionada con éxito.");
+            document.getElementById("mapModal").style.display = "none";
+            // Actualiza el resumen del checkout
+            actualizarResumenCheckout();
+            // Se abre el modal de checkout para finalizar el pedido
+            document.getElementById('popup-checkout').style.display = 'flex';
+        }
+
+        function cerrarMapa() {
+            document.getElementById("mapModal").style.display = "none";
+            ubicacionSeleccionada = null;
+        }
+
+        // Cerrar modal de Checkout
+        function cerrarCheckout() {
+            document.getElementById('popup-checkout').style.display = 'none';
+        }
+
+        // Procesar pago (llama a la API PedidosService)
+                // Procesar pago (llama a la API PedidosService)
+        async function procesarPago(metodoPago) {
+            const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            const comentarios = document.getElementById('comentarios').value;
+
+            // Calcular el subtotal
+            const subtotal = carrito.reduce((sum, producto) => sum + (producto.cantidad * producto.precio), 0);
+            // Calcular descuento si se aplicó cupón
+            const descuento = cuponAplicado ? subtotal * descuentoActual : 0;
+            // Total final suma el envío (shippingFee ya definido como 2000 colones)
+            const total = subtotal - descuento + shippingFee;
+
+            // Obtener la ubicación seleccionada
+            const ubicacion = ubicacionSeleccionada;
+            if (!ubicacion) {
+                alert("Por favor selecciona una ubicación de entrega antes de pagar.");
+                return false;
+            }
+
+            // Armar el objeto pedido, incluyendo el total con envío
+            let pedido = {
+                Id: 0,
+                UsuarioId: parseInt('@userId' ?? "0"),
+                FechaPedido: new Date().toISOString().slice(0, 19),
+                EstadoPedido: "Pendiente",
+                MetodoPago: metodoPago,
+                Total: total,  // Total calculado con envío
+                Comentarios: comentarios,
+                CuponId: cuponAplicado ? cuponAplicado.id : null,
+                Cupon: cuponAplicado || null,
+                Detalles: carrito.map(producto => ({
+                    Id: 0,
+                    PedidoId: 0,
+                    ProductoId: parseInt(producto.id),
+                    Cantidad: producto.cantidad,
+                    PrecioUnitario: producto.precio,
+                    Total: producto.cantidad * producto.precio,
+                })),
+                LatitudEntrega: ubicacion.latitud,
+                LongitudEntrega: ubicacion.longitud
+            };
+
+            try {
+                let response = await fetch("/api/PedidosService/", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(pedido)
+                });
+                const responseBody = await response.text();
+                if (!response.ok) {
+                    throw new Error(`Error al realizar el pedido. Respuesta del servidor: ${responseBody}`);
+                }
+                return true;
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Hubo un problema al realizar el pedido: " + error.message);
+                return false;
+            }
+        }
+
+
+        async function pagarConEfectivo() {
+            const exito = await procesarPago("Efectivo");
+            if (exito) {
+                alert("Pedido realizado con éxito. Puedes pagar en efectivo.");
+                localStorage.removeItem("carrito");
+                mostrarCarrito();
+                cerrarCheckout();
+            }
+        }
+        async function pagarConTarjeta() {
+            const datosTarjeta = prompt("Introduce los datos de tu tarjeta (número, fecha exp., CVV):");
+            if (!datosTarjeta || datosTarjeta.trim() === "") {
+                alert("Debes introducir los datos de la tarjeta para continuar.");
+                return;
+            }
+            const exito = await procesarPago("Tarjeta de Crédito");
+            if (exito) {
+                alert("Pago con tarjeta procesado con éxito.");
+                localStorage.removeItem("carrito");
+                mostrarCarrito();
+                cerrarCheckout();
+            }
+        }
+        // 1) Cuando el usuario clickea "Pagar con PayPal"
+        function pagarConPaypal() {
+            document.getElementById('paypal-button-container').style.display = 'block';
+            renderizarBotonPayPal();
+        }
+
+        function renderizarBotonPayPal() {
+            // limpia instancias previas por si pinchan varias veces
+            const container = document.getElementById('paypal-button-container');
+            container.innerHTML = '';
+
+            paypal.Buttons({
+                style: {
+                    layout: 'vertical',
+                    color: 'gold',
+                    shape: 'rect',
+                    label: 'paypal'
+                },
+
+                // a) createOrder: recalcula total **dentro** del callback
+                createOrder: function (data, actions) {
+                    const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+                    const subtotal = carrito.reduce((s, p) => s + p.cantidad * p.precio, 0);
+                    const descuento = cuponAplicado ? subtotal * (cuponAplicado.descuento / 100) : 0;
+                    const total = subtotal - descuento + shippingFee;
+
+                    // opcional: para debug
+                    console.log('🧮 PayPal createOrder total:', total);
+
+                    return fetch('/api/PayPal/CreateOrder', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ value: total })
+                    })
+                        .then(res => {
+                            if (!res.ok) {
+                                return res.json().then(err => {
+                                    throw new Error(err.error || 'Error al crear orden');
+                                });
+                            }
+                            return res.json();
+                        })
+                        .then(json => {
+                            // tu controller debe devolver { "id": "..."}
+                            console.log('📦 CreateOrder response:', json);
+                            return json.id;
+                        });
+                },
+
+
+                onApprove: function (data, actions) {
+
+                    return fetch(`/api/PayPal/CaptureOrder/${data.orderID}`, {
+                        method: 'POST'
+                    })
+                        .then(res => res.json())
+                        .then(captureResult => {
+                            console.log('✅ PayPal captura:', captureResult);
+                            alert('¡Pago completado y pedido registrado!');
+                            container.style.display = 'none';
+                            localStorage.removeItem('carrito');
+                            mostrarCarrito();
+                            cerrarCheckout();
+                        });
+                },
+
+                onError: function (err) {
+                    console.error('PayPal Error:', err);
+                    alert('❌ Error en PayPal: ' + err.message);
+                }
+
+            }).render('#paypal-button-container');
+        }
+
+        // Función para iniciar el flujo: cierra el Drawer y abre el modal de mapa
+        function seleccionarUbicacionYpagar() {
+            toggleCart();
+            mostrarMapa();
+        }
+    </script>
+
+    <!-- Script de Voiceflow u otros scripts (si es necesario) -->
     <script type="text/javascript">
         (function (d, t) {
             var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
@@ -227,22 +942,14 @@
                     verify: { projectID: '67f5a28dfbee7bfc90657b03' },
                     url: 'https://general-runtime.voiceflow.com',
                     versionID: 'production',
-                    voice: {
-                        url: "https://runtime-api.voiceflow.com"
-                    }
+                    voice: { url: "https://runtime-api.voiceflow.com" }
                 });
             }
-            v.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
+            v.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs";
+            v.type = "text/javascript";
+            s.parentNode.insertBefore(v, s);
         })(document, 'script');
     </script>
-    </footer>
-
-
-    <!-- Bootstrap JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="/_framework/aspnetcore-browser-refresh.js"></script>
     @RenderSection("scripts", required: false)
-
 </body>
 </html>

@@ -3,210 +3,136 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Mis Pedidos";
+    // Filtrar pedidos para mostrar únicamente los que no están entregados.
+    var pedidosFiltrados = Model?.Where(p => p.EstadoPedido.ToLower() != "entregado");
+    // Obtener lista de repartidores desde el ViewBag (cargado en el controlador).
+    var repartidores = (IEnumerable<JarredsOrderHub.Models.Empleado>)ViewBag.Repartidores;
 }
 <link rel="stylesheet" href="~/css/Calificar.css" />
+<link rel="stylesheet" href="~/css/Estilos.css" />
 <!-- Incluye Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
 
-<style>
-    /* Estilos para la tarjeta de pedido */
-    .pedido-card {
-        display: flex;
-        gap: 20px;
-        margin-bottom: 30px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-        background-color: #fff;
-    }
-
-    /* Columna del mapa */
-    .pedido-map {
-        width: 50%; /* La mitad de la tarjeta */
-    }
-
-    /* Columna de información */
-    .pedido-info {
-        width: 50%;
-        padding: 20px;
-    }
-
-    /* Asegúrate de que el iframe se adapte al contenedor */
-    .pedido-map iframe {
-        width: 100%;
-        height: 100%;
-    }
-
-    /* Puedes ajustar los márgenes y fuentes según sea necesario */
-    .header-detalle-pedido h1 {
-        font-size: 1.8rem;
-        margin-bottom: 10px;
-    }
-
-    .order-info-detalle-pedido p {
-        margin: 5px 0;
-    }
-
-</style>
-
-<div class="container-detalle-pedido">
-    @if (Model == null || !Model.Any())
+<div class="order-history-container">
+    <h1 class="order-history-title">Estado de mis Pedidos</h1>
+    <p class="order-history-description">Aquí encontrarás tus pedidos que aún no han sido entregados.</p>
+    @if (pedidosFiltrados == null || !pedidosFiltrados.Any())
     {
-        <p>No se encontró información para tus pedidos.</p>
+        <div class="order-no-records">
+            <p>Aún no existen pagos registrados</p>
+        </div>
     }
     else
     {
-        @foreach (var pedido in Model)
-        {
-            var estado = pedido.EstadoPedido.ToLower();
-            <div class="pedido-card">
-                <!-- Columna Izquierda: Mapa (usando Leaflet) -->
-                @if (estado != "en_camino")
+        <div class="order-slider">
+            <div class="order-slider-track">
+                @foreach (var pedido in pedidosFiltrados)
                 {
-                    <div class="pedido-map">
-                        <!-- Un contenedor para el mapa, usando data attributes para coordenadas -->
-                        <div class="leaflet-map" data-lat="@pedido.LatitudEntrega" data-lng="@pedido.LongitudEntrega" style="width:100%; height:400px;"></div>
-                    </div>
-                }
-                else
-                {
-                    <div class="pedido-map">
-                        <p>No se puede mostrar una ubicacion del pedido.</p>
-                    </div>
-                }
-
-                <!-- Columna Derecha: Información -->
-                <div class="pedido-info">
-                    <header class="header-detalle-pedido">
-                        <h1>Pedido #@pedido.Id</h1>
-                        <p><strong>Fecha:</strong> @pedido.FechaPedido.ToString("yyyy-MM-dd HH:mm")</p>
-                        <p><strong>Estado:</strong> @pedido.EstadoPedido</p>
-                    </header>
-                    <div class="order-info-detalle-pedido">
-                        <p><strong>Método de Pago:</strong> @pedido.MetodoPago</p>
-                        <p><strong>Total:</strong> @pedido.Total.ToString("C", new System.Globalization.CultureInfo("es-CR"))</p>
-                        <h3>Detalles del Pedido</h3>
-                        <ul class="detalle-pedido-lista">
-                            @if (pedido.Detalles != null && pedido.Detalles.Any())
+                    var repartidor = pedido.IdRepartidor.HasValue 
+                        ? repartidores.FirstOrDefault(r => r.IdEmpleado == pedido.IdRepartidor.Value)
+                        : null;
+                    <div class="order-card">
+                        <!-- Columna del Mapa -->
+                        <div class="order-card-map">
+                            @if (pedido.EstadoPedido.ToLower() != "entregado")
                             {
-                                foreach (var detalle in pedido.Detalles)
-                                {
-                                    <li>
-                                        <span class="detalle-nombre">Plato: @(detalle.Platillo?.Nombre ?? "Sin nombre")</span>
-                                        <span class="detalle-cantidad">Cantidad: @detalle.Cantidad</span>
-                                        <span class="detalle-precio">Precio: @detalle.Total.ToString("C", new System.Globalization.CultureInfo("es-CR"))</span>
-                                    </li>
-                                }
+                                <div class="leaflet-map" data-lat="@pedido.LatitudEntrega" data-lng="@pedido.LongitudEntrega"></div>
                             }
                             else
                             {
-                                <li>No hay detalles disponibles.</li>
+                                <div style="display: flex; align-items: center; justify-content: center; height: 100%; font-size: 1rem; color: #999;">
+                                    <p>No se puede mostrar la ubicación</p>
+                                </div>
                             }
-                        </ul>
+                        </div>
+                        <!-- Columna de Información del Pedido -->
+                        <div class="order-card-info">
+                            <header>
+                                <h1 style="font-family: 'Lobster', cursive;">Pedido #@pedido.Id</h1>
+                                <p><strong>Fecha:</strong> @pedido.FechaPedido.ToString("yyyy-MM-dd HH:mm")</p>
+                                <p><strong>Estado:</strong> @pedido.EstadoPedido</p>
+                                <p>
+                                    <strong>Repartidor:</strong>
+                                    @(repartidor == null ? "Sin repartidor asignado" : repartidor.Nombre + " " + repartidor.Apellido)
+                                </p>
+                            </header>
+                            <div class="order-card-info-body">
+                                <p><strong>Método de Pago:</strong> @pedido.MetodoPago</p>
+                                <p><strong>Total:</strong> @pedido.Total.ToString("C", new System.Globalization.CultureInfo("es-CR"))</p>
+                                <h3>Detalles del Pedido</h3>
+                                <ul class="order-details-list">
+                                    @if (pedido.Detalles != null && pedido.Detalles.Any())
+                                    {
+                                        foreach (var detalle in pedido.Detalles)
+                                        {
+                                            <li>
+                                                <span><strong>Plato:</strong> @(detalle.Platillo?.Nombre ?? "Sin nombre")</span> |
+                                                <span><strong>Cantidad:</strong> @detalle.Cantidad</span> |
+                                                <span><strong>Precio:</strong> @detalle.Total.ToString("C", new System.Globalization.CultureInfo("es-CR"))</span>
+                                            </li>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <li>No hay detalles disponibles.</li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                }
             </div>
-            <hr />
+        </div>
+        @if (pedidosFiltrados.Count() > 1)
+        {
+            <div class="order-navigation">
+                <button class="order-btn-nav" id="orderPrevBtn">&laquo; Anterior</button>
+                <button class="order-btn-nav" id="orderNextBtn">Siguiente &raquo;</button>
+            </div>
         }
     }
 </div>
 
-<!-- Modal para Calificación (Opcional) -->
-<div id="ratingModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2 class="secondary-title">Califica tu Pedido</h2>
-            <span class="close" id="closeRatingModal">&times;</span>
-        </div>
-        <p>Por favor, califica tu experiencia con el pedido entregado.</p>
-        <div class="stars" id="ratingStars">
-            <i class="fa-regular fa-star" data-star="1"></i>
-            <i class="fa-regular fa-star" data-star="2"></i>
-            <i class="fa-regular fa-star" data-star="3"></i>
-            <i class="fa-regular fa-star" data-star="4"></i>
-            <i class="fa-regular fa-star" data-star="5"></i>
-        </div>
-        <textarea id="ratingComment" rows="4" placeholder="Deja un comentario sobre tu pedido..." required></textarea>
-        <button id="submitRating" class="btn-submit">Enviar Calificación</button>
-    </div>
-</div>
-
+<!-- Incluir Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Selecciona todos los contenedores que tienen la clase "leaflet-map"
-        const maps = document.querySelectorAll('.leaflet-map');
-
-        maps.forEach(mapDiv => {
-            // Obtén las coordenadas de los atributos data-lat y data-lng
+    document.addEventListener("DOMContentLoaded", function () {
+        // Inicialización de los mapas en cada tarjeta
+        const mapDivs = document.querySelectorAll('.leaflet-map');
+        mapDivs.forEach(function (mapDiv) {
             const lat = parseFloat(mapDiv.getAttribute('data-lat'));
             const lng = parseFloat(mapDiv.getAttribute('data-lng'));
-
-            // Verifica si las coordenadas son válidas, de lo contrario, usa coordenadas por defecto (opcional)
             if (isNaN(lat) || isNaN(lng)) return;
-
-            // Inicializa el mapa
-            var map = L.map(mapDiv).setView([lat, lng], 15);
-
-            // Carga la capa de OpenStreetMap
+            let map = L.map(mapDiv).setView([lat, lng], 15);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '© OpenStreetMap contributors'
             }).addTo(map);
-
-            // Agrega un marcador en la ubicación
             L.marker([lat, lng]).addTo(map)
                 .bindPopup("Ubicación de entrega")
                 .openPopup();
         });
-    });
-</script>
 
-<script>
-    // Script para modal de calificación (opcional)
-    const ratingModal = document.getElementById("ratingModal");
-    const closeRatingModal = document.getElementById("closeRatingModal");
-    const stars = document.querySelectorAll("#ratingStars i");
-    const commentBox = document.getElementById("ratingComment");
-    const submitButton = document.getElementById("submitRating");
-
-    let currentRating = 0;
-
-    stars.forEach(star => {
-        star.addEventListener("mouseover", function () {
-            const starValue = this.getAttribute("data-star");
-            highlightStars(starValue);
-        });
-        star.addEventListener("click", function () {
-            currentRating = this.getAttribute("data-star");
-            console.log("Calificación seleccionada:", currentRating);
-        });
-    });
-
-    function highlightStars(count) {
-        stars.forEach((star, index) => {
-            star.classList.toggle("fa-solid", index < count);
-            star.classList.toggle("fa-regular", index >= count);
-        });
-    }
-
-    closeRatingModal.onclick = () => {
-        ratingModal.style.display = "none";
-    };
-
-    submitButton.onclick = () => {
-        const comment = commentBox.value;
-        if (currentRating > 0 && comment.trim() !== "") {
-            alert(`Gracias por tu calificación de ${currentRating} estrellas.\nComentario: ${comment}`);
-            ratingModal.style.display = "none";
-        } else {
-            alert("Por favor selecciona una calificación y escribe un comentario.");
+        // Slider de pedidos
+        const sliderTrack = document.querySelector('.order-slider-track');
+        const orders = document.querySelectorAll('.order-card');
+        let currentIndex = 0;
+        function updateSlider() {
+            const offset = -currentIndex * (orders[0].clientWidth + 20);
+            sliderTrack.style.transform = `translateX(${offset}px)`;
         }
-    };
-
-    window.onclick = function (event) {
-        if (event.target == ratingModal) {
-            ratingModal.style.display = "none";
-        }
-    };
+        document.getElementById('orderPrevBtn')?.addEventListener('click', function () {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateSlider();
+            }
+        });
+        document.getElementById('orderNextBtn')?.addEventListener('click', function () {
+            if (currentIndex < orders.length - 1) {
+                currentIndex++;
+                updateSlider();
+            }
+        });
+        window.addEventListener('resize', updateSlider);
+        updateSlider();
+    });
 </script>

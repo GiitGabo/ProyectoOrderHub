@@ -1,101 +1,276 @@
 ﻿@model List<Pago>
 
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Historial de Pagos";
+}
+<!-- Fuentes y CSS base -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="~/css/HistorialPagos.css" />
+
+<!-- Iconos de Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-papKepjyXD1B5GFL3EkI1w0+y/5GeOk+f/Plb9iv4/8n0qk/pYF9Mj5yuJxjOLYlKwc7/ILHwBk9OL8B+LNoQg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<!-- Incluye Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+
+<style>
+    :root {
+        --primary-color: #2EA629;
+        --secondary-color: #F2A413;
+        --dark-color: #262626;
+        --light-gray: #e0e0e0;
+        --bg-light: #f8f8f8;
+        --font-primary: 'Roboto', sans-serif;
+        --border-radius: 8px;
+        --transition-speed: 0.3s;
+    }
+
+    body {
+        font-family: var(--font-primary);
+        background-color: #fafafa;
+    }
+
+    .container-pagos-historial {
+        max-width: 1400px;
+        margin: 20px auto;
+        padding: 40px 20px;
+        box-sizing: border-box;
+    }
+
+        .container-pagos-historial header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+            .container-pagos-historial header h1 {
+                font-size: 3rem;
+                color: var(--dark-color);
+                margin-bottom: 10px;
+            }
+
+            .container-pagos-historial header p {
+                font-size: 1.2rem;
+                color: var(--dark-color);
+            }
+    /* Filtros */
+    .filtros {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 1rem;
+        background-color: var(--bg-light);
+        padding: 15px;
+        border-radius: var(--border-radius);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+        justify-content: center;
+    }
+
+        .filtros label {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-right: 5px;
+        }
+
+        .filtros input[type="date"],
+        .filtros select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color var(--transition-speed);
+        }
+
+            .filtros input[type="date"]:focus,
+            .filtros select:focus {
+                border-color: var(--secondary-color);
+            }
+    /* Tarjetas de Pago */
+    .pagos-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .pago-card {
+        background-color: var(--dark-color);
+        color: #fff;
+        border-radius: var(--border-radius);
+        padding: 20px;
+        box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        transition: transform var(--transition-speed);
+    }
+
+        .pago-card:hover {
+            transform: translateY(-3px);
+        }
+
+    .pago-info h2 {
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+        font-family: 'Lobster', cursive;
+    }
+
+    .pago-info p {
+        font-size: 1rem;
+        margin: 6px 0;
+    }
+
+    .order-details-list {
+        list-style: none;
+        padding: 0;
+        margin: 10px 0 0;
+    }
+
+        .order-details-list li {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            margin-bottom: 5px;
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 4px;
+        }
+
+            .order-details-list li i {
+                margin-right: 8px;
+                color: var(--secondary-color);
+            }
+    /* Botones de Acciones */
+    .pago-actions {
+        margin-top: 15px;
+        display: flex;
+        justify-content: flex-start;
+    }
+
+        .pago-actions button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            background-color: var(--secondary-color);
+            color: var(--dark-color);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color var(--transition-speed);
+        }
+
+            .pago-actions button:hover {
+                background-color: #e0a713;
+            }
+
+    .btn-reenviar {
+        display: none;
+    }
+    /* Modal Estilos Mejorados */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1100;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background: rgba(0,0,0,0.6);
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn var(--transition-speed);
+    }
+
+    .modal-content {
+        background: #fff;
+        padding: 20px 30px;
+        border-radius: var(--border-radius);
+        width: 90%;
+        max-width: 600px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        position: relative;
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #ececec;
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+    }
+
+        .modal-header h2 {
+            font-size: 1.8rem;
+            margin: 0;
+            color: var(--dark-color);
+        }
+
+        .modal-header .close {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark-color);
+            background: transparent;
+            border: none;
+        }
+
+    .modal-body {
+        font-size: 1rem;
+        color: #333;
+        white-space: pre-line;
+    }
+    /* Estilo para secciones de detalles (cabeceras) */
+    .detalle-seccion {
+        margin: 15px 0 8px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid #ececec;
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: var(--primary-color);
+    }
+</style>
 
 <div class="container-pagos-historial">
     <header>
         <h1>Historial de Pagos</h1>
         <p>Consulta tus pagos realizados y accede a los detalles de tus pedidos.</p>
     </header>
-    <style>
-        .filtros {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 1rem;
-            background-color: #f8f8f8;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
 
-            .filtros label {
-                font-weight: 600;
-                color: #262626;
-                margin-right: 5px;
-            }
-
-            .filtros input[type="date"],
-            .filtros select {
-                padding: 8px 12px;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                font-size: 0.9rem;
-                outline: none;
-                transition: border-color 0.3s;
-            }
-
-                .filtros input[type="date"]:focus,
-                .filtros select:focus {
-                    border-color: #f2a413;
-                }
-
-        /* Opcional: estilos para que los filtros se centren en la página */
-        .filtros-container {
-            display: flex;
-            justify-content: center;
-            width: 100%;
-            padding: 10px;
-        }
-    </style>
     <!-- Filtros -->
-    <div class="filtros-container">
-        <div class="filtros">
-            <label for="fechaInicio">Fecha de Inicio:</label>
-            <input type="date" id="fechaInicio" onchange="aplicarFiltros()">
-
-            <label for="fechaFin">Fecha de Fin:</label>
-            <input type="date" id="fechaFin" onchange="aplicarFiltros()">
-
-            <label for="metodoPago">Método de Pago:</label>
-            <select id="metodoPago" onchange="aplicarFiltros()">
-                <option value="">Todos</option>
-                <option value="Efectivo">Efectivo</option>
-                <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
-                <option value="PayPal">PayPal</option>
-            </select>
-        </div>
+    <div class="filtros">
+        <label for="fechaInicio">Fecha de Inicio:</label>
+        <input type="date" id="fechaInicio" onchange="aplicarFiltros()">
+        <label for="fechaFin">Fecha de Fin:</label>
+        <input type="date" id="fechaFin" onchange="aplicarFiltros()">
+        <label for="metodoPago">Método de Pago:</label>
+        <select id="metodoPago" onchange="aplicarFiltros()">
+            <option value="">Todos</option>
+            <option value="Efectivo">Efectivo</option>
+            <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
+            <option value="PayPal">PayPal</option>
+        </select>
     </div>
 
-    <!-- Sección de pagos -->
     @if (Model.Count == 0)
     {
-        <div class="no-pagos text-center" style="margin:30px 0px;">
+        <div class="no-pagos text-center" style="margin:30px 0;">
             <p>Aún no existen pagos registrados.</p>
         </div>
     }
     else
     {
-        <!-- Sección de pagos -->
         <div class="pagos-container">
             @foreach (var pago in Model)
-
             {
                 <div class="pago-card" data-fecha="@pago.Pedido.FechaPedido.ToString("yyyy-MM-dd")"
                      data-metodopago="@pago.Pedido.MetodoPago">
                     <div class="pago-info">
                         <h2>Pedido #@pago.PedidoId</h2>
-                        <p><strong>Fecha de Pedido:</strong> @pago.Pedido.FechaPedido.ToString("yyyy-MM-dd")</p>
-                        <p><strong>Total:</strong> $@pago.Pedido.Total</p>
-                        <p><strong>Pago:</strong> $@pago.Monto</p>
-                        <p><strong>Método de Pago:</strong> @pago.Pedido.MetodoPago</p>
-                        <p><strong>Estado:</strong> @pago.Estado</p>
+                        <p><i class="fas fa-calendar-alt"></i> <strong>Fecha:</strong> @pago.Pedido.FechaPedido.ToString("yyyy-MM-dd")</p>
+                        <p><i class="fas fa-receipt"></i> <strong>Total:</strong> ₡@pago.Pedido.Total</p>
+                        <p><i class="fas fa-money-check-alt"></i> <strong>Pago:</strong> ₡@pago.Monto</p>
+                        <p><i class="fas fa-credit-card"></i> <strong>Método:</strong> @pago.Pedido.MetodoPago</p>
+                        <p><i class="fas fa-info-circle"></i> <strong>Estado:</strong> @pago.Estado</p>
                     </div>
                     <div class="pago-actions">
                         <button onclick="verDetalles(@pago.PedidoId)"><i class="fas fa-eye"></i> Ver Detalles</button>
-                        <button onclick="reenviarFactura(@pago.PedidoId)"><i class="fas fa-envelope"></i> Reenviar Factura</button>
                     </div>
                 </div>
             }
@@ -103,22 +278,24 @@
     }
 </div>
 
-<!-- Modal de Detalles del Pedido -->
+<!-- Modal de Detalles del Pedido Mejorado -->
 <div id="modalDetalles" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h2 id="modalTitle">Detalles del Pedido</h2>
-            <span class="close" onclick="cerrarModal()">&times;</span>
+            <h2 id="modalTitle"><i class="fas fa-info"></i> Detalles del Pedido</h2>
+            <button class="close" onclick="cerrarModal()"><i class="fas fa-times"></i></button>
         </div>
-        <p id="detallesPedido"></p>
+        <div id="detallesContenido" class="modal-body">
+            <!-- Aquí se inyectarán los detalles del pedido -->
+        </div>
     </div>
 </div>
 
-<!-- Modal para reenviar factura -->
+<!-- Modal para Reenviar Factura (oculto por ahora) -->
 <div id="modalReenviarFactura" class="modal">
     <div class="modal-content">
-        <span class="close" onclick="cerrarModal()">&times;</span>
-        <h2>Reenviar Factura</h2>
+        <button class="close" onclick="cerrarModal()"><i class="fas fa-times"></i></button>
+        <h2><i class="fas fa-paper-plane"></i> Reenviar Factura</h2>
         <p id="reenviarMensaje"></p>
         <button onclick="reenviarFacturaConfirmado()">Enviar Factura</button>
     </div>
@@ -129,47 +306,29 @@
         const fechaInicio = document.getElementById("fechaInicio").value;
         const fechaFin = document.getElementById("fechaFin").value;
         const metodoPago = document.getElementById("metodoPago").value;
-
         const pagos = document.querySelectorAll(".pago-card");
 
         pagos.forEach(pago => {
             const fechaPedido = pago.getAttribute("data-fecha");
             const metodo = pago.getAttribute("data-metodopago");
-
-            console.log("fecha: ", fechaPedido);
-
             let mostrar = true;
-
-            // Convertir la fecha de inicio y fin a formato Date (año-mes-día)
             const fechaInicioObj = fechaInicio ? new Date(fechaInicio) : null;
             const fechaFinObj = fechaFin ? new Date(fechaFin) : null;
-
-            // Convertir la fecha del pedido a formato Date (año-mes-día)
             const fechaPedidoObj = new Date(fechaPedido);
 
-            // Filtrar por fecha
             if (fechaInicioObj && fechaPedidoObj < fechaInicioObj) {
                 mostrar = false;
             }
             if (fechaFinObj && fechaPedidoObj > fechaFinObj) {
                 mostrar = false;
             }
-
-            // Filtrar por método de pago
             if (metodoPago && metodo !== metodoPago) {
                 mostrar = false;
             }
-
-            // Mostrar u ocultar el pago según los filtros
-            if (mostrar) {
-                pago.style.display = "flex";
-            } else {
-                pago.style.display = "none";
-            }
+            pago.style.display = mostrar ? "block" : "none";
         });
     }
 
-    // Función para ver detalles del pedido
     function verDetalles(pedidoId) {
         fetch(`/api/PedidosService/Detalles/${pedidoId}`)
             .then(response => {
@@ -178,48 +337,55 @@
                 }
                 return response.json();
             })
-            .then(detalles => {
-                let contenido = `Detalles del pedido #${pedidoId}:\n`;
-
-                if (detalles.length > 0) {
+            .then(data => {
+                // Aquí 'data' es un array de DetallePedido
+                let detalles = data;
+                let contenido = `<div class="detalle-seccion">Pedido #${pedidoId}</div>`;
+                if (detalles && detalles.length > 0) {
+                    contenido += `<ul class="order-details-list">`;
                     detalles.forEach(d => {
-                        contenido += `- ${d.platillo.nombre} x ${d.cantidad} ($${d.precioUnitario.toFixed(2)})\n`;
+                        contenido += `<li>
+                                        <i class="fas fa-utensils"></i>
+                                        ${d.platillo.nombre} &times; ${d.cantidad}
+                                        <span style="margin-left:auto;">₡${parseFloat(d.precioUnitario).toFixed(2)}</span>
+                                      </li>`;
                     });
-
-                    const total = detalles.reduce((sum, d) => sum + d.total, 0);
-                    contenido += `Total: $${total.toFixed(2)}`;
+                    contenido += `</ul>`;
+                    const subtotal = detalles.reduce((sum, d) => sum + d.total, 0);
+                    const shipping = 2000; // Cuota de envío express
+                    let total = subtotal + shipping;
+                    // Si en el futuro deseas agregar cupón, debes actualizar el endpoint para incluirlo.
+                    contenido += `<p style="font-weight:600; margin-top:10px;"><i class="fas fa-calculator"></i> Subtotal: ₡${subtotal.toFixed(2)}</p>`;
+                    contenido += `<p style="font-weight:600; margin-top:10px;"><i class="fas fa-shipping-fast"></i> Envío Express: ₡${shipping.toFixed(2)}</p>`;
+                    contenido += `<p style="font-weight:700; margin-top:15px; font-size:1.1rem;"><i class="fas fa-check-circle"></i> Total Final: ₡${total.toFixed(2)}</p>`;
                 } else {
-                    contenido += "No hay detalles disponibles.";
+                    contenido += `<p><i class="fas fa-exclamation-circle"></i> No hay detalles disponibles.</p>`;
                 }
-
-                document.getElementById("detallesPedido").innerText = contenido;
-                document.getElementById("modalDetalles").style.display = "block";
+                document.getElementById("detallesContenido").innerHTML = contenido;
+                document.getElementById("modalDetalles").style.display = "flex";
             })
             .catch(error => {
-                document.getElementById("detallesPedido").innerText = error.message;
-                document.getElementById("modalDetalles").style.display = "block";
+                document.getElementById("detallesContenido").innerHTML = `<p><i class="fas fa-exclamation-triangle"></i> ${error.message}</p>`;
+                document.getElementById("modalDetalles").style.display = "flex";
             });
     }
 
 
-
-    // Función para reenviar la factura
-    function reenviarFactura(pedidoId) {
-        let mensaje = `¿Deseas reenviar la factura del pedido #${pedidoId}?`;
-        document.getElementById("reenviarMensaje").innerText = mensaje;
-        document.getElementById("modalReenviarFactura").style.display = "block";
-    }
-
-    // Función para cerrar el modal
     function cerrarModal() {
         document.getElementById("modalDetalles").style.display = "none";
         document.getElementById("modalReenviarFactura").style.display = "none";
     }
 
-    // Cerrar el modal si se hace clic fuera de él
     window.onclick = function (event) {
-        if (event.target == document.getElementById("modalDetalles") || event.target == document.getElementById("modalReenviarFactura")) {
+        const modalDetalles = document.getElementById("modalDetalles");
+        const modalReenviar = document.getElementById("modalReenviarFactura");
+        if (event.target === modalDetalles || event.target === modalReenviar) {
             cerrarModal();
         }
+    };
+
+    function reenviarFacturaConfirmado() {
+        alert("Factura reenviada correctamente.");
+        cerrarModal();
     }
 </script>

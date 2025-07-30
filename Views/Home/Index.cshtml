@@ -2,12 +2,27 @@
 @model JarredsOrderHub.ViewModels.MenuViewModel
 <style>
     /* Animaciones y efectos hover */
-    .hero-section:hover .btn-hero i {
-        transform: translateX(5px);
+
+    .btn-hero {
+        display: inline-flex;
+        align-items: center;
+        background-color: #262626;
+        color: #fff;
+        padding: 1.2rem 3rem;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 20px rgba(207,167,107,0.3);
+        border: 2px solid #f2a413;
     }
 
-    body {
-        font-family: 'Roboto', sans-serif;
+        .btn-hero:hover {
+            background-color: #f2a413;
+        }
+
+    .hero-section:hover .btn-hero i {
+        transform: translateX(5px);
     }
 
     h1, h2, h3 {

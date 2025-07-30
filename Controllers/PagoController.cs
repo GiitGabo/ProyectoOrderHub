@@ -17,15 +17,17 @@ namespace JarredsOrderHub.Controllers
 
         public async Task<IActionResult> HistorialPagosPedidos()
         {
-            var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (usuarioId == null)
+            // Se obtiene el ID del empleado desde la sesión
+            var userId = User.FindFirst("UserId")?.Value;
+            if (string.IsNullOrEmpty(userId))
             {
-                return RedirectToAction("Login", "Account");
+                // Redirige al login u otra vista de acciones de usuario si no hay empleado autenticado
+                return RedirectToAction("AccionesUsuario", "Usuario");
             }
 
             var pagos = await _context.Pagos
                 .Include(p => p.Pedido)
-                .Where(p => p.Pedido.UsuarioId == int.Parse(usuarioId) &&
+                .Where(p => p.Pedido.UsuarioId == int.Parse(userId) &&
                             p.Estado.ToLower() == "pagado")
                 .ToListAsync();
 

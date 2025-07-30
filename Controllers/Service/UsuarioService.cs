@@ -264,5 +264,142 @@ namespace JarredsOrderHub.Controllers.Service
                 .Replace("+", "-")
                 .Replace("=", "");
         }
+
+        public async Task<bool> ActualizarUbicacionAsync(int IdEmpleado, double? latitud, double? longitud)
+        {
+            if (!latitud.HasValue || !longitud.HasValue)
+            {
+                _logger.LogWarning("No se proporcionaron coordenadas válidas para el empleado {IdEmpleado}", IdEmpleado);
+                return false;
+            }
+
+            var empleado = await _context.Empleados.FindAsync(IdEmpleado);
+            if (empleado == null)
+            {
+                _logger.LogWarning("Empleado no encontrado: {IdEmpleado}", IdEmpleado);
+                return false;
+            }
+
+            // Usa latitud.Value y longitud.Value para obtener el double
+            empleado.LatitudActual = latitud.Value;
+            empleado.LongitudActual = longitud.Value;
+
+            _context.Empleados.Update(empleado);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        // Add these methods to your UsuarioService class
+
+        // Obtener datos del perfil de cliente
+        public async Task<Cliente> ObtenerPerfilCliente(int idCliente)
+        {
+            return await _context.Clientes
+                .FirstOrDefaultAsync(c => c.IdCliente == idCliente);
+        }
+
+
+        // Obtener datos del perfil de empleado
+        public async Task<Empleado> ObtenerPerfilEmpleado(int idEmpleado)
+        {
+            return await _context.Empleados
+                .Include(e => e.Rol)
+                .Include(e => e.Horario)
+                .FirstOrDefaultAsync(e => e.IdEmpleado == idEmpleado);
+        }
+
+        // Actualizar perfil de cliente
+        public async Task<(bool success, string message)> ActualizarPerfilCliente(Cliente cliente)
+        {
+            try
+            {
+                var existente = await _context.Clientes
+                    .FirstOrDefaultAsync(c => c.IdCliente == cliente.IdCliente);
+
+                if (existente == null)
+                    return (false, "Cliente no encontrado");
+
+                // Validar email único
+                if (existente.Email != cliente.Email)
+                {
+                    var emailExiste = await _context.Clientes
+                        .AnyAsync(c => c.Email == cliente.Email);
+                    if (emailExiste)
+                        return (false, "El correo electrónico ya está registrado");
+                }
+
+                // Actualizar solo los campos permitidos
+                existente.Nombre = cliente.Nombre;
+                existente.Apellido = cliente.Apellido;
+                existente.Email = cliente.Email;
+                existente.NumeroContacto = cliente.NumeroContacto;
+
+
+                await _context.SaveChangesAsync();
+                return (true, "Perfil de cliente actualizado exitosamente");
+            }
+            catch (DbUpdateException dbEx)
+            {
+                _logger.LogError(dbEx, "Error de base de datos al actualizar cliente");
+                return (false, "Error al guardar en la base de datos");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error inesperado actualizando cliente");
+                return (false, "Error interno del servidor");
+            }
+        }
+
+        // Actualizar perfil de empleado
+        public async Task<(bool success, string message)> ActualizarPerfilEmpleado(Empleado empleado)
+        {
+            try
+            {
+                var empleadoExistente = await _context.Empleados
+                    .FirstOrDefaultAsync(e => e.IdEmpleado == empleado.IdEmpleado);
+
+                if (empleadoExistente == null)
+                {
+                    return (false, "Empleado no encontrado");
+                }
+
+                // Validar email único
+                if (empleadoExistente.Email != empleado.Email)
+                {
+                    var emailExiste = await _context.Empleados
+                        .AnyAsync(e => e.Email == empleado.Email);
+
+                    if (emailExiste)
+                    {
+                        return (false, "El correo electrónico ya está registrado");
+                    }
+                }
+
+                // Actualizar campos permitidos
+                empleadoExistente.Nombre = empleado.Nombre;
+                empleadoExistente.Apellido = empleado.Apellido;
+                empleadoExistente.Email = empleado.Email;
+
+                // Actualizar contraseña solo si se proporciona
+                if (!string.IsNullOrWhiteSpace(empleado.Contrasenia))
+                {
+                    empleadoExistente.Contrasenia = HashPassword(empleado.Contrasenia);
+                }
+
+                await _context.SaveChangesAsync();
+                return (true, "Perfil actualizado exitosamente");
+            }
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError(ex, "Error de base de datos al actualizar empleado");
+                return (false, "Error al guardar en la base de datos");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error inesperado actualizando empleado");
+                return (false, "Error interno del servidor");
+            }
+        }
+
     }
 }

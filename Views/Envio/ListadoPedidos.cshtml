@@ -3,13 +3,10 @@
 @{
     ViewBag.Title = "Listado de Pedidos";
 }
-<link rel="stylesheet" href="~/css/ListadoPedidos.css" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
-<h1 class="titulo-primario" style="text-align:center; color:#2EA629; margin:20px 0;">Listado de Pedidos</h1>
-
 <style>
-    /* Contenedor general de pedidos en esta vista */
+    /* Contenedor general de pedidos */
     .container-detalle-pedido {
         display: flex;
         flex-wrap: wrap;
@@ -17,13 +14,22 @@
         gap: 20px;
         padding: 20px;
     }
+
+
+    .order-history-description {
+        text-align: center;
+        color: var(--dark-color);
+        font-size: 1.2rem;
+        margin-bottom: 30px;
+    }
+
     /* Tarjeta resumen de pedido (card) */
     .card-pedido {
         background-color: #ffffff;
         border: 1px solid #ccc;
         border-radius: 10px;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        width: 300px;
+        width: 320px;
         padding: 15px;
         cursor: pointer;
         transition: transform 0.2s;
@@ -33,16 +39,28 @@
     }
     .card-pedido h3 {
         margin: 0;
+        /* Se utiliza amarillo y se agrega '#' al número de pedido */
         color: #F2A413;
+        font-family: 'Lobster', cursive;
     }
     .card-pedido p {
         font-size: 14px;
         margin: 5px 0;
+        color: #333;
     }
-    .card-pedido .bold-text {
+    .bold-text {
         font-weight: bold;
     }
-    /* Modal de detalle del pedido */
+    .card-pedido i {
+        color: #2EA629;
+    }
+    /* Agregamos la línea para Envío Express y Total del Pedido */
+    .info-total {
+        font-size: 14px;
+        margin: 5px 0;
+        color: #333;
+    }
+    /* Modal para detalle del pedido */
     .modal-pedido {
         display: none;
         position: fixed;
@@ -53,36 +71,54 @@
         height: 100%;
         overflow: auto;
         background-color: rgba(0,0,0,0.5);
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.3s;
     }
+
     .modal-pedido-content {
-        background-color: #ffffff;
+        background-color: #262626; /* Fondo oscuro */
         margin: 5% auto;
         padding: 20px;
         border-radius: 10px;
         width: 90%;
         max-width: 800px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        max-height: 90vh; /* Permite scroll si el contenido es alto */
+        overflow-y: auto;
     }
     .modal-pedido-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        border-bottom: 1px solid #F2A413;
+        padding-bottom: 10px;
+        margin-bottom: 15px;
     }
     .modal-pedido-header h2 {
         margin: 0;
+        color: #F2A413;
     }
     .modal-pedido-close {
         font-size: 28px;
         font-weight: bold;
         cursor: pointer;
+        color: #F2A413;
     }
     .detalle-pedido-info p {
         font-size: 14px;
         margin: 8px 0;
+        color: #FFFFFF;
     }
     .detalle-pedido-info span.bold-text {
         font-weight: bold;
+        color: #F2A413;
     }
-    /* Sección de repartidores (tarjetas) */
+    /* Estilo de platos en el detalle */
+    .detalle-pedido-info p span.subtitulo {
+        color: #ff4c4c; /* Se usa rojo para acentos */
+    }
+    /* Sección de repartidores */
     .repartidor-lista {
         display: flex;
         flex-wrap: wrap;
@@ -110,11 +146,12 @@
     /* Sección para cambiar el estado del pedido */
     .container-asignar-estados {
         margin-top: 20px;
-        border-top: 1px solid #ddd;
+        border-top: 1px solid #ccc;
         padding-top: 15px;
     }
     .container-asignar-estados h3 {
         margin-bottom: 10px;
+        color: #F2A413;
     }
     .container-asignar-estados select {
         padding: 8px;
@@ -122,10 +159,11 @@
         border-radius: 5px;
         width: 100%;
         margin-bottom: 10px;
+        font-size: 14px;
     }
     .btn-actualizar-estado {
-        background-color: #2EA629;
-        color: #ffffff;
+        background-color: #F2A413;
+        color: #262626;
         border: none;
         border-radius: 5px;
         padding: 10px 15px;
@@ -133,32 +171,46 @@
         font-size: 14px;
     }
     .btn-actualizar-estado:hover {
-        background-color: #1F7D1C;
+        background-color: #ff4c4c;
+        color: #ffffff;
     }
-    /* Estilo para mostrar el repartidor asignado */
+    /* Estilo para mostrar repartidor asignado */
     .detalle-repartidor {
         margin-top: 15px;
         padding: 8px;
         border: 2px solid #F2A413;
         font-weight: bold;
         text-align: center;
+        color: #F2A413;
     }
 </style>
 
+<h1 class="titulo-primario" style="text-align:center; color:#262626; margin:20px 0;">Listado de Pedidos</h1>
+<p class="order-history-description">Aquí encontrarás tus pedidos que aún no han sido entregados.</p>
+
 <!-- Contenedor de Cards de Pedidos -->
 <div class="container-detalle-pedido">
-    @foreach (var pedido in Model)
+    @foreach (var pedido in Model.Where(p => !p.EstadoPedido.Equals("Entregado", StringComparison.OrdinalIgnoreCase)))
     {
-        <div class="card-pedido" onclick="mostrarDetallesPedido(@pedido.Id)">
-            <h3>Pedido @pedido.Id</h3>
+        <div class="card-pedido" onclick="mostrarDetallesPedido('@pedido.Id')">
+            <h3>Pedido #@pedido.Id</h3>
             @if (pedido.Cliente != null)
             {
                 <p>
-                    <i class="fas fa-user"></i>
+                    <i class="fas fa-user"></i> 
                     <span class="bold-text">Cliente:</span> @pedido.Cliente.Nombre @pedido.Cliente.Apellido
                 </p>
                 <p>
-                    <i class="fas fa-envelope"></i>
+                    <i class="fas fa-phone"></i>
+                    <span class="bold-text">Contacto:</span>
+                    @{
+                        var contacto = pedido.Cliente.NumeroContacto;
+                        string contactoTexto = (contacto != 0 ? contacto.ToString() : "Sin número de contacto");
+                    }
+                    @contactoTexto
+                </p>
+                <p>
+                    <i class="fas fa-envelope"></i> 
                     <span class="bold-text">Correo:</span> @pedido.Cliente.Email
                 </p>
             }
@@ -167,12 +219,21 @@
                 <p><i class="fas fa-user"></i> Sin información de cliente</p>
             }
             <p>
-                <i class="fas fa-comment"></i>
+                <i class="fas fa-comment"></i> 
                 <span class="bold-text">Comentarios:</span> @pedido.Comentarios
             </p>
             <p>
-                <i class="fas fa-hourglass-half"></i>
-                <span class="bold-text">Estado:</span> @pedido.EstadoPedido
+                <i class="fas fa-hourglass-half"></i> 
+                <span class="bold-text">Estado:</span> @( !string.IsNullOrEmpty(pedido.EstadoPedido) ? pedido.EstadoPedido : "Pendiente")
+            </p>
+            <!-- Se agrega información de Envío Express y Total del Pedido -->
+            <p class="info-total">
+                <i class="fas fa-truck"></i> 
+                <span class="bold-text">Envío Express:</span> ₡2000
+            </p>
+            <p class="info-total">
+                <i class="fas fa-money-check-alt"></i> 
+                <span class="bold-text">Total del Pedido:</span> ₡@( (pedido.Total + 2000).ToString("N2") )
             </p>
         </div>
     }
@@ -193,6 +254,8 @@
                 <!-- Listado de platos se renderiza aquí -->
             </div>
             <p><strong>Total:</strong> <span id="detalle-total"></span></p>
+            <p><strong>Envío Express:</strong> ₡2000</p>
+            <p><strong>Total del Pedido:</strong> <span id="detalle-total-final"></span></p>
             <p><strong>Ubicación de entrega:</strong></p>
             <div id="detalle-mapa" style="height:300px; margin-bottom:15px;"></div>
             <p><strong>Comentarios:</strong> <span id="detalle-comentarios"></span></p>
@@ -200,7 +263,7 @@
             <div id="detalle-repartidor" class="detalle-repartidor"></div>
         </div>
         <!-- Sección para asignar repartidor mediante tarjetas -->
-        <div id="asignar-repartidor" class="container-asignar-repartidor">
+        <div id="asignar-repartidor" class="container-asignar-estados">
             <h3>Asignar Repartidor</h3>
             <div class="repartidor-lista">
                 @if (ViewBag.Repartidores != null && ((List<JarredsOrderHub.Models.Empleado>)ViewBag.Repartidores).Any())
@@ -257,18 +320,21 @@
             .then(pedido => {
                 document.getElementById("detalle-id").textContent = pedido.id;
                 document.getElementById("detalle-fecha").textContent = new Date(pedido.fechaPedido).toLocaleString();
-                document.getElementById("detalle-total").textContent = "$" + pedido.total;
-                document.getElementById("detalle-comentarios").textContent = pedido.comentarios;
+                // Mostrar el total y el total final (suma de envío fijo)
+                document.getElementById("detalle-total").textContent = "₡" + pedido.total;
+                const totalFinal = parseFloat(pedido.total) + 2000;
+                document.getElementById("detalle-total-final").textContent = "₡" + totalFinal.toFixed(2);
+                document.getElementById("detalle-comentarios").textContent = pedido.comentarios || "Sin comentarios";
 
-                // Listar los platos
+                // Listar los platos en el formato solicitado
                 let platosHtml = "";
                 if (pedido.detalles && pedido.detalles.length > 0) {
                     pedido.detalles.forEach(detalle => {
                         platosHtml += `<p>
-                            <i class="fas fa-utensils"></i> 
-                            <span class="bold-text">Plato:</span> ${detalle.platillo.nombre} — 
-                            <span class="bold-text">Cantidad:</span> ${detalle.cantidad} — 
-                            <span class="bold-text">Subtotal:</span> $${detalle.total}
+                            <i class="fas fa-utensils"></i>
+                            <span class="bold-text">Plato:</span> ${detalle.platillo.nombre} I
+                            <span class="bold-text">Cantidad:</span> ${detalle.cantidad} I
+                            <span class="bold-text">Subtotal:</span> ₡${detalle.total}
                         </p>`;
                     });
                 } else {
@@ -276,48 +342,51 @@
                 }
                 document.getElementById("detalle-platos").innerHTML = platosHtml;
 
-                // Inicializar el mapa si hay coordenadas
+                // Inicializar, centrar y asegurar el tamaño correcto del mapa (si hay coordenadas)
                 if (pedido.latitudEntrega && pedido.longitudEntrega) {
-                    if (mapaDetalle) {
-                        mapaDetalle.remove();
+                    if (mapaDetalle) { 
+                        mapaDetalle.remove(); 
                     }
-                    mapaDetalle = L.map('detalle-mapa').setView([pedido.latitudEntrega, pedido.longitudEntrega], 15);
+                    mapaDetalle = L.map('detalle-mapa', { zoomControl: true }).setView([pedido.latitudEntrega, pedido.longitudEntrega], 16);
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                         attribution: '&copy; OpenStreetMap contributors'
                     }).addTo(mapaDetalle);
-                    L.marker([pedido.latitudEntrega, pedido.longitudEntrega]).addTo(mapaDetalle);
+                    var marker = L.marker([pedido.latitudEntrega, pedido.longitudEntrega], {autoPan: false}).addTo(mapaDetalle);
+                    marker.bindPopup("Ubicación de entrega").openPopup();
+                    // Forzar re-dimensionado y centrado del mapa después de unos milisegundos
+                    setTimeout(function() {
+                        mapaDetalle.invalidateSize();
+                        mapaDetalle.setView([pedido.latitudEntrega, pedido.longitudEntrega], 16);
+                    }, 300);
                 } else {
                     document.getElementById("detalle-mapa").innerHTML = "<p>Ubicación no definida.</p>";
-                    if (mapaDetalle) {
-                        mapaDetalle.remove();
-                        mapaDetalle = null;
-                    }
+                    if (mapaDetalle) { mapaDetalle.remove(); mapaDetalle = null; }
                 }
                 
-                // Actualizar la información del repartidor asignado
-                // Actualizar la información del repartidor asignado
-const detalleRepartidor = document.getElementById("detalle-repartidor");
-if (pedido.idRepartidor) {
-    // Buscar el repartidor en la lista serializada usando propiedades con mayúscula
-    const rep = repartidores.find(r => r.IdEmpleado === pedido.idRepartidor);
-    if (rep) {
-        detalleRepartidor.textContent = "Repartidor asignado: " + rep.Nombre + " " + rep.Apellido;
-
-    } else {
-        detalleRepartidor.textContent = "Repartidor asignado: " + pedido.idRepartidor;
-
-    }
-} else {
-    detalleRepartidor.textContent = "Sin repartidor asignado";
-}
-
-
-
-                // Guardar el ID del pedido en el modal para usar en actualización de estado y asignación
+                // Mostrar o actualizar el repartidor asignado
+                const detalleRepartidor = document.getElementById("detalle-repartidor");
+                if (pedido.idRepartidor) {
+                    // Buscar en la lista de repartidores
+                    const rep = repartidores.find(r => r.IdEmpleado === pedido.idRepartidor);
+                    if (rep) {
+                        detalleRepartidor.textContent = "Repartidor asignado: " + rep.Nombre + " " + rep.Apellido;
+                    } else {
+                        detalleRepartidor.textContent = "Repartidor asignado: " + pedido.idRepartidor;
+                    }
+                } else {
+                    detalleRepartidor.textContent = "Sin repartidor asignado";
+                }
+                
+                // Asignar el estado actual en el select para cambiar estado
+                document.getElementById("select-estado").value = (!pedido.EstadoPedido || pedido.EstadoPedido.trim() === "") 
+                    ? "Pendiente" 
+                    : pedido.EstadoPedido;
+                
+                // Guardar el ID del pedido en el modal para su uso en asignación y actualización
                 document.getElementById("modal-pedido").setAttribute("data-pedidoid", pedido.id);
 
                 // Mostrar el modal
-                document.getElementById("modal-pedido").style.display = "block";
+                document.getElementById("modal-pedido").style.display = "flex";
             })
             .catch(error => {
                 console.error("Error al obtener el pedido:", error);
@@ -330,7 +399,7 @@ if (pedido.idRepartidor) {
         document.getElementById("modal-pedido").style.display = "none";
     }
 
-    // Función para asignar repartidor cuando se hace clic en una tarjeta de repartidor
+    // Función para asignar repartidor al hacer clic en una tarjeta de repartidor
     function asignarRepartidor(idRepartidor) {
         const pedidoId = document.getElementById("modal-pedido").getAttribute("data-pedidoid");
         if (!idRepartidor) {
@@ -347,7 +416,8 @@ if (pedido.idRepartidor) {
         })
         .then(data => {
             alert("Repartidor asignado correctamente");
-            cerrarModalPedido();
+            // Recargar la página para ver la actualización (o actualizar dinámicamente la card)
+            location.reload();
         })
         .catch(error => {
             console.error(error);
@@ -369,7 +439,8 @@ if (pedido.idRepartidor) {
         })
         .then(data => {
             alert("Estado actualizado correctamente");
-            cerrarModalPedido();
+            // Actualizamos la página para reflejar los cambios
+            location.reload();
         })
         .catch(error => {
             console.error(error);

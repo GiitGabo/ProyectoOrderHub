@@ -1,0 +1,99 @@
+﻿@model JarredsOrderHub.Models.Cliente
+@{
+    ViewData["Title"] = "Gestionar Perfil Cliente";
+}
+<link rel="stylesheet" href="~/css/EstilosPerfil.css" />
+
+<div class="perfil-container">
+    <h2 class="titulo-primario">Gestionar mi perfil</h2>
+
+    <!-- Mensajes de éxito/error -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+
+    <!-- Resumen de errores de validación -->
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+    <form id="perfil-form" asp-action="ActualizarPerfilCliente" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="IdCliente" />
+
+        <!-- Nombre -->
+        <div class="campo">
+            <label class="titulo-secundario" for="nombre">Nombre:</label>
+            <input asp-for="Nombre" id="nombre" readonly />
+            <span asp-validation-for="Nombre" class="text-danger"></span>
+            <button type="button" class="btn-editar" onclick="editarCampo('nombre')">
+                <i class="fa-regular fa-pen-to-square"></i>
+            </button>
+        </div>
+
+        <!-- Apellido -->
+        <div class="campo">
+            <label class="titulo-secundario" for="apellido">Apellido:</label>
+            <input asp-for="Apellido" id="apellido" readonly />
+            <span asp-validation-for="Apellido" class="text-danger"></span>
+            <button type="button" class="btn-editar" onclick="editarCampo('apellido')">
+                <i class="fa-regular fa-pen-to-square"></i>
+            </button>
+        </div>
+
+        <!-- Correo -->
+        <div class="campo">
+            <label class="titulo-secundario" for="email">Correo Electrónico:</label>
+            <input asp-for="Email" id="email" readonly />
+            <span asp-validation-for="Email" class="text-danger"></span>
+            <button type="button" class="btn-editar" onclick="editarCampo('email')">
+                <i class="fa-regular fa-pen-to-square"></i>
+            </button>
+        </div>
+
+        <!-- Teléfono -->
+        <div class="campo">
+            <label class="titulo-secundario" for="numeroContacto">Teléfono:</label>
+            <input asp-for="NumeroContacto" id="numeroContacto" readonly />
+            <span asp-validation-for="NumeroContacto" class="text-danger"></span>
+            <button type="button" class="btn-editar" onclick="editarCampo('numeroContacto')">
+                <i class="fa-regular fa-pen-to-square"></i>
+            </button>
+        </div>
+
+        <!-- Contraseña -->
+        <div class="campo readonly">
+            <label class="titulo-secundario">Contraseña:</label>
+            <span class="valor-readonly">********</span>
+            <span class="info-tooltip" title="Para cambiar tu contraseña, ve a la sección de seguridad">ℹ️</span>
+        </div>
+
+        <button type="submit" class="btn-guardar" id="btn-guardar" disabled>
+            <i class="fa-solid fa-save"></i> Guardar Cambios
+        </button>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        let camposEditados = false;
+
+        function editarCampo(campoId) {
+            const input = document.getElementById(campoId);
+            input.readOnly = !input.readOnly;
+            input.focus();
+            camposEditados = true;
+            document.getElementById('btn-guardar').disabled = !camposEditados;
+        }
+
+        document.querySelectorAll('input').forEach(i => {
+            i.addEventListener('input', () => {
+                camposEditados = true;
+                document.getElementById('btn-guardar').disabled = false;
+            });
+        });
+    </script>
+}

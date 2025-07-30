@@ -1,0 +1,189 @@
+﻿@model JarredsOrderHub.Models.Empleado
+
+@{
+    ViewData["Title"] = "Gestionar Perfil";
+}
+
+<link rel="stylesheet" href="~/css/EstilosPerfil.css" />
+<style>
+    .campo.readonly {
+        background-color: #f9f9f9;
+        border-radius: 5px;
+    }
+
+    .campo.readonly input {
+        background-color: #f0f0f0;
+        color: #666;
+    }
+
+    .info-tooltip {
+        cursor: help;
+        margin-left: 10px;
+        font-size: 18px;
+        color: #3498db;
+    }
+
+    .info-tooltip:hover::after {
+        content: attr(title);
+        position: absolute;
+        background: #333;
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 3px;
+        margin-left: 10px;
+        font-size: 14px;
+        z-index: 100;
+    }
+
+    input[readonly] {
+        background-color: #f0f0f0;
+        border-color: #ddd;
+        cursor: not-allowed;
+    }
+
+    .valor-readonly {
+        display: inline-block;
+        padding: 8px 12px;
+        width: 100%;
+        background-color: #f0f0f0;
+        border-radius: 4px;
+        color: #666;
+    }
+</style>
+
+<div class="perfil-container">
+    <h2 class="titulo-primario">Gestionar mi perfil</h2>
+    
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+    
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+    
+    <form id="perfil-form" asp-action="ActualizarPerfilEmpleado" method="post">
+        @Html.AntiForgeryToken()
+        
+        <!-- Campo oculto para el ID -->
+        <input type="hidden" asp-for="IdEmpleado" />
+
+        <!-- Nombre -->
+        <div class="campo">
+            <label for="nombre" class="titulo-secundario">Nombre:</label>
+            <input type="text" id="nombre" asp-for="Nombre" readonly />
+            <button type="button" class="btn-editar" onclick="editarCampo('nombre')">
+                <i class="fa-regular fa-pen-to-square"></i>
+            </button>
+        </div>
+
+        <!-- Apellido -->
+        <div class="campo">
+            <label for="apellido" class="titulo-secundario">Apellido:</label>
+            <input type="text" id="apellido" asp-for="Apellido" readonly />
+            <button type="button" class="btn-editar" onclick="editarCampo('apellido')">
+                <i class="fa-regular fa-pen-to-square"></i>
+            </button>
+        </div>
+        
+        <!-- Correo Electrónico -->
+        <div class="campo">
+            <label for="correoElectronico" class="titulo-secundario">Correo Electrónico:</label>
+            <input type="email" id="correoElectronico" asp-for="Email" readonly />
+            <button type="button" class="btn-editar" onclick="editarCampo('correoElectronico')">
+                <i class="fa-regular fa-pen-to-square"></i>
+            </button>
+        </div>
+        
+        <!-- Contraseña -->
+        <div class="campo">
+            <label for="contrasena" class="titulo-secundario">Contraseña:</label>
+            <input type="password" id="contrasena" asp-for="Contrasenia" placeholder="Nueva Contraseña" readonly />
+            <button type="button" class="btn-editar" onclick="editarCampo('contrasena')">
+                <i class="fa-regular fa-pen-to-square"></i>
+            </button>
+        </div>
+        
+        <!-- Rol (Solo lectura) -->
+        <div class="campo readonly">
+            <label class="titulo-secundario">Rol:</label>
+            <span class="valor-readonly">@(Model.Rol?.Nombre ?? "No asignado")</span>
+            <span class="info-tooltip" title="Solo administradores pueden modificar este campo">ℹ️</span>
+        </div>
+        
+        <!-- Horario (Solo lectura) -->
+        <div class="campo readonly">
+            <label class="titulo-secundario">Horario:</label>
+            <span class="valor-readonly">
+                @(Model.Horario != null ? string.Format("{0:hh\\:mm} - {1:hh\\:mm}", Model.Horario.HoraInicio, Model.Horario.HoraFin) : "No asignado")
+            </span>
+            <span class="info-tooltip" title="Solo administradores pueden modificar este campo">ℹ️</span>
+        </div>
+        
+        <!-- Salario (Solo lectura) -->
+        <div class="campo readonly">
+            <label class="titulo-secundario">Salario:</label>
+            <span class="valor-readonly">@($"${Model.Salario}")</span>
+            <span class="info-tooltip" title="Solo administradores pueden modificar este campo">ℹ️</span>
+        </div>
+
+        <!-- Botón Guardar -->
+        <button type="submit" class="btn-guardar" id="btn-guardar" disabled>
+            <i class="fa-solid fa-save"></i> Guardar Cambios
+        </button>
+    </form>
+    
+</div>
+
+<script>
+
+    // Variables para control de cambios
+    let camposEditados = false;
+    
+    // Función para habilitar los campos
+    function editarCampo(campo) {
+        const input = document.getElementById(campo);
+        input.readOnly = !input.readOnly;
+        input.focus();
+        camposEditados = true;
+        actualizarBotonGuardar();
+    }
+    
+    // Detectar cambios en inputs
+    document.querySelectorAll('input').forEach(input => {
+        input.addEventListener('change', function() {
+            camposEditados = true;
+            actualizarBotonGuardar();
+        });
+    });
+    
+    // Actualizar estado del botón guardar
+    function actualizarBotonGuardar() {
+        document.getElementById('btn-guardar').disabled = !camposEditados;
+    }
+    
+    // Validación del formulario
+    document.getElementById('perfil-form').addEventListener('submit', function(event) {
+        const nombre = document.getElementById('nombre').value;
+        const apellido = document.getElementById('apellido').value;
+        const email = document.getElementById('correoElectronico').value;
+
+        // Validar campos requeridos
+        if (!nombre || !apellido || !email) {
+            event.preventDefault();
+            alert("Los campos de nombre, apellido y correo son obligatorios");
+            return;
+        }
+        
+
+        
+        // Validar longitud de contraseña
+        const contrasena = document.getElementById('contrasena').value;
+        if (contrasena && contrasena.length < 6) {
+            event.preventDefault();
+            alert("La contraseña debe tener al menos 6 caracteres.");
+        }
+    });
+</script>
