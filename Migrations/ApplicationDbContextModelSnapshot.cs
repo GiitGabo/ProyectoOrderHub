@@ -453,6 +453,9 @@ namespace JarredsOrderHub.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("FechaReporte")
                         .HasColumnType("datetime2");
 

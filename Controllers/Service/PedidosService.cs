@@ -62,6 +62,29 @@ namespace JarredsOrderHub.Controllers.Service
             return Ok(detalles);
         }
 
+        [HttpGet("enviarRecibo/{pedidoId}")]
+        public async Task<IActionResult> CompletarPedido(int pedidoId)
+        {
+            try
+            {
+                var pedido = await _context.Pedidos
+                .Include(p => p.Detalles)
+                .ThenInclude(d => d.Platillo)
+                .Include(p => p.Cupon)
+                .FirstOrDefaultAsync(p => p.Id == pedidoId);
+
+                var usuario = await _context.Clientes.FindAsync(pedido.UsuarioId);
+
+                await _emailService.EnviarReciboPedido(pedido, usuario);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.ToString());
+            }
+        }
+
         [HttpPost]
         public async Task<ActionResult<Pedidos>> CreatePedido(Pedidos pedido)
         {

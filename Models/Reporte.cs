@@ -13,6 +13,7 @@ namespace JarredsOrderHub.Models
         public DateTime FechaReporte { get; set; }
         public string DescripcionReporte { get; set; }
         public string Estado { get; set; } = "Pendiente";
+        public DateTime FechaCreacion { get; set; } = DateTime.Now;
 
     }
 }
