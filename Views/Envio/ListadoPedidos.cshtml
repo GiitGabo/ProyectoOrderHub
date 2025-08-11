@@ -306,145 +306,136 @@
 </script>
 
 <script>
-    var mapaDetalle; // Variable global para el mapa en el modal
+    function toast(type, title, msg, ms) {
+        if (typeof window.showToast === 'function') {
+            window.showToast(type, title, msg, ms);
+        } else {
+            alert((title ? title + ': ' : '') + (msg || ''));
+        }
+    }
 
-    // Función para abrir el modal y cargar los detalles del pedido
+    var mapaDetalle;
+
+    // Abrir modal y cargar pedido
     function mostrarDetallesPedido(pedidoId) {
+        toast('success', 'Cargando', `Abriendo pedido #${pedidoId}...`, 1000);
+
         fetch(`/api/PedidosService/${pedidoId}`)
             .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 return response.json();
             })
             .then(pedido => {
                 document.getElementById("detalle-id").textContent = pedido.id;
                 document.getElementById("detalle-fecha").textContent = new Date(pedido.fechaPedido).toLocaleString();
-                // Mostrar el total y el total final (suma de envío fijo)
                 document.getElementById("detalle-total").textContent = "₡" + pedido.total;
                 const totalFinal = parseFloat(pedido.total) + 2000;
                 document.getElementById("detalle-total-final").textContent = "₡" + totalFinal.toFixed(2);
                 document.getElementById("detalle-comentarios").textContent = pedido.comentarios || "Sin comentarios";
 
-                // Listar los platos en el formato solicitado
                 let platosHtml = "";
-                if (pedido.detalles && pedido.detalles.length > 0) {
+                if (pedido.detalles?.length > 0) {
                     pedido.detalles.forEach(detalle => {
                         platosHtml += `<p>
-                            <i class="fas fa-utensils"></i>
-                            <span class="bold-text">Plato:</span> ${detalle.platillo.nombre} I
-                            <span class="bold-text">Cantidad:</span> ${detalle.cantidad} I
-                            <span class="bold-text">Subtotal:</span> ₡${detalle.total}
-                        </p>`;
+                                <i class="fas fa-utensils"></i>
+                                <span class="bold-text">Plato:</span> ${detalle.platillo.nombre} |
+                                <span class="bold-text">Cantidad:</span> ${detalle.cantidad} |
+                                <span class="bold-text">Subtotal:</span> ₡${detalle.total}
+                            </p>`;
                     });
                 } else {
                     platosHtml = "<p>No hay platos asociados.</p>";
                 }
                 document.getElementById("detalle-platos").innerHTML = platosHtml;
 
-                // Inicializar, centrar y asegurar el tamaño correcto del mapa (si hay coordenadas)
                 if (pedido.latitudEntrega && pedido.longitudEntrega) {
-                    if (mapaDetalle) { 
-                        mapaDetalle.remove(); 
-                    }
-                    mapaDetalle = L.map('detalle-mapa', { zoomControl: true }).setView([pedido.latitudEntrega, pedido.longitudEntrega], 16);
+                    if (mapaDetalle) { mapaDetalle.remove(); }
+                    mapaDetalle = L.map('detalle-mapa').setView([pedido.latitudEntrega, pedido.longitudEntrega], 16);
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                         attribution: '&copy; OpenStreetMap contributors'
                     }).addTo(mapaDetalle);
-                    var marker = L.marker([pedido.latitudEntrega, pedido.longitudEntrega], {autoPan: false}).addTo(mapaDetalle);
-                    marker.bindPopup("Ubicación de entrega").openPopup();
-                    // Forzar re-dimensionado y centrado del mapa después de unos milisegundos
-                    setTimeout(function() {
-                        mapaDetalle.invalidateSize();
-                        mapaDetalle.setView([pedido.latitudEntrega, pedido.longitudEntrega], 16);
-                    }, 300);
+                    L.marker([pedido.latitudEntrega, pedido.longitudEntrega]).addTo(mapaDetalle).bindPopup("Ubicación de entrega").openPopup();
+                    setTimeout(() => mapaDetalle.invalidateSize(), 300);
                 } else {
                     document.getElementById("detalle-mapa").innerHTML = "<p>Ubicación no definida.</p>";
                     if (mapaDetalle) { mapaDetalle.remove(); mapaDetalle = null; }
                 }
-                
-                // Mostrar o actualizar el repartidor asignado
+
                 const detalleRepartidor = document.getElementById("detalle-repartidor");
                 if (pedido.idRepartidor) {
-                    // Buscar en la lista de repartidores
                     const rep = repartidores.find(r => r.IdEmpleado === pedido.idRepartidor);
-                    if (rep) {
-                        detalleRepartidor.textContent = "Repartidor asignado: " + rep.Nombre + " " + rep.Apellido;
-                    } else {
-                        detalleRepartidor.textContent = "Repartidor asignado: " + pedido.idRepartidor;
-                    }
+                    detalleRepartidor.textContent = rep
+                        ? `Repartidor asignado: ${rep.Nombre} ${rep.Apellido}`
+                        : `Repartidor asignado: ${pedido.idRepartidor}`;
                 } else {
                     detalleRepartidor.textContent = "Sin repartidor asignado";
                 }
-                
-                // Asignar el estado actual en el select para cambiar estado
-                document.getElementById("select-estado").value = (!pedido.EstadoPedido || pedido.EstadoPedido.trim() === "") 
-                    ? "Pendiente" 
-                    : pedido.EstadoPedido;
-                
-                // Guardar el ID del pedido en el modal para su uso en asignación y actualización
-                document.getElementById("modal-pedido").setAttribute("data-pedidoid", pedido.id);
 
-                // Mostrar el modal
+                document.getElementById("select-estado").value = pedido.EstadoPedido?.trim() || "Pendiente";
+                document.getElementById("modal-pedido").setAttribute("data-pedidoid", pedido.id);
                 document.getElementById("modal-pedido").style.display = "flex";
+
+                toast('success', 'Listo', `Pedido #${pedido.id} cargado.`, 1500);
             })
             .catch(error => {
                 console.error("Error al obtener el pedido:", error);
-                alert("No se pudo cargar el detalle del pedido.");
+                toast('error', 'Error', 'No se pudo cargar el detalle del pedido');
             });
     }
 
-    // Función para cerrar el modal
     function cerrarModalPedido() {
         document.getElementById("modal-pedido").style.display = "none";
     }
 
-    // Función para asignar repartidor al hacer clic en una tarjeta de repartidor
+    // Asignar repartidor
     function asignarRepartidor(idRepartidor) {
         const pedidoId = document.getElementById("modal-pedido").getAttribute("data-pedidoid");
         if (!idRepartidor) {
-            alert("No se ha seleccionado un repartidor.");
+            toast('error', 'Error', 'No se ha seleccionado un repartidor.');
             return;
         }
+        toast('success', 'Asignando', `Asignando repartidor #${idRepartidor}...`, 1000);
+
         fetch(`/api/PedidosService/AsignarRepartidor/${pedidoId}/${idRepartidor}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' }
         })
-        .then(response => {
-            if (response.ok) return response.json();
-            throw new Error("Error al asignar repartidor");
-        })
-        .then(data => {
-            alert("Repartidor asignado correctamente");
-            // Recargar la página para ver la actualización (o actualizar dinámicamente la card)
-            location.reload();
-        })
-        .catch(error => {
-            console.error(error);
-            alert("No se pudo asignar el repartidor");
-        });
+            .then(response => {
+                if (response.ok) return response.json();
+                throw new Error("Error al asignar repartidor");
+            })
+            .then(data => {
+                toast('success', 'Listo', 'Repartidor asignado correctamente');
+                location.reload();
+            })
+            .catch(error => {
+                console.error(error);
+                toast('error', 'Error', 'No se pudo asignar el repartidor');
+            });
     }
 
-    // Función para actualizar el estado del pedido
+    // Actualizar estado
     function actualizarEstado() {
         const pedidoId = document.getElementById("modal-pedido").getAttribute("data-pedidoid");
         const nuevoEstado = document.getElementById("select-estado").value;
+        toast('success', 'Actualizando', `Cambiando estado a ${nuevoEstado}...`, 1000);
+
         fetch(`/api/PedidosService/actualizarEstado/${pedidoId}/${nuevoEstado}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' }
         })
-        .then(response => {
-            if (response.ok) return response.json();
-            throw new Error("Error al actualizar el estado");
-        })
-        .then(data => {
-            alert("Estado actualizado correctamente");
-            // Actualizamos la página para reflejar los cambios
-            location.reload();
-        })
-        .catch(error => {
-            console.error(error);
-            alert("No se pudo actualizar el estado");
-        });
+            .then(response => {
+                if (response.ok) return response.json();
+                throw new Error("Error al actualizar el estado");
+            })
+            .then(data => {
+                toast('success', 'Listo', 'Estado actualizado correctamente');
+                location.reload();
+            })
+            .catch(error => {
+                console.error(error);
+                toast('error', 'Error', 'No se pudo actualizar el estado');
+            });
     }
 </script>
+

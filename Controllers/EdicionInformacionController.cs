@@ -28,6 +28,11 @@ namespace JarredsOrderHub.Controllers
             var seccion = await _context.SeccionesContenido.FindAsync(id);
             if (seccion == null)
             {
+
+                TempData["ToastType"] = "error";
+                TempData["ToastTitle"] = "Error";
+                TempData["ToastMessage"] = "Error al obtener la seccion.";
+
                 return NotFound();
             }
 
@@ -43,6 +48,11 @@ namespace JarredsOrderHub.Controllers
                 var seccionExistente = await _context.SeccionesContenido.FindAsync(id);
                 if (seccionExistente == null)
                 {
+
+                    TempData["ToastType"] = "error";
+                    TempData["ToastTitle"] = "Error";
+                    TempData["ToastMessage"] = "Error al obtener la seccion al editar.";
+
                     return NotFound();
                 }
 

@@ -78,6 +78,7 @@
 
     // Función para mostrar el carrito (ya la tienes)
     function mostrarCarrito() {
+
         const contenedor = document.getElementById('productos-carrito');
         contenedor.innerHTML = '';
         let carrito = JSON.parse(localStorage.getItem('carrito')) || [];

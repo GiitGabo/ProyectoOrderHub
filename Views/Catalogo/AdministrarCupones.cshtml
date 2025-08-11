@@ -88,31 +88,35 @@
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
 <script>
+    if (typeof window.showToast !== 'function') {
+        window.showToast = function (type, title, message) {
+            alert((title ? title + ': ' : '') + (message || ''));
+        };
+    }
+
     let cuponEditandoId = null;
     let cuponEditandoCodigo = null;
 
     document.getElementById("addCuponBtn").onclick = function () {
         cuponEditandoId = null;
+        cuponEditandoCodigo = null;
         document.getElementById("cuponDescuento").value = '';
         document.getElementById("cuponFechaExpiracion").value = '';
-        document.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
-        document.getElementById("title-modal").textContent = "Añadir Cupon";
+        document.querySelectorAll('input[name="estado"]').forEach(r => r.checked = false);
+        document.getElementById("estadoActivo").checked = true;
+        document.getElementById("title-modal").textContent = "Añadir Cupón";
         cuponModal.style.display = "block";
     };
 
     closeCuponModal.onclick = function () {
         cuponModal.style.display = "none";
-        cuponEditandoId = null;
-        cuponEditandoCodigo = null;
-    }
+    };
 
     window.onclick = function (event) {
         if (event.target == cuponModal) {
             cuponModal.style.display = "none";
-            cuponEditandoId = null;
-            cuponEditandoCodigo = null;
         }
-    }
+    };
 
     document.getElementById("cuponForm").onsubmit = async function (event) {
         event.preventDefault();
@@ -122,7 +126,7 @@
         const esPorcentual = document.querySelector('input[name="estado"]:checked').value === "true";
 
         if (!descuento || !fechaExpiracion) {
-            alert("Todos los campos son obligatorios.");
+            showToast('error', 'Datos faltantes', 'Todos los campos son obligatorios');
             return;
         }
 
@@ -134,27 +138,28 @@
             EsPorcentual: esPorcentual
         };
 
-        console.log("cupon: ", cuponData);
-
         const url = cuponEditandoId ? `/api/CuponService/${cuponEditandoId}` : "/api/CuponService";
         const method = cuponEditandoId ? "PUT" : "POST";
 
         try {
             const response = await fetch(url, {
-                method: method,
+                method,
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(cuponData)
             });
 
-            if (!response.ok) throw new Error("Error en la solicitud");
+            if (!response.ok) throw new Error("Error al guardar el cupón");
 
-            actualizarTabla();
+            await actualizarTabla();
+            cuponModal.style.display = "none";
 
-            document.getElementById("cuponModal").style.display = "none";
+            showToast('success',
+                cuponEditandoId ? 'Cupón actualizado' : 'Cupón creado',
+                cuponEditandoId ? `ID ${cuponEditandoId}` : 'Nuevo cupón agregado');
 
         } catch (error) {
             console.error("Error al guardar cupón:", error);
-            alert("Hubo un problema al guardar el cupón.");
+            showToast('error', 'Error', error.message || 'Hubo un problema al guardar el cupón');
         }
     };
 
@@ -169,13 +174,12 @@
                 document.getElementById("cuponFechaExpiracion").value = cupon.fechaExpiracion.split("T")[0];
                 document.querySelector(`input[name="estado"][value="${cupon.esPorcentual}"]`).checked = true;
 
-                document.getElementById("title-modal").textContent = "Editar Cupon";
-
-                document.getElementById("cuponModal").style.display = "block";
+                document.getElementById("title-modal").textContent = "Editar Cupón";
+                cuponModal.style.display = "block";
             })
             .catch(error => {
-                console.error("Error al obtener el cupón:", error);
-                alert("Hubo un problema al cargar los datos del cupón.");
+                console.error("Error al obtener cupón:", error);
+                showToast('error', 'Error', error.message || 'No se pudo cargar el cupón');
             });
     }
 
@@ -186,9 +190,9 @@
             const tbody = document.querySelector("#cuponTable tbody");
 
             tbody.innerHTML = "";
-
             cupones.forEach(cupon => {
                 const row = document.createElement("tr");
+                row.id = `cupon-${cupon.id}`;
                 row.innerHTML = `
                         <td>${cupon.id}</td>
                         <td>${cupon.codigo}</td>
@@ -207,59 +211,42 @@
                 tbody.appendChild(row);
             });
         } catch (error) {
-            console.error("Error al actualizar la tabla:", error);
+            console.error("Error al actualizar tabla:", error);
+            showToast('error', 'Error', error.message || 'No se pudo actualizar la tabla');
         }
     }
 
-    actualizarTabla();
-
     async function eliminarCupon(id) {
-        const confirmation = confirm("¿Estás seguro de que deseas eliminar este cupón?");
-        if (!confirmation) return;  // Si el usuario cancela, no hace nada
+        if (!confirm("¿Seguro que quieres eliminar este cupón?")) return;
 
         try {
-            const response = await fetch(`/api/CuponService/${id}`, {
-                method: "DELETE",
-            });
+            const response = await fetch(`/api/CuponService/${id}`, { method: "DELETE" });
+            if (!response.ok) throw new Error("Error al eliminar el cupón");
 
-            if (!response.ok) {
-                throw new Error("Error al eliminar el cupón");
-            }
+            await actualizarTabla();
+            showToast('success', 'Cupón eliminado', `ID ${id}`);
 
-            actualizarTabla();
-
-            alert("Cupón eliminado con éxito.");
         } catch (error) {
-            console.error("Error al eliminar el cupón:", error);
-            alert("Hubo un problema al eliminar el cupón.");
+            console.error("Error al eliminar cupón:", error);
+            showToast('error', 'Error', error.message || 'Hubo un problema al eliminar el cupón');
         }
     }
 
     $('#cuponTable').DataTable({
-        "order": [[0, "asc"]],
-        "language": {
-            "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
-        },
-        "dom": "<'dataTables_wrapper'<'dataTables_top'<'dataTables_length'l><'dataTables_filter'f>>r>t<'dataTables_bottom'<'dataTables_info'i><'dataTables_paginate'p>>",
-        "responsive": true,
-        "autoWidth": false,
-        "initComplete": function (settings, json) {
-            // Añadir clase personalizada a los inputs
+        order: [[0, "asc"]],
+        language: { url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json" },
+        dom: "<'dataTables_wrapper'<'dataTables_top'<'dataTables_length'l><'dataTables_filter'f>>r>t<'dataTables_bottom'<'dataTables_info'i><'dataTables_paginate'p>>",
+        responsive: true,
+        autoWidth: false,
+        initComplete: function () {
             $('.dataTables_filter input').addClass('search-input');
             $('.dataTables_length select').addClass('custom-select');
         },
-        "columnDefs": [{
-            "orderable": true,
-            "targets": '_all'
-        }],
-        "drawCallback": function (settings) {
-            // Ajustar posición de la paginación después de dibujar
-            $('.dataTables_paginate').css({
-                'display': 'flex',
-                'justify-content': 'center',
-                'width': '100%'
-            });
+        columnDefs: [{ orderable: true, targets: '_all' }],
+        drawCallback: function () {
+            $('.dataTables_paginate').css({ display: 'flex', justifyContent: 'center', width: '100%' });
         }
     });
 </script>
+
 

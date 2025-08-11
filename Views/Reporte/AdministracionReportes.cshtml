@@ -5,37 +5,39 @@
 <link rel="stylesheet" href="~/css/Estilos.css" />
 <link rel="stylesheet" href="~/css/dataTable.css" />
 
-<h1>Realizar Reporte</h1>
+<style>
+    .btn {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        color: #fff;
+        margin-right: 5px;
+        transition: background-color 0.3s ease;
+    }
 
-<!-- Formulario para Realizar un Reporte -->
-<form id="reportForm">
-    <label for="reportDescription">Descripción del Reporte:</label>
-    <textarea id="reportDescription" name="reportDescription" rows="4" placeholder="Describa el problema o reporte" required></textarea>
-    <button type="submit">Enviar Reporte</button>
-</form>
+    .btn-info {
+        background-color: #17a2b8;
+    }
 
-<!-- Popup Modal de Confirmación -->
-<div id="reportConfirmationModal" class="modal" style="display:none;">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2 id="modalTitle">Confirmación</h2>
-            <span class="close" id="closeReportConfirmation">&times;</span>
-        </div>
-        <p>Gracias por realizar tu reporte. Nuestro equipo lo revisará pronto.</p>
-    </div>
-</div>
+        .btn-info:hover {
+            background-color: #138496;
+        }
 
-<hr>
+    .btn-warning {
+        background-color: #ffc107;
+    }
 
-<h1 class="titulo-tabla">Administración de Reportes</h1>
-
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+</style>
 
 <!-- Tabla de Reportes -->
-<table>
+<h1 class="titulo-tabla">Administración de Reportes</h1>
 
 <div class="contenedor-tabla">
 <table id="tabla">
-
     <thead>
         <tr>
             <th>ID</th>
@@ -49,13 +51,18 @@
     <tbody>
         @foreach (var reporte in Model)
         {
+            // Solo se muestran los reportes que no están resueltos
             if (reporte.Estado != "Resuelto")
             {
                 <tr>
                     <td>@reporte.Id</td>
                     <td>@(reporte.Cliente != null ? reporte.Cliente.Nombre : "N/A")</td>
                     <td>@reporte.FechaReporte.ToString("yyyy-MM-dd")</td>
-                    <td>@(reporte.DescripcionReporte.Length > 50 ? reporte.DescripcionReporte.Substring(0, 50) + "..." : reporte.DescripcionReporte)</td>
+                    <td>
+                        @(reporte.DescripcionReporte.Length > 50
+                            ? reporte.DescripcionReporte.Substring(0, 50) + "..."
+                            : reporte.DescripcionReporte)
+                    </td>
                     <td>@reporte.Estado</td>
                     <td>
                         <button class="btn btn-info" onclick="verDetalles(@reporte.Id, '@(reporte.DescripcionReporte.Replace("'", "\\'"))')">Ver Detalles</button>
@@ -90,13 +97,6 @@
         </select>
         <button onclick="actualizarEstado()">Guardar</button>
     </div>
-</div>
-
-
-<!-- Botones para generar reportes -->
-<div>
-    <a href="@Url.Action("GenerarReporteVentas", new { tipoReporte = 1 })" class="btn btn-primary">Generar Reporte PDF</a>
-    <a href="@Url.Action("GenerarReporteVentas", new { tipoReporte = 2 })" class="btn btn-success">Generar Reporte Excel</a>
 </div>
 
 <!-- Incluir jQuery -->
@@ -155,51 +155,6 @@
     }
 
 
-    // Función para enviar el formulario de reporte
-    const reportForm = document.getElementById("reportForm");
-    const reportConfirmationModal = document.getElementById("reportConfirmationModal");
-    const closeReportConfirmation = document.getElementById("closeReportConfirmation");
-
-    reportForm.onsubmit = async function (e) {
-        e.preventDefault();
-
-        const reportDescription = document.getElementById("reportDescription").value;
-        const reporteData = {
-            DescripcionReporte: reportDescription
-        };
-
-        try {
-            const response = await fetch('/Reporte/GuardarReporte', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(reporteData)
-            });
-
-            const result = await response.json();
-            if (result.success) {
-                reportConfirmationModal.style.display = "block";
-                reportForm.reset();
-            } else {
-                alert("Error: " + result.message);
-            }
-        } catch (error) {
-            console.error("Error al enviar reporte:", error);
-            alert("Error al enviar reporte.");
-        }
-    };
-
-    closeReportConfirmation.onclick = function () {
-        reportConfirmationModal.style.display = "none";
-    };
-
-    window.onclick = function (event) {
-        if (event.target == reportConfirmationModal) {
-            reportConfirmationModal.style.display = "none";
-        }
-    };
-</script>
     $('#tabla').DataTable({
         "order": [[0, "asc"]],
         "language": {
@@ -227,4 +182,3 @@
         }
     });
 </script>
-

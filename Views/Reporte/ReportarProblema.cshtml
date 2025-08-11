@@ -1,0 +1,106 @@
+﻿<link rel="stylesheet" href="~/css/Estilos.css" />
+<h1>Realizar Reporte</h1>
+
+<!-- Formulario para Realizar un Reporte -->
+<form id="reportForm">
+    <!-- Se elimina el campo de fecha, ya que se asigna automáticamente -->
+    <label for="reportDescription">Descripción del Reporte:</label>
+    <textarea id="reportDescription" name="reportDescription" rows="4" placeholder="Describa el problema o reporte" required></textarea>
+    <button type="submit">Enviar Reporte</button>
+</form>
+
+<!-- Popup Modal de Confirmación -->
+<div id="reportConfirmationModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">Confirmación</h2>
+            <span class="close" id="closeReportConfirmation">&times;</span>
+        </div>
+        <p>Gracias por realizar tu reporte. Nuestro equipo lo revisará pronto.</p>
+    </div>
+</div>
+
+<!-- Script JS -->
+<script>
+    // Obtener elementos
+    const reportForm = document.getElementById("reportForm");
+    const reportConfirmationModal = document.getElementById("reportConfirmationModal");
+    const closeReportConfirmation = document.getElementById("closeReportConfirmation");
+
+    // Helper seguro para toasts
+    function toast(type, title, msg, ms) {
+        if (typeof window.showToast === "function") {
+            window.showToast(type, title, msg, ms);
+        } else {
+            // fallback
+            (type === 'error')
+                ? alert((title ? title + ': ' : '') + msg)
+                : console.log((title ? title + ': ' : '') + msg);
+        }
+    }
+
+    // Manejar el envío del formulario
+    reportForm.onsubmit = async function (e) {
+        e.preventDefault();
+
+        const submitBtn = reportForm.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+
+        const reportDescription = document.getElementById("reportDescription").value.trim();
+
+        if (!reportDescription) {
+            toast('error', 'Campos requeridos', 'La descripción es obligatoria.');
+            submitBtn.disabled = false;
+            return;
+        }
+
+        const reporteData = { DescripcionReporte: reportDescription };
+
+        try {
+            const response = await fetch('/Reporte/GuardarReporte', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(reporteData)
+            });
+
+            // Si el backend puede devolver JSON con { success, message }
+            const result = await response.json();
+
+            if (response.ok && result?.success) {
+                // Mostrar toast de éxito
+                toast('success', 'Reporte enviado', result.message || 'Tu reporte fue recibido.');
+
+                // Mostrar modal de confirmación
+                reportConfirmationModal.style.display = "block";
+
+                // Limpiar formulario
+                reportForm.reset();
+
+                // Cerrar modal automáticamente luego de 2.5s (opcional)
+                setTimeout(() => {
+                    reportConfirmationModal.style.display = "none";
+                }, 2500);
+            } else {
+                // Error controlado por el backend
+                const msg = (result && (result.message || result.error)) || 'No se pudo enviar el reporte.';
+                toast('error', 'Error', msg);
+            }
+        } catch (error) {
+            console.error("Error al enviar reporte:", error);
+            toast('error', 'Error', error.message || 'Error al enviar reporte.');
+        } finally {
+            submitBtn.disabled = false;
+        }
+    };
+
+    // Cerrar modal de confirmación
+    closeReportConfirmation.onclick = function () {
+        reportConfirmationModal.style.display = "none";
+    };
+
+    window.onclick = function (event) {
+        if (event.target == reportConfirmationModal) {
+            reportConfirmationModal.style.display = "none";
+        }
+    };
+</script>

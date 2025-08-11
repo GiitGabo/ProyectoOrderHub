@@ -153,6 +153,7 @@
 
                 // Verificar que los datos necesarios existen
                 if (!data.idCategoria || !data.nombre) {
+                    showToast('error', 'Error al procesar la categoría', "Respuesta incompleta del servidor");
                     throw new Error('Respuesta incompleta del servidor');
                 }
 
@@ -184,11 +185,14 @@
                 categoriaEditandoId = null;
 
                 // Mostrar mensaje de éxito
-                alert(categoriaEditandoId ? 'Categoría actualizada con éxito' : 'Categoría creada con éxito');
+                showToast('success',
+                    categoriaEditandoId ? 'Categoría actualizada' : 'Categoría creada',
+                    `ID ${data.idCategoria}`);
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Error al procesar la categoría: ' + (error.message || 'Error desconocido'));
+                showToast('error', 'Error al procesar la categoría', getErrorMessage(error));
+                
             });
     };
 
@@ -207,8 +211,7 @@
                 document.querySelector("#categoryForm button[type='submit']").textContent = "Actualizar";
 
                 categoryModal.style.display = "block";
-            })
-            .catch(error => console.error('Error al obtener la categoría:', error));
+            })            .catch(error => console.error('Error al obtener la categoría:', error));
     }
 
     function eliminarCategoria(categoriaId) {
@@ -223,12 +226,12 @@
                 if (!response.ok) {
                     return response.json().then(err => Promise.reject(err));
                 }
-                document.getElementById(`categoria-${categoriaId}`).remove();
-                alert('Categoría eliminada con éxito');
+                document.getElementById(`categoria-${categoriaId}`).remove();r3
+                showToast('success', 'Exito', `Categoría eliminada`);
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Error al eliminar la categoría: ' + (error.message || 'Error desconocido'));
+                showToast('error', 'Error al eliminar la categoría', error);
             });
     }
 

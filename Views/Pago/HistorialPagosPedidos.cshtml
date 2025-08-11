@@ -235,11 +235,7 @@
 
     <!-- Filtros -->
     <div class="filtros">
-        <label for="fechaInicio">Fecha de Inicio:</label>
-        <input type="date" id="fechaInicio" onchange="aplicarFiltros()">
-        <label for="fechaFin">Fecha de Fin:</label>
-        <input type="date" id="fechaFin" onchange="aplicarFiltros()">
-    <div class="filters" style="margin-bottom:10px">
+        <div class="filters" style="margin-bottom:10px">
         <label for="fechaInicio">Fecha de Inicio:</label>
         <input type="date" id="fechaInicio" onchange="aplicarFiltros()">
 
@@ -253,6 +249,7 @@
             <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
             <option value="PayPal">PayPal</option>
         </select>
+    </div>
     </div>
 
     @if (Model.Count == 0)
@@ -283,7 +280,7 @@
             }
         </div>
     }
-</div>
+
 
 <!-- Modal de Detalles del Pedido Mejorado -->
 <div id="modalDetalles" class="modal">

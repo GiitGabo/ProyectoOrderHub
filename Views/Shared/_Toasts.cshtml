@@ -1,0 +1,46 @@
+﻿@* Contenedor visual de toasts *@
+<div class="toast-area" id="toastArea" aria-live="polite" aria-atomic="true"></div>
+
+@* Semilla segura: TempData se pasa como data-* (sin romper JS) *@
+<div id="toastSeed"
+     data-type="@(TempData["ToastType"] ?? "")"
+     data-title="@(TempData["ToastTitle"] ?? "")"
+     data-msg="@(TempData["ToastMessage"] ?? "")"
+     hidden></div>
+
+<style>
+  .toast-area{position:fixed;right:20px;top:20px;display:flex;flex-direction:column;gap:12px;z-index:9999}
+  .toast{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,.25);border-left:4px solid;min-width:260px;background:#fff;color:#111}
+  .toast.success{border-color:#16a34a}
+  .toast.error{border-color:#ef4444}
+  .toast h4{margin:0 0 2px 0;font-size:15px}
+  .toast p{margin:0;color:#444;font-size:13px}
+</style>
+
+<script>
+  // API global
+  window.showToast = function (type, title, message, ms=3800) {
+    const area = document.getElementById('toastArea');
+    if (!area) return;
+    const t = document.createElement('div');
+    t.className = 'toast ' + (type || 'success');
+    t.innerHTML = `<div class="content"><h4>${title||'Listo'}</h4><p>${message||''}</p></div>`;
+    area.prepend(t);
+    setTimeout(()=>{ t.style.transition='opacity .2s, transform .2s';
+                     t.style.opacity='0'; t.style.transform='translateY(-6px)';
+                     setTimeout(()=> t.remove(), 220); }, ms);
+  };
+
+  // Dispara automáticamente si TempData vino con valores
+  (function(){
+    const seed = document.getElementById('toastSeed');
+    if(!seed) return;
+    const type  = seed.dataset.type;
+    const title = seed.dataset.title;
+    const msg   = seed.dataset.msg;
+    if (type && (title || msg)) {
+      // console.log('[Toast] Auto:', {type,title,msg});
+      window.showToast(type, title || (type==='success'?'Éxito':'Error'), msg || '');
+    }
+  })();
+</script>

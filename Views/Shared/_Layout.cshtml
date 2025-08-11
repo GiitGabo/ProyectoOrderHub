@@ -16,6 +16,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     @RenderSection("styles", required: false)
     <style>
         /* Base Styles */
@@ -288,17 +289,19 @@
             .btn-cancelar:hover {
                 background-color: #c0392b;
             }
+
+
     </style>
     <!-- ICONO -->
     <link rel="icon" type="image/png" href="~/LOGO-JARREDS.ico" />
 
     <title>JarredsOrderHub</title>
-
 </head>
 <body>
     <div class="wrapper">
         <!-- Header -->
         <header>
+
             <nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background-color: #262626 !important;">
                 <div class="container">
                     <!-- Logo -->
@@ -371,9 +374,8 @@
                                 }
                             }
                             <li class="nav-item">
-                                <a class="nav-link" href="@Url.Action("Menu", "Catalogo")" id="pedidoDropdown" role="button">
-                                    <i class="fa-solid fa-utensils"></i> Menu
-                                </a>
+                                <a class="nav-link"
+                                   href='@Url.Action("Menu","Catalogo")'><i class="fa-solid fa-utensils"></i> Menu</a>
                             </li>
                             @if (userType != "Empleado")
                             {
@@ -569,7 +571,127 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
 
+    <!-- ======= TOASTS (único) ======= -->
+    <div class="jtoast-area" id="toastArea" aria-live="polite" aria-atomic="true"></div>
+
+    <div id="toastSeed"
+         data-type="@(TempData["ToastType"] ?? "")"
+         data-title="@(TempData["ToastTitle"] ?? "")"
+         data-msg="@(TempData["ToastMessage"] ?? "")"
+         hidden></div>
+
+    <style>
+        .jtoast-area {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 9999
+        }
+
+        .jtoast {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            padding: 12px 14px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(2,6,23,.25);
+            border-left: 4px solid;
+            min-width: 260px;
+            background: #fff;
+            color: #111
+        }
+
+            .jtoast.success {
+                border-color: #16a34a
+            }
+
+            .jtoast.error {
+                border-color: #ef4444
+            }
+
+            .jtoast h4 {
+                margin: 0 0 2px 0;
+                font-size: 15px
+            }
+
+            .jtoast p {
+                margin: 0;
+                color: #444;
+                font-size: 13px
+            }
+    </style>
+
     <script>
+        // API global
+        window.showToast = function (type, title, message, ms = 3800) {
+            const area = document.getElementById('toastArea');
+            if (!area) return;
+            const t = document.createElement('div');
+            t.className = 'jtoast ' + (type || 'success');
+            t.innerHTML = `<div class="content"><h4>${title || 'Listo'}</h4><p>${message || ''}</p></div>`;
+            area.prepend(t);
+            setTimeout(() => {
+                t.style.transition = 'opacity .2s, transform .2s';
+                t.style.opacity = '0';
+                t.style.transform = 'translateY(-6px)';
+                setTimeout(() => t.remove(), 220);
+            }, ms);
+        };
+
+        // Navegación: guarda el toast deseado antes de salir de la página
+        document.addEventListener('click', function (e) {
+            const a = e.target.closest('a[data-toast]');
+            if (!a) return;
+            sessionStorage.setItem('nextToast', JSON.stringify({
+                t: a.dataset.toast || 'success',
+                tt: a.dataset.title || 'Listo',
+                tm: a.dataset.msg || ''
+            }));
+        });
+
+        // Al cargar: muestra toast pendiente de sessionStorage
+        (function () {
+            try {
+                const raw = sessionStorage.getItem('nextToast');
+                if (raw) {
+                    const { t, tt, tm, ms } = JSON.parse(raw);
+                    if (t && (tt || tm)) {
+                        window.showToast(t, tt || (t === 'success' ? 'Éxito' : 'Error'), tm || '', ms || 3800);
+                    }
+                    sessionStorage.removeItem('nextToast');
+                }
+            } catch (e) { /* noop */ }
+        })();
+
+        // Si viene por TempData, también lo muestra
+        (function () {
+            const seed = document.getElementById('toastSeed');
+            if (!seed) return;
+            const type = seed.dataset.type;
+            const title = seed.dataset.title;
+            const msg = seed.dataset.msg;
+            if (type && (title || msg)) {
+                window.showToast(type, title || (type === 'success' ? 'Éxito' : 'Error'), msg || '');
+            }
+        })();
+
+    </script>
+
+    <script>
+     function toast(type, title, msg, ms) {
+        if (typeof window.showToast === "function") {
+            window.showToast(type, title, msg, ms);
+        } else {
+            // Fallback si no hay showToast definido
+            (type === 'error')
+                ? alert((title ? title + ': ' : '') + msg)
+                : alert((title ? title + ': ' : '') + msg);
+        }
+    }
+
         // Variables globales para mapa y carrito
         let ubicacionSeleccionada = null,
             marcadorMapa = null,
@@ -672,8 +794,7 @@
             let mensajeCupon = document.getElementById('mensaje-cupon');
             mensajeCupon.style.display = 'block';
             if (!codigo) {
-                mensajeCupon.textContent = "No se ha ingresado cupón, se continuará sin descuento.";
-                mensajeCupon.style.color = "blue";
+                toast('info', 'Cupón vacío', 'No se ha ingresado cupón, se continuará sin descuento.');
                 cuponAplicado = null;
                 descuentoActual = 0;
                 mostrarCarrito();
@@ -682,19 +803,14 @@
             try {
                 let response = await fetch(`/api/CuponService/ValidarCupon?usuarioId=${usuarioId}&codigo=${codigo}`);
                 let data = await response.json();
-                if (!response.ok) {
-                    throw new Error(data.message || "Error al validar cupón");
-                }
-                document.getElementById('precio-descuento').style.display = 'block';
-                // Se utiliza el valor del cupón para el checkout, pero el total en el drawer se recalcula
+                if (!response.ok) throw new Error(data.message || "Error al validar cupón");
+
                 cuponAplicado = data.cupon;
                 descuentoActual = data.cupon.descuento / 100;
-                mensajeCupon.textContent = "Cupón válido: " + cuponAplicado.codigo;
-                mensajeCupon.style.color = "green";
+                toast('success', 'Cupón válido', cuponAplicado.codigo);
                 mostrarCarrito();
             } catch (error) {
-                mensajeCupon.textContent = error.message;
-                mensajeCupon.style.color = "red";
+                toast('error', 'Cupón inválido', error.message);
                 cuponAplicado = null;
                 descuentoActual = 0;
             }
@@ -743,13 +859,12 @@
         }
 
 
-
                 function confirmarUbicacion() {
             if (!ubicacionSeleccionada) {
-                alert("Selecciona una ubicación en el mapa.");
+                toast('error', 'Ubicación requerida', 'Selecciona una ubicación en el mapa.');
                 return;
             }
-            alert("Ubicación seleccionada con éxito.");
+            toast('success', 'Ubicación confirmada', 'Tu dirección de entrega ha sido guardada.');
             document.getElementById("mapModal").style.display = "none";
             // Actualiza el resumen del checkout
             actualizarResumenCheckout();
@@ -783,7 +898,7 @@
             // Obtener la ubicación seleccionada
             const ubicacion = ubicacionSeleccionada;
             if (!ubicacion) {
-                alert("Por favor selecciona una ubicación de entrega antes de pagar.");
+                toast('error', 'Ubicación faltante', 'Selecciona una ubicación antes de pagar.');
                 return false;
             }
 
@@ -823,7 +938,7 @@
                 return true;
             } catch (error) {
                 console.error("Error:", error);
-                alert("Hubo un problema al realizar el pedido: " + error.message);
+                toast('error', 'Error de pedido', error.message);
                 return false;
             }
         }
@@ -832,7 +947,7 @@
         async function pagarConEfectivo() {
             const exito = await procesarPago("Efectivo");
             if (exito) {
-                alert("Pedido realizado con éxito. Puedes pagar en efectivo.");
+                toast('success', 'Pedido realizado', 'Puedes pagar en efectivo al recibirlo.');
                 localStorage.removeItem("carrito");
                 mostrarCarrito();
                 cerrarCheckout();
@@ -841,12 +956,12 @@
         async function pagarConTarjeta() {
             const datosTarjeta = prompt("Introduce los datos de tu tarjeta (número, fecha exp., CVV):");
             if (!datosTarjeta || datosTarjeta.trim() === "") {
-                alert("Debes introducir los datos de la tarjeta para continuar.");
+                toast('error', 'Datos faltantes', 'Debes introducir los datos de la tarjeta.');
                 return;
             }
             const exito = await procesarPago("Tarjeta de Crédito");
             if (exito) {
-                alert("Pago con tarjeta procesado con éxito.");
+                toast('success', 'Pago realizado', 'Tu pago con tarjeta fue exitoso.');
                 localStorage.removeItem("carrito");
                 mostrarCarrito();
                 cerrarCheckout();
@@ -910,7 +1025,7 @@
                         .then(res => res.json())
                         .then(captureResult => {
                             console.log('✅ PayPal captura:', captureResult);
-                            alert('¡Pago completado y pedido registrado!');
+                            toast('success', 'Pago PayPal', 'Pago completado y pedido registrado.');
                             container.style.display = 'none';
                             localStorage.removeItem('carrito');
                             mostrarCarrito();
@@ -920,7 +1035,7 @@
 
                 onError: function (err) {
                     console.error('PayPal Error:', err);
-                    alert('❌ Error en PayPal: ' + err.message);
+                    toast('error', 'Error en PayPal', err.message);
                 }
 
             }).render('#paypal-button-container');
@@ -950,6 +1065,7 @@
             s.parentNode.insertBefore(v, s);
         })(document, 'script');
     </script>
+
     @RenderSection("scripts", required: false)
 </body>
 </html>

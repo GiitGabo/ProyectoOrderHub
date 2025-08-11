@@ -44,6 +44,11 @@ namespace JarredsOrderHub.Controllers
                 if (cliente.Contrasenia != confirmarContrasenia)
                 {
                     ModelState.AddModelError("ConfirmarContrasenia", "Las contraseñas no coinciden");
+
+                    TempData["ToastType"] = "error";
+                    TempData["ToastTitle"] = "Error";
+                    TempData["ToastMessage"] = "Las contraseñas no coinciden";
+
                     return View("AccionesUsuario", cliente);
                 }
 
@@ -52,13 +57,22 @@ namespace JarredsOrderHub.Controllers
                     var (success, message) = await _usuarioService.RegistrarCliente(cliente);
                     if (success)
                     {
-                        TempData["SuccessMessage"] = "Registro exitoso. Inicie sesión.";
+
+                        TempData["ToastType"] = "success";
+                        TempData["ToastTitle"] = "Exito al registrar";
+                        TempData["ToastMessage"] = "Cuenta creada con exito, Inicie sesion.";
+
                         return RedirectToAction("AccionesUsuario");
                     }
                     else
                     {
                         // Añadir error específico del servicio
                         ModelState.AddModelError("", message);
+
+                        TempData["ToastType"] = "error";
+                        TempData["ToastTitle"] = "Error";
+                        TempData["ToastMessage"] = $"Registro fallido: {message}";
+
                         _logger.LogWarning($"Registro fallido: {message}");
                     }
                 }
@@ -66,6 +80,10 @@ namespace JarredsOrderHub.Controllers
             catch (Exception ex)
             {
                 // Loggear error completo
+                TempData["ToastType"] = "error";
+                TempData["ToastTitle"] = "Error";
+                TempData["ToastMessage"] = $"Registro fallido: {ex}";
+
                 _logger.LogError(ex, "Error en registro de cliente");
                 ModelState.AddModelError("", "Ocurrió un error inesperado. Intente nuevamente.");
             }
@@ -78,6 +96,10 @@ namespace JarredsOrderHub.Controllers
         {
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(contrasena))
             {
+                TempData["ToastType"] = "error";
+                TempData["ToastTitle"] = "Error";
+                TempData["ToastMessage"] = "Correo y contraseña obligatorios";
+
                 ViewBag.Error = "Correo y contraseña son obligatorios";
                 return View("AccionesUsuario");
             }
@@ -109,6 +131,10 @@ namespace JarredsOrderHub.Controllers
                 HttpContext.Session.SetString("UserName", cliente.Nombre);
                 HttpContext.Session.SetString("UserType", "Cliente");
                 HttpContext.Session.SetInt32("ClienteId", cliente.IdCliente);
+
+                TempData["ToastType"] = "success";
+                TempData["ToastTitle"] = "Exito";
+                TempData["ToastMessage"] = "Inicio de sesion exitoso.";
 
                 return RedirectToAction("Index", "Home");
             }
@@ -152,6 +178,10 @@ namespace JarredsOrderHub.Controllers
                 HttpContext.Session.SetString("UserType", "Empleado");
                 HttpContext.Session.SetInt32("EmpleadoId", empleado.IdEmpleado);
 
+                TempData["ToastType"] = "success";
+                TempData["ToastTitle"] = "Exito";
+                TempData["ToastMessage"] = "Inicio de sesion de empleado exitoso.";
+
                 return RedirectToAction("Index", "Home");
             }
 
@@ -163,6 +193,11 @@ namespace JarredsOrderHub.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             HttpContext.Session.Clear();
+
+            TempData["ToastType"] = "success";
+            TempData["ToastTitle"] = "Exito";
+            TempData["ToastMessage"] = "Logout exitoso";
+
             return RedirectToAction("AccionesUsuario");
         }
 
@@ -182,6 +217,10 @@ namespace JarredsOrderHub.Controllers
         {
             if (string.IsNullOrEmpty(email))
             {
+                TempData["ToastType"] = "error";
+                TempData["ToastTitle"] = "Error";
+                TempData["ToastMessage"] = "El correo electronico es requerido.";
+
                 ModelState.AddModelError("", "El correo electrónico es requerido");
                 return View("Recuperar");
             }
@@ -190,11 +229,20 @@ namespace JarredsOrderHub.Controllers
 
             if (success)
             {
+                TempData["ToastType"] = "success";
+                TempData["ToastTitle"] = "Exito";
+                TempData["ToastMessage"] = "Correo de recuperacion enviado.";
+
                 TempData["SuccessMessage"] = message;
                 return RedirectToAction("AccionesUsuario");
             }
             else
             {
+
+                TempData["ToastType"] = "error";
+                TempData["ToastTitle"] = "Error";
+                TempData["ToastMessage"] = "Error al recuperar contraseña";
+
                 ModelState.AddModelError("", message);
                 return View("Recuperar");
             }
@@ -212,6 +260,10 @@ namespace JarredsOrderHub.Controllers
             var tokenValido = await _usuarioService.ValidarTokenRecuperacion(token, email);
             if (!tokenValido)
             {
+                TempData["ToastType"] = "error";
+                TempData["ToastTitle"] = "Error";
+                TempData["ToastMessage"] = "El enlace de recuperación es inválido o ha expirado.";
+
                 TempData["ErrorMessage"] = "El enlace de recuperación es inválido o ha expirado";
                 return RedirectToAction("AccionesUsuario");
             }
@@ -239,7 +291,10 @@ namespace JarredsOrderHub.Controllers
 
             if (success)
             {
-                TempData["SuccessMessage"] = message;
+                    TempData["ToastType"] = "success";
+                    TempData["ToastTitle"] = "Exito";
+                    TempData["ToastMessage"] = "Restablecimiento de contraseña exitoso.";
+                    TempData["SuccessMessage"] = message;
                 return RedirectToAction("AccionesUsuario");
             }
             else
@@ -255,13 +310,25 @@ namespace JarredsOrderHub.Controllers
             int? empleadoId = HttpContext.Session.GetInt32("EmpleadoId");
             if (!empleadoId.HasValue)
             {
-                return Unauthorized("Empleado no autenticado");
+                    TempData["ToastType"] = "error";
+                    TempData["ToastTitle"] = "Error";
+                    TempData["ToastMessage"] = "Empleado no autenticado.";
+
+                    return Unauthorized("Empleado no autenticado");
             }
             var resultado = await _usuarioService.ActualizarUbicacionAsync(empleadoId.Value, ubicacion.Latitud, ubicacion.Longitud);
             if (resultado)
             {
-                return Ok(new { success = true, message = "Ubicación actualizada" });
+                    TempData["ToastType"] = "success";
+                    TempData["ToastTitle"] = "Exito";
+                    TempData["ToastMessage"] = "Ubicacion actualizada.";
+
+                    return Ok(new { success = true, message = "Ubicación actualizada" });
             }
+            TempData["ToastType"] = "error";
+            TempData["ToastTitle"] = "Error";
+            TempData["ToastMessage"] = "Empleado no encontrado.";
+
             return NotFound("Empleado no encontrado");
         }
 
@@ -331,10 +398,18 @@ namespace JarredsOrderHub.Controllers
                     principal,
                     new AuthenticationProperties { IsPersistent = true });
 
+                TempData["ToastType"] = "success";
+                TempData["ToastTitle"] = "Exito";
+                TempData["ToastMessage"] = "Exito al actualizar.";
+
                 TempData["SuccessMessage"] = resultado.message;
             }
             else
             {
+                TempData["ToastType"] = "error";
+                TempData["ToastTitle"] = "Error";
+                TempData["ToastMessage"] = "Error al actualizar.";
+
                 TempData["ErrorMessage"] = resultado.message;
             }
 
@@ -380,11 +455,18 @@ namespace JarredsOrderHub.Controllers
                     CookieAuthenticationDefaults.AuthenticationScheme,
                     principal,
                     new AuthenticationProperties { IsPersistent = true });
+                TempData["ToastType"] = "success";
+                TempData["ToastTitle"] = "Exito";
+                TempData["ToastMessage"] = "Exito al actualizar.";
 
                 TempData["SuccessMessage"] = resultado.message;
             }
             else
             {
+                TempData["ToastType"] = "error";
+                TempData["ToastTitle"] = "Error";
+                TempData["ToastMessage"] = "Error al actualizar.";
+
                 TempData["ErrorMessage"] = resultado.message;
             }
 
@@ -404,6 +486,10 @@ namespace JarredsOrderHub.Controllers
             var cliente = await _usuarioService.ObtenerPerfilCliente(int.Parse(userId));
             if (cliente == null)
             {
+                TempData["ToastType"] = "error";
+                TempData["ToastTitle"] = "Error";
+                TempData["ToastMessage"] = "No se encontro el perfil.";
+
                 TempData["ErrorMessage"] = "No se encontró tu perfil";
                 return RedirectToAction("GestionPerfil");
             }
@@ -412,7 +498,11 @@ namespace JarredsOrderHub.Controllers
             var (success, message) = await _usuarioService.IniciarRecuperacionContrasenia(cliente.Email);
             if (success)
                 TempData["SuccessMessage"] = message;
+
             else
+                TempData["ToastType"] = "error";
+                TempData["ToastTitle"] = "Error";
+                TempData["ToastMessage"] = "Error al enviar el correo.";
                 TempData["ErrorMessage"] = message;
 
             return RedirectToAction("GestionPerfil");

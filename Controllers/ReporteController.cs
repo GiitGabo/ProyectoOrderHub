@@ -9,33 +9,127 @@ namespace JarredsOrderHub.Controllers
     public class ReporteController : Controller
     {
         private readonly ReporteService _reporteService;
-        private readonly IExportacionService _exportacionService;
 
-        public ReporteController(ReporteService reporteService, IExportacionService exportacionService)
+        public ReporteController(ReporteService reporteService)
         {
             _reporteService = reporteService;
-            _exportacionService = exportacionService;
         }
 
-        // Acción para generar reporte en PDF o Excel
-        public async Task<IActionResult> GenerarReporteVentas(int tipoReporte)
+        public class EstadoUpdateModel
         {
-            // Obtener los reportes de ventas desde el servicio
+            public int Id { get; set; }
+            public string NuevoEstado { get; set; }
+        }
+
+
+        // Vista para realizar el reporte
+        public ActionResult ReportarProblema()
+        {
+            return View();
+        }
+
+        //Guardar reporte
+
+        [HttpPost]
+        public async Task<IActionResult> GuardarReporte([FromBody] Reporte reporte)
+        {
+            if (reporte == null || string.IsNullOrEmpty(reporte.DescripcionReporte))
+            {
+                return Json(new { success = false, message = "Datos inválidos" });
+            }
+
+            try
+            {
+                // Asigna la fecha
+                reporte.FechaReporte = DateTime.Today;
+
+                // Obtener el Id del cliente desde la sesión 
+                var clienteId = User.FindFirst("UserId")?.Value;
+                if (string.IsNullOrEmpty(clienteId))
+                {
+                    TempData["ToastType"] = "error";
+                    TempData["ToastTitle"] = "Error";
+                    TempData["ToastMessage"] = "No se encontro al cliente en la sesion";
+
+                    return Json(new { success = false, message = "No se encontró el cliente en la sesión." });
+                }
+                else
+                {
+                    reporte.IdCliente = Convert.ToInt32(clienteId);
+                }
+
+                // Se fuerza el estado a "Pendiente"
+                reporte.Estado = "Pendiente";
+
+                await _reporteService.GuardarReporteAsync(reporte);
+
+
+                TempData["ToastType"] = "success";
+                TempData["ToastTitle"] = "Exito";
+                TempData["ToastMessage"] = "Reporte guardado correctamente.";
+
+                return Json(new { success = true, message = "Reporte guardado correctamente." });
+            }
+            catch (Exception ex)
+            {
+
+                TempData["ToastType"] = "error";
+                TempData["ToastTitle"] = "Error";
+                TempData["ToastMessage"] = $"Error al obtener la guardar el reporte {ex.Message}.";
+
+                return Json(new { success = false, message = "Error al guardar el reporte: " + ex.Message });
+            }
+        }
+
+        // Acción para la administración de reportes
+        public async Task<IActionResult> AdministracionReportes()
+        {
+
             var reportes = await _reporteService.ObtenerReportesAsync();
-            byte[] archivo = null;
+            return View(reportes);
+        }
 
-            // Verifica el tipo de reporte y genera el archivo correspondiente
-            if (tipoReporte == 1) // PDF
+        // Acción para actualizar el estado del reporte
+        [HttpPost]
+        public async Task<IActionResult> ActualizarEstado([FromBody] EstadoUpdateModel model)
+        {
+            if (model == null || model.Id <= 0 || string.IsNullOrEmpty(model.NuevoEstado))
             {
-                archivo = await _exportacionService.GenerarReporteVentasPDF(reportes);
-            }
-            else if (tipoReporte == 2) // Excel
-            {
-                archivo = await _exportacionService.GenerarReporteVentasExcel(reportes);
+                TempData["ToastType"] = "error";
+                TempData["ToastTitle"] = "Error";
+                TempData["ToastMessage"] = "Datos invalidos";
+
+                return Json(new { success = false, message = "Datos inválidos." });
             }
 
-            // Retorna el archivo generado como una respuesta de tipo "file"
-            return File(archivo, "application/octet-stream", "Reporte_Ventas." + (tipoReporte == 1 ? "pdf" : "xlsx"));
+            try
+            {
+                var reporte = await _reporteService.ObtenerReportePorIdAsync(model.Id);
+                if (reporte == null)
+                {
+                    TempData["ToastType"] = "error";
+                    TempData["ToastTitle"] = "Error";
+                    TempData["ToastMessage"] = "Reporte no encontrado.";
+
+                    return Json(new { success = false, message = "Reporte no encontrado." });
+                }
+                reporte.Estado = model.NuevoEstado;
+                await _reporteService.ActualizarReporteAsync(reporte);
+
+                TempData["ToastType"] = "success";
+                TempData["ToastTitle"] = "Exito";
+                TempData["ToastMessage"] = "Estado actualizado correctamente.";
+
+                return Json(new { success = true, message = "Estado actualizado correctamente." });
+            }
+            catch (Exception ex)
+            {
+                TempData["ToastType"] = "error";
+                TempData["ToastTitle"] = "Error";
+                TempData["ToastMessage"] = $"Error al obtener la guardar el reporte {ex.Message}.";
+
+                return Json(new { success = false, message = "Error al actualizar el estado: " + ex.Message });
+            }
         }
     }
 }

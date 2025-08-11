@@ -133,6 +133,7 @@
                     });
                 })
                 .catch(error => console.error('Error al cargar categorías:', error));
+        showToast('error', 'Error', 'No se pudieron cargar las categorías');
         }
 
         // Llamar a cargarCategorías cuando se carga la página
@@ -182,7 +183,6 @@
             idCategoria: parseInt(document.getElementById("platilloCategoria").value),
             activo: document.querySelector('input[name="estado"]:checked').value === 'true'
             };
-
 
             console.log('Datos a enviar:', platilloData); // Añade este log
 
@@ -239,12 +239,17 @@
                     plateForm.reset();
                     platilloEditandoId = null;
 
+                showToast('success',
+                    platilloEditandoId ? 'Platillo actualizado' : 'Platillo creado',
+                    `ID ${data.idPlatillo}`);
+
                     alert(platilloEditandoId ? 'Platillo actualizado con éxito' : 'Actualizacion de Platillos realizada con Exito!!');
                 })
                 .catch(error => {
                     console.error('Error:', error);
                     alert('Error al procesar el platillo: ' + (error.message || 'Error desconocido'));
                     console.log(platilloData);
+                showToast('error', 'Error al procesar el platillo', "Error al procesar el platillo: " + error.message
                 });
         };
 
@@ -270,8 +275,8 @@
                 plateModal.style.display = "block";
             })
             .catch(error => {
-                console.error('Error al obtener el plato:', error);
-                alert('Error al cargar los datos del platillo');
+                console.error('Error al obtener el plato:', error.message
+                showToast('error', 'Error al procesar el platillo', "Error al cargar los datos del platillo.");
             });
     }
 
@@ -287,11 +292,12 @@
                         return response.json().then(err => Promise.reject(err));
                     }
                     document.getElementById(`platillo-${platilloId}`).remove();
-                    alert('Platillo eliminado con éxito');
+                showToast('success', 'Exito', "Platillo eliminado con exito.");
                 })
                 .catch(error => {
                     console.error('Error:', error);
                     alert('Error al eliminar el platillo: ' + (error.message || 'Error desconocido'));
+                showToast('error', 'Error al procesar el platillo', error.message );
                 });
         }
 

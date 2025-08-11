@@ -62,6 +62,7 @@ namespace JarredsOrderHub.Controllers.Service
             return Ok(detalles);
         }
 
+        /*
         [HttpGet("enviarRecibo/{pedidoId}")]
         public async Task<IActionResult> CompletarPedido(int pedidoId)
         {
@@ -84,7 +85,9 @@ namespace JarredsOrderHub.Controllers.Service
                 return BadRequest(ex.ToString());
             }
         }
+        */
 
+        /*
         [HttpPost]
         public async Task<ActionResult<Pedidos>> CreatePedido(Pedidos pedido)
         {
@@ -131,6 +134,7 @@ namespace JarredsOrderHub.Controllers.Service
                 return StatusCode(500, new { message = "Error interno del servidor", details = ex.Message });
             }
         }
+        */
 
         [HttpPut("actualizarEstado/{id}/{nuevoEstado}")]
         public async Task<IActionResult> UpdatePedido(int id, string nuevoEstado)
@@ -195,6 +199,7 @@ namespace JarredsOrderHub.Controllers.Service
             return Ok(new { success = true });
         }
 
+        /*
         [HttpGet("enviarRecibo/{pedidoId}")]
         public async Task<IActionResult> CompletarPedido(int pedidoId)
         {
@@ -217,7 +222,7 @@ namespace JarredsOrderHub.Controllers.Service
                 return BadRequest(ex.ToString());
             }
         }
-
+        */
 
 
 

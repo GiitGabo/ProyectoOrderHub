@@ -38,6 +38,10 @@ namespace JarredsOrderHub.Controllers
             }
             catch (System.Exception ex)
             {
+                TempData["ToastType"] = "error";
+                TempData["ToastTitle"] = "Error";
+                TempData["ToastMessage"] = "Error al obtener usuarios.";
+
                 _logger.LogError(ex, "Error al obtener los usuarios");
                 return StatusCode(500, "Error interno del servidor");
             }
@@ -60,6 +64,10 @@ namespace JarredsOrderHub.Controllers
             }
             catch (Exception ex)
             {
+                TempData["ToastType"] = "error";
+                TempData["ToastTitle"] = "Error";
+                TempData["ToastMessage"] = "Error al obtener usuarios.";
+
                 Console.WriteLine($"Error al obtener empleados: {ex.Message}");
                 return StatusCode(500, "Error interno del servidor");
             }
@@ -72,6 +80,10 @@ namespace JarredsOrderHub.Controllers
             {
                 if (!ModelState.IsValid)
                 {
+                    TempData["ToastType"] = "error";
+                    TempData["ToastTitle"] = "Error";
+                    TempData["ToastMessage"] = "Datos invalidos.";
+
                     return Json(new { success = false, message = "Datos inválidos" });
                 }
 
@@ -81,6 +93,9 @@ namespace JarredsOrderHub.Controllers
 
                 if (empleadoDuplicado)
                 {
+                    TempData["ToastType"] = "error";
+                    TempData["ToastTitle"] = "Error";
+                    TempData["ToastMessage"] = "Empleado ya registrado.";
 
                     return Json(new { success = false, message = "El empleado ya está registrado." });
                 }
@@ -100,12 +115,18 @@ namespace JarredsOrderHub.Controllers
                     descripcion: $"Se agrego al empleado: {empleado.Nombre}"
                 );
 
+                TempData["ToastType"] = "success";
+                TempData["ToastTitle"] = "Empleado agregado";
+                TempData["ToastMessage"] = "Empleado agregado correctamente";
 
                 return Json(new { success = true, message = "Empleado agregado correctamente." });
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error al agregar empleado: {ex.Message}");
+                TempData["ToastType"] = "error";
+                TempData["ToastTitle"] = "Error";
+                TempData["ToastMessage"] = "Error desconocido al agregar empleado.";
                 return Json(new { success = false, message = "Error al agregar el empleado. Intente nuevamente." });
             }
         }
@@ -123,6 +144,9 @@ namespace JarredsOrderHub.Controllers
 
                 if (empleado == null)
                 {
+                    TempData["ToastType"] = "error";
+                    TempData["ToastTitle"] = "Error";
+                    TempData["ToastMessage"] = "Empleado no encontrado.";
                     return Json(new { success = false, message = "Empleado no encontrado" });
                 }
 
@@ -131,6 +155,9 @@ namespace JarredsOrderHub.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine($"Error al obtener empleado: {ex.Message}");
+                TempData["ToastType"] = "error";
+                TempData["ToastTitle"] = "Error";
+                TempData["ToastMessage"] = "Error al Obtener empleado.";
                 return Json(new { success = false, message = "Error al obtener el empleado." });
             }
         }
@@ -142,12 +169,18 @@ namespace JarredsOrderHub.Controllers
             {
                 if (!ModelState.IsValid)
                 {
+                    TempData["ToastType"] = "error";
+                    TempData["ToastTitle"] = "Error";
+                    TempData["ToastMessage"] = "Datos invalidos.";
                     return Json(new { success = false, message = "Datos inválidos" });
                 }
 
                 var empleadoExistente = await _context.Empleados.FindAsync(empleado.IdEmpleado);
                 if (empleadoExistente == null)
                 {
+                    TempData["ToastType"] = "error";
+                    TempData["ToastTitle"] = "Error";
+                    TempData["ToastMessage"] = "Empleado no encontrado";
                     return Json(new { success = false, message = "Empleado no encontrado" });
                 }
 
@@ -170,11 +203,18 @@ namespace JarredsOrderHub.Controllers
                     detallesCambios: JsonSerializer.Serialize(empleado),
                     descripcion: $"Se edito al empleado con los siguientes datos: {empleado.Nombre}"
                 );
+                TempData["ToastType"] = "success";
+                TempData["ToastTitle"] = "Exito";
+                TempData["ToastMessage"] = "Empleado actualizado.";
                 return Json(new { success = true });
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error al actualizar empleado: {ex.Message}");
+                TempData["ToastType"] = "error";
+                TempData["ToastTitle"] = "Error";
+                TempData["ToastMessage"] = "Error al actualizar empleado.";
+
                 return Json(new { success = false, message = "Error al actualizar el empleado." });
             }
         }
@@ -188,6 +228,11 @@ namespace JarredsOrderHub.Controllers
                 var empleado = await _context.Empleados.FindAsync(id);
                 if (empleado == null)
                 {
+
+                    TempData["ToastType"] = "error";
+                    TempData["ToastTitle"] = "Error";
+                    TempData["ToastMessage"] = "Empleado no encontrado.";
+
                     return Json(new { success = false, message = "Empleado no encontrado" });
                 }
 
@@ -203,11 +248,20 @@ namespace JarredsOrderHub.Controllers
                     detallesCambios: JsonSerializer.Serialize(empleado),
                     descripcion: $"Se elimino al empleado: {empleado.Nombre}"
                 );
+
+                TempData["ToastType"] = "success";
+                TempData["ToastTitle"] = "Exito";
+                TempData["ToastMessage"] = "Empleado eliminado.";
+
                 return Json(new { success = true });
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error al eliminar empleado: {ex.Message}");
+                TempData["ToastType"] = "error";
+                TempData["ToastTitle"] = "Error";
+                TempData["ToastMessage"] = "Error al eliminar el empleado.";
+
                 return Json(new { success = false, message = "Error al eliminar el empleado." });
             }
         }
@@ -238,12 +292,22 @@ namespace JarredsOrderHub.Controllers
             {
                 _context.Tareas.Add(nuevaTarea);
                 var result = _context.SaveChanges();
+
+                TempData["ToastType"] = "success";
+                TempData["ToastTitle"] = "Exito";
+                TempData["ToastMessage"] = "Tarea añadida y asignada.";
+
                 Console.WriteLine($"Registros guardados: {result}");
                 return RedirectToAction("AdministrarTareas");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error al guardar: {ex.Message}");
+
+                TempData["ToastType"] = "error";
+                TempData["ToastTitle"] = "Error";
+                TempData["ToastMessage"] = "Error al guardar la tarea.";
+
                 ModelState.AddModelError("", "Error al guardar la tarea: " + ex.Message);
             }
 
@@ -258,12 +322,20 @@ namespace JarredsOrderHub.Controllers
         {
             if (tareaEditada == null || tareaEditada.IdTarea == 0)
             {
+                TempData["ToastType"] = "error";
+                TempData["ToastTitle"] = "Error";
+                TempData["ToastMessage"] = "Datos de tarea invalidos.";
+
                 ModelState.AddModelError("", "Datos inválidos.");
             }
 
             var tareaExistente = _context.Tareas.Find(tareaEditada.IdTarea);
             if (tareaExistente == null)
             {
+                TempData["ToastType"] = "error";
+                TempData["ToastTitle"] = "Error";
+                TempData["ToastMessage"] = "Tarea no existente.";
+
                 ModelState.AddModelError("", "La tarea no existe.");
             }
 
@@ -282,12 +354,20 @@ namespace JarredsOrderHub.Controllers
                 tareaExistente.IdEmpleado = tareaEditada.IdEmpleado == 0 ? null : tareaEditada.IdEmpleado;
 
                 _context.SaveChanges();
+
+                TempData["ToastType"] = "success";
+                TempData["ToastTitle"] = "Exito";
+                TempData["ToastMessage"] = "Tarea editada con exito";
+
                 return RedirectToAction("AdministrarTareas");
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", "Error al actualizar la tarea: " + ex.Message);
                 Console.WriteLine($"Error al actualizar tarea: {ex.Message}");
+                TempData["ToastType"] = "error";
+                TempData["ToastTitle"] = "Error";
+                TempData["ToastMessage"] = "Error al actualizar tareas.";
                 ViewBag.Empleados = _context.Empleados.ToList();
                 var tareas = _context.Tareas.Include(t => t.Empleado).ToList();
                 return View("AdministrarTareas", tareas);
@@ -300,6 +380,10 @@ namespace JarredsOrderHub.Controllers
             var tarea = _context.Tareas.Find(id);
             if (tarea == null)
             {
+                TempData["ToastType"] = "error";
+                TempData["ToastTitle"] = "Error";
+                TempData["ToastMessage"] = "Tarea no existe o ya fue eliminada.";
+
                 TempData["Error"] = "La tarea no existe o ya fue eliminada.";
                 return RedirectToAction("AdministrarTareas");
             }
@@ -308,10 +392,17 @@ namespace JarredsOrderHub.Controllers
             {
                 _context.Tareas.Remove(tarea);
                 _context.SaveChanges();
-                TempData["Success"] = "Tarea eliminada correctamente.";
+                TempData["ToastType"] = "success";
+                TempData["ToastTitle"] = "Exito";
+                TempData["ToastMessage"] = "Tarea eliminada correctamente.";
+
             }
             catch (Exception ex)
             {
+                TempData["ToastType"] = "error";
+                TempData["ToastTitle"] = "Error";
+                TempData["ToastMessage"] = $"Error al eliminar tarea: {ex.Message}";
+
                 Console.WriteLine($"Error al eliminar tarea: {ex.Message}");
                 TempData["Error"] = "No se pudo eliminar la tarea. Verifique si tiene dependencias.";
             }

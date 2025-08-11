@@ -11,6 +11,11 @@ namespace JarredsOrderHub.Controllers
             var userId = User.FindFirst("UserId")?.Value;
             if (string.IsNullOrEmpty(userId))
             {
+
+                TempData["ToastType"] = "error";
+                TempData["ToastTitle"] = "Error";
+                TempData["ToastMessage"] = "Debes autenticar como cliente para acceder al carrito.";
+
                 // Redirige al login u otra vista de acciones de usuario si no hay empleado autenticado
                 return RedirectToAction("AccionesUsuario", "Usuario");
             }

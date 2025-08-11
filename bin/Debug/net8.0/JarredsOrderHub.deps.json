@@ -11,12 +11,9 @@
           "EPPlus": "8.0.1",
           "Microsoft.EntityFrameworkCore.SqlServer": "9.0.1",
           "Microsoft.EntityFrameworkCore.Tools": "9.0.2",
-<<<<<<< HEAD
           "PayPalCheckoutSdk": "1.0.3",
-          "PayPalHttp": "1.0.1"
-=======
+          "PayPalHttp": "1.0.1",
           "iTextSharp": "5.5.13.4"
->>>>>>> 2ef3f40d877a625a1b8f0ae4cd0cb50b36d0c7d3
         },
         "runtime": {
           "JarredsOrderHub.dll": {}

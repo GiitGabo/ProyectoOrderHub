@@ -1176,6 +1176,24 @@
           "buildTransitive/Mono.TextTemplating.targets": {}
         }
       },
+      "PayPalCheckoutSdk/1.0.3": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/PayPalCheckoutSdk.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/PayPalCheckoutSdk.dll": {}
+        }
+      },
+      "PayPalHttp/1.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/PayPalHttp-Dotnet.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/PayPalHttp-Dotnet.dll": {}
+        }
+      },
       "System.ClientModel/1.0.0": {
         "type": "package",
         "dependencies": {
@@ -4048,6 +4066,30 @@
         "readme.md"
       ]
     },
+    "PayPalCheckoutSdk/1.0.3": {
+      "sha512": "s6VaUtSbUmFHl10GB79Qw5lQtMoL/oZy46ow5+df4rR2P9D7RtRnr/lFaPDswOnilX2BNd4IsQ4Tt+S9vzklGg==",
+      "type": "package",
+      "path": "paypalcheckoutsdk/1.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netstandard2.0/PayPalCheckoutSdk.dll",
+        "paypalcheckoutsdk.1.0.3.nupkg.sha512",
+        "paypalcheckoutsdk.nuspec"
+      ]
+    },
+    "PayPalHttp/1.0.1": {
+      "sha512": "Jlg8e9Egwxk+sfkIoGIkjQS+uxGNIOnY6NbUkWXKJiEGGqryeV9bIRNtSfjSgs/g02JcIQbKRFQW+8amtSo3ig==",
+      "type": "package",
+      "path": "paypalhttp/1.0.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netstandard2.0/PayPalHttp-Dotnet.dll",
+        "paypalhttp.1.0.1.nupkg.sha512",
+        "paypalhttp.nuspec"
+      ]
+    },
     "System.ClientModel/1.0.0": {
       "sha512": "I3CVkvxeqFYjIVEP59DnjbeoGNfo/+SZrCLpRz2v/g0gpCHaEMPtWSY0s9k/7jR1rAsLNg2z2u1JRB76tPjnIw==",
       "type": "package",
@@ -5412,28 +5454,25 @@
       "EPPlus >= 8.0.1",
       "Microsoft.EntityFrameworkCore.SqlServer >= 9.0.1",
       "Microsoft.EntityFrameworkCore.Tools >= 9.0.2",
+      "PayPalCheckoutSdk >= 1.0.3",
+      "PayPalHttp >= 1.0.1",
       "iTextSharp >= 5.5.13.4"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Keilyn\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\melvi\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Keilyn\\Desktop\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub.csproj",
+      "projectUniqueName": "C:\\Users\\melvi\\Documents\\JarredsOrderHub\\PROYECTO\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub.csproj",
       "projectName": "JarredsOrderHub",
-      "projectPath": "C:\\Users\\Keilyn\\Desktop\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub.csproj",
-      "packagesPath": "C:\\Users\\Keilyn\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Keilyn\\Desktop\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub\\obj\\",
+      "projectPath": "C:\\Users\\melvi\\Documents\\JarredsOrderHub\\PROYECTO\\JarredsOrderHub\\JarredsOrderHub\\JarredsOrderHub.csproj",
+      "packagesPath": "C:\\Users\\melvi\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\melvi\\Documents\\JarredsOrderHub\\PROYECTO\\JarredsOrderHub\\JarredsOrderHub\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\Keilyn\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Users\\melvi\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -5441,6 +5480,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -5458,8 +5498,7 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      },
-      "SdkAnalysisLevel": "9.0.200"
+      }
     },
     "frameworks": {
       "net8.0": {
@@ -5478,6 +5517,14 @@
             "suppressParent": "All",
             "target": "Package",
             "version": "[9.0.2, )"
+          },
+          "PayPalCheckoutSdk": {
+            "target": "Package",
+            "version": "[1.0.3, )"
+          },
+          "PayPalHttp": {
+            "target": "Package",
+            "version": "[1.0.1, )"
           },
           "iTextSharp": {
             "target": "Package",
@@ -5503,7 +5550,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
       }
     }
   },

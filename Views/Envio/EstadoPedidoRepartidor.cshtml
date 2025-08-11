@@ -253,143 +253,156 @@ else
 <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
 
 <script>
-var mapaDetalle;        // Mapa del modal
-var rutaControl;         // Control de ruta de Leaflet Routing Machine
-window.pedidoActual = null; // Pedido cargado actualmente
-
-// Inicializar los mapas pequeños en las tarjetas
-document.addEventListener("DOMContentLoaded", function() {
-    const maps = document.querySelectorAll('.leaflet-map');
-    maps.forEach(mapDiv => {
-        const lat = parseFloat(mapDiv.getAttribute('data-lat'));
-        const lng = parseFloat(mapDiv.getAttribute('data-lng'));
-        if (isNaN(lat) || isNaN(lng)) return;
-        var map = L.map(mapDiv).setView([lat, lng], 15);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
-        L.marker([lat, lng]).addTo(map).bindPopup("Ubicación de entrega").openPopup();
-    });
-});
-
-// Función para abrir el modal y cargar los detalles del pedido
-function mostrarDetallesPedido(pedidoId) {
-    fetch(`/api/PedidosService/${pedidoId}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(pedido => {
-            window.pedidoActual = pedido; // Guarda el pedido globalmente
-
-            // Rellenar información del pedido en el modal
-            document.getElementById("detalle-id").textContent = pedido.id;
-            document.getElementById("detalle-fecha").textContent = new Date(pedido.fechaPedido).toLocaleString();
-            document.getElementById("detalle-total").textContent = "$" + pedido.total;
-            document.getElementById("detalle-comentarios").textContent = pedido.comentarios;
-            document.getElementById("detalle-metodopago").textContent = pedido.metodoPago;
-
-            // Actualizar la información del repartidor asignado
-            const detalleRepartidor = document.getElementById("detalle-repartidor");
-            if (pedido.idRepartidor) {
-                const rep = repartidores.find(r => parseInt(r.IdEmpleado, 10) === parseInt(pedido.idRepartidor, 10));
-                if (rep) {
-                    detalleRepartidor.textContent = "Repartidor asignado: " + rep.Nombre + " " + rep.Apellido;
-                } else {
-                    detalleRepartidor.textContent = "Repartidor asignado: " + pedido.idRepartidor;
-                }
-            } else {
-                detalleRepartidor.textContent = "Sin repartidor asignado";
-            }
-
-            // Inicializar el mapa del modal (sin ruta)
-            if (pedido.latitudEntrega && pedido.longitudEntrega) {
-                if (mapaDetalle) { mapaDetalle.remove(); }
-                mapaDetalle = L.map('modal-mapa').setView([pedido.latitudEntrega, pedido.longitudEntrega], 15);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; OpenStreetMap contributors'
-                }).addTo(mapaDetalle);
-                L.marker([pedido.latitudEntrega, pedido.longitudEntrega]).addTo(mapaDetalle);
-            } else {
-                document.getElementById("modal-mapa").innerHTML = "<p>Ubicación no definida.</p>";
-                if (mapaDetalle) { mapaDetalle.remove(); mapaDetalle = null; }
-            }
-
-            // Guarda el ID del pedido en el modal
-            document.getElementById("modal-pedido").setAttribute("data-pedidoid", pedido.id);
-            // Muestra el modal
-            document.getElementById("modal-pedido").style.display = "block";
-        })
-        .catch(error => {
-            console.error("Error al obtener el pedido:", error);
-            alert("No se pudo cargar el detalle del pedido.");
-        });
-}
-
-// Función para cerrar el modal
-function cerrarModalPedido() {
-    document.getElementById("modal-pedido").style.display = "none";
-}
-
-// Función para trazar la ruta
-function mostrarRuta() {
-    if (!window.pedidoActual) {
-        alert("No hay un pedido cargado.");
-        return;
-    }
-    if (!window.pedidoActual.idRepartidor) {
-        alert("Este pedido no tiene repartidor asignado.");
-        return;
-    }
-    // Para esta alternativa, usaremos la geolocalización del navegador al presionar el botón
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-            trazarRuta(position.coords.latitude, position.coords.longitude);
-        }, function (error) {
-            console.error("Error al obtener la geolocalización:", error);
-            alert("No se pudo obtener la geolocalización para trazar la ruta.");
-        });
-    } else {
-        alert("El navegador no soporta la geolocalización.");
-    }
-}
-
-function trazarRuta(latInicio, lngInicio) {
-    if (rutaControl) {
-        mapaDetalle.removeControl(rutaControl);
-        rutaControl = null;
-    }
-    rutaControl = L.Routing.control({
-        waypoints: [
-            L.latLng(latInicio, lngInicio),
-            L.latLng(window.pedidoActual.latitudEntrega, window.pedidoActual.longitudEntrega)
-        ],
-        routeWhileDragging: false,
-        draggableWaypoints: false,
-        addWaypoints: false,
-        createMarker: function (i, wp) {
-            return L.marker(wp.latLng);
+    // Fallback por si el layout aún no cargó showToast
+    function toast(type, title, msg, ms) {
+        if (typeof window.showToast === 'function') {
+            window.showToast(type, title, msg, ms);
+        } else {
+            alert((title ? title + ': ' : '') + (msg || ''));
         }
-    }).addTo(mapaDetalle);
-}
-
-// Función para abrir Google Maps con un enlace hacia la ubicación de entrega
-function abrirGoogleMaps() {
-    if (!window.pedidoActual || !window.pedidoActual.latitudEntrega || !window.pedidoActual.longitudEntrega) {
-        alert("No se tiene la ubicación de entrega del pedido.");
-        return;
     }
-    // Construir la URL de Google Maps
-    var googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=" +
-                        window.pedidoActual.latitudEntrega + "," + window.pedidoActual.longitudEntrega;
-    window.open(googleMapsUrl, "_blank");
-}
 
-// Función para actualizar el estado del pedido a "Entregado"
+    var mapaDetalle;        // Mapa del modal
+    var rutaControl;        // Control de ruta
+    window.pedidoActual = null; // Pedido cargado actualmente
+
+    // Inicializar los mapas pequeños en las tarjetas
+    document.addEventListener("DOMContentLoaded", function () {
+        const maps = document.querySelectorAll('.leaflet-map');
+        maps.forEach(mapDiv => {
+            const lat = parseFloat(mapDiv.getAttribute('data-lat'));
+            const lng = parseFloat(mapDiv.getAttribute('data-lng'));
+            if (isNaN(lat) || isNaN(lng)) return;
+            var map = L.map(mapDiv).setView([lat, lng], 15);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+            L.marker([lat, lng]).addTo(map).bindPopup("Ubicación de entrega").openPopup();
+        });
+    });
+
+    // Abrir modal y cargar detalles
+    function mostrarDetallesPedido(pedidoId) {
+        toast('success', 'Cargando', `Abriendo pedido #${pedidoId}...`, 1200);
+
+        fetch(`/api/PedidosService/${pedidoId}`)
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                return response.json();
+            })
+            .then(pedido => {
+                window.pedidoActual = pedido;
+
+                // Rellenar datos
+                document.getElementById("detalle-id").textContent = pedido.id;
+                document.getElementById("detalle-fecha").textContent = new Date(pedido.fechaPedido).toLocaleString();
+                document.getElementById("detalle-total").textContent = "₡" + Number(pedido.total || 0).toLocaleString('es-CR');
+                document.getElementById("detalle-comentarios").textContent = pedido.comentarios || '—';
+                document.getElementById("detalle-metodopago").textContent = pedido.metodoPago || '—';
+
+                // Repartidor
+                const detalleRepartidor = document.getElementById("detalle-repartidor");
+                if (pedido.idRepartidor) {
+                    const rep = (window.repartidores || []).find(r => parseInt(r.IdEmpleado, 10) === parseInt(pedido.idRepartidor, 10));
+                    detalleRepartidor.textContent = rep ? `Repartidor asignado: ${rep.Nombre} ${rep.Apellido}` : `Repartidor asignado: ${pedido.idRepartidor}`;
+                } else {
+                    detalleRepartidor.textContent = "Sin repartidor asignado";
+                }
+
+                // Mapa modal
+                if (pedido.latitudEntrega && pedido.longitudEntrega) {
+                    if (mapaDetalle) { mapaDetalle.remove(); }
+                    mapaDetalle = L.map('modal-mapa').setView([pedido.latitudEntrega, pedido.longitudEntrega], 15);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; OpenStreetMap contributors'
+                    }).addTo(mapaDetalle);
+                    L.marker([pedido.latitudEntrega, pedido.longitudEntrega]).addTo(mapaDetalle);
+                } else {
+                    document.getElementById("modal-mapa").innerHTML = "<p>Ubicación no definida.</p>";
+                    if (mapaDetalle) { mapaDetalle.remove(); mapaDetalle = null; }
+                }
+
+                document.getElementById("modal-pedido").setAttribute("data-pedidoid", pedido.id);
+                document.getElementById("modal-pedido").style.display = "block";
+                toast('success', 'Listo', `Pedido #${pedido.id} cargado.`, 1500);
+            })
+            .catch(error => {
+                console.error("Error al obtener el pedido:", error);
+                toast('error', 'Error', 'No se pudo cargar el detalle del pedido');
+            });
+    }
+
+    // Cerrar modal
+    function cerrarModalPedido() {
+        document.getElementById("modal-pedido").style.display = "none";
+    }
+
+    // Trazar ruta
+    function mostrarRuta() {
+        if (!window.pedidoActual) {
+            toast('error', 'Sin pedido', 'No hay un pedido cargado.');
+            return;
+        }
+        if (!window.pedidoActual.idRepartidor) {
+            toast('error', 'Sin repartidor', 'Este pedido no tiene repartidor asignado.');
+            return;
+        }
+        if (!navigator.geolocation) {
+            toast('error', 'Geolocalización', 'Tu navegador no soporta geolocalización.');
+            return;
+        }
+
+        toast('success', 'Ubicación', 'Obteniendo tu ubicación...', 1200);
+
+        navigator.geolocation.getCurrentPosition(function (pos) {
+            trazarRuta(pos.coords.latitude, pos.coords.longitude);
+            toast('success', 'Ruta', 'Ruta calculada.', 1500);
+        }, function (err) {
+            console.error("Geo error:", err);
+            toast('error', 'Ubicación', 'No se pudo obtener tu ubicación para trazar la ruta.');
+        });
+    }
+
+    function trazarRuta(latInicio, lngInicio) {
+        if (!mapaDetalle || !window.pedidoActual?.latitudEntrega || !window.pedidoActual?.longitudEntrega) {
+            toast('error', 'Mapa', 'No hay mapa o destino para trazar la ruta.');
+            return;
+        }
+        if (rutaControl) {
+            mapaDetalle.removeControl(rutaControl);
+            rutaControl = null;
+        }
+        rutaControl = L.Routing.control({
+            waypoints: [
+                L.latLng(latInicio, lngInicio),
+                L.latLng(window.pedidoActual.latitudEntrega, window.pedidoActual.longitudEntrega)
+            ],
+            routeWhileDragging: false,
+            draggableWaypoints: false,
+            addWaypoints: false,
+            createMarker: (i, wp) => L.marker(wp.latLng)
+        }).addTo(mapaDetalle);
+    }
+
+    // Google Maps externo
+    function abrirGoogleMaps() {
+        if (!window.pedidoActual?.latitudEntrega || !window.pedidoActual?.longitudEntrega) {
+            toast('error', 'Ubicación', 'No se tiene la ubicación de entrega del pedido.');
+            return;
+        }
+        const url = `https://www.google.com/maps/search/?api=1&query=${window.pedidoActual.latitudEntrega},${window.pedidoActual.longitudEntrega}`;
+        window.open(url, "_blank");
+        toast('success', 'Google Maps', 'Abriendo ruta en una nueva pestaña...', 1500);
+    }
+
+    // Actualizar estado -> Entregado
     function actualizarEstado(nuevoEstado) {
         const pedidoId = document.getElementById("modal-pedido").getAttribute("data-pedidoid");
+        if (!pedidoId) {
+            toast('error', 'Estado', 'No se encontró el ID del pedido.');
+            return;
+        }
+        toast('success', 'Actualizando', `Marcando pedido #${pedidoId} como ${nuevoEstado}...`, 1200);
 
         fetch(`/api/PedidosService/actualizarEstado/${pedidoId}/${nuevoEstado}`, {
             method: 'PUT',
@@ -401,45 +414,49 @@ function abrirGoogleMaps() {
             })
             .then(data => {
                 if (data.success) {
-                    alert("Pedido y pago actualizados correctamente");
+                    toast('success', 'Listo', 'Pedido y pago actualizados correctamente');
                     cerrarModalPedido();
-                    location.reload(); // Recargar para ver cambios
+                    // Si prefieres actualizar solo la card, hazlo aquí; por ahora recargamos:
+                    location.reload();
+                } else {
+                    throw new Error(data.message || 'No se pudo actualizar');
                 }
             })
             .catch(error => {
                 console.error(error);
-                alert(error.message || "Error al actualizar");
+                toast('error', 'Error', error.message || "Error al actualizar");
             });
     }
 
-// Función para actualizar la ubicación del empleado (opcional)
-function actualizarUbicacionEmpleado() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-            const lat = position.coords.latitude;
-            const lng = position.coords.longitude;
+    // (Opcional) Actualizar ubicación de repartidor
+    function actualizarUbicacionEmpleado() {
+        if (!navigator.geolocation) {
+            toast('error', 'Geolocalización', 'Tu navegador no soporta geolocalización.');
+            return;
+        }
+        toast('success', 'Ubicación', 'Obteniendo tu ubicación...', 1200);
+
+        navigator.geolocation.getCurrentPosition(function (pos) {
             fetch('/Usuario/ActualizarUbicacion', {
                 method: 'POST',
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ latitud: lat, longitud: lng })
+                body: JSON.stringify({ latitud: pos.coords.latitude, longitud: pos.coords.longitude })
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert("Ubicación actualizada correctamente.");
-                } else {
-                    alert("Error al actualizar la ubicación.");
-                }
-            })
-            .catch(error => {
-                console.error("Error en la actualización:", error);
-            });
-        }, function (error) {
-            console.error("Error al obtener la ubicación:", error);
-            alert("No se pudo obtener tu ubicación.");
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        toast('success', 'Ubicación', 'Ubicación actualizada correctamente.');
+                    } else {
+                        toast('error', 'Ubicación', 'Error al actualizar la ubicación.');
+                    }
+                })
+                .catch(err => {
+                    console.error("Error en la actualización:", err);
+                    toast('error', 'Ubicación', err.message || 'Error al actualizar la ubicación.');
+                });
+        }, function (err) {
+            console.error("Geo error:", err);
+            toast('error', 'Ubicación', 'No se pudo obtener tu ubicación.');
         });
-    } else {
-        alert("La geolocalización no es soportada por este navegador.");
     }
-}
 </script>

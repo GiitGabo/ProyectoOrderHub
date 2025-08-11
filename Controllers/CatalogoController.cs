@@ -45,6 +45,7 @@ namespace JarredsOrderHub.Controllers
                 .Where(p => p.Activo && p.Categoria.Activa)
                 .ToListAsync();
 
+
             // Obtén las categorías únicas de los platillos
             var categorias = platillos
                 .Select(p => p.Categoria)

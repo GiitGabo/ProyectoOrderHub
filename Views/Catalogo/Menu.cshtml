@@ -79,7 +79,13 @@
                 });
             }
             localStorage.setItem('carrito', JSON.stringify(carrito));
-            alert(nombre + " se ha añadido al carrito.");
+
+            // Mostrar toast en lugar de alert
+            if (typeof window.showToast === 'function') {
+                window.showToast('success', 'Añadido', `${nombre} se ha añadido al carrito.`);
+            } else {
+                alert(nombre + " se ha añadido al carrito.");
+            }
         }
     </script>
 

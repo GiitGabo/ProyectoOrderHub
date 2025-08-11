@@ -190,10 +190,6 @@ namespace JarredsOrderHub.Controllers.Service
 
 
 
-
-
-
-
         [HttpPost("platillos")]
         public async Task<ActionResult<Platillo>> CrearPlatillo([FromBody] Platillo platillo)
         {
